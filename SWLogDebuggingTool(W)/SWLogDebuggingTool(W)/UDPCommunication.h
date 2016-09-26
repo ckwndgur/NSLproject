@@ -17,6 +17,7 @@
 #include "DataReqMsg.h"
 #include "TextManager.h"
 #include "FolderManager.h"
+#include "XMLManager.h"
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
@@ -28,18 +29,19 @@ public:
 	UDPCommunication(void);
 	~UDPCommunication(void);
 
+	XMLManager mXMLManager;
+
 	int recvfromTimeOut(SOCKET socket, long sec, long usec);
+	void WSAInit();
 	void InitSocket_Wt(int& hRecvSock, int& hRecvUniSock, int& hSndSock);
 	void MultiGroupRcvSet(int iRcvSocket, char* MultiGroupAddr, int MultiGroupPort);
 	void InforReq(int iSndSock, int iWatcherPort, char* cMultiGroup);
 	list<string> RcvInfor(int iRcvUniSock, int iTimeout_sec);
+	list<string> RcvInfor_nonTimeout(int iRcvUniSock, int iTimeout_sec);
 
+	BOOL SndDataReq_MFC(int iSndSockUni, string sAgtIP, string sReqFileName, int iWtcPort);
 	void LogFileRcv(int iRcvSocket, char* cFileDir, char* cFileName);
 	char* SndDataReq(int iSndSockUni, list<string> lIPandFileList);
-
-	void DevideInfor(char cMessage[2048], char cPartIPIn[20], char cPartNameIn[20], char cPartPathIn[2048], char cPartListIn[2048]);
-	int GetDate();
-	int GetDate_DAY();
 
 	WSADATA wsaData;
 	SOCKADDR_IN addr;

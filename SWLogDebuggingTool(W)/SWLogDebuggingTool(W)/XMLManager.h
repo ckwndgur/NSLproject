@@ -14,16 +14,20 @@ public:
 
 
 	void initXML();
+	void CreatXML_AgentInfo(string AgentName);
 
 	bool WriteXML(string NodeTitle, string* ChildElement, string* Contents, int ChildCnt);
+	bool WriteAgentInfo_XML(string NodeTitle, string* ChildElement, string* Contents, int ChildCnt);
+
 	bool AddXML(string NodeTitle, string* ChildElement, string* Contents, int ChildCnt);
 	bool EditElementXML(string ChildTitle, string ChildElement, string Contents);
 
 	string ParsingXML(string ChildTitle, string ChildElement);
-
+	string LoadAllXMLinDir(string sFileDir, string ChildTitle, string ChildElement);
 
 private:
 	string sConfigFileDirectory;
+	string sAgentInfoDirectory;
 	UserConfig mUserConfig;
 	StringManager mStringManager;
 	tinyxml2::XMLDocument mXMLDocument;

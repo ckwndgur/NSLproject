@@ -1,3 +1,12 @@
+/*////////////////////////////////////////////////////////////////
+Winsock를 계속 사용하기 위해
+Project -> Property -> Linker -> Input -> Additional Dependence
+에 ws2_32.lib를 추가하였습니다.
+
+MFC에서는 printf나 fput으로 출력이 불가능하여 주석처리 하였습니다.
+////////////////////////////////////////////////////////////////*/
+
+
 #include "StdAfx.h"
 #include "UDPCommunication.h"
 
@@ -29,11 +38,16 @@ int UDPCommunication::recvfromTimeOut(SOCKET socket, long sec, long usec)
 	return select(0, &fds, 0, 0, &timeout);
 }
 
+void UDPCommunication::WSAInit()
+{
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+	
+	//if(WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+	//	fputs("WSAStartup() error\n", stderr);
+}
+
 void UDPCommunication::InitSocket_Wt(int& hRecvSock, int& hRecvUniSock, int& hSndSock)
 {
-	if(WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-		fputs("WSAStartup() error\n", stderr);
-
 	//소켓생성
 	hRecvSock = socket(PF_INET, SOCK_DGRAM, 0);
 	if(hRecvSock == INVALID_SOCKET)
@@ -154,7 +168,7 @@ list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 
 	int iListStartFlag = 0;
 
-	printf("Wating Reponse from Agent\n");
+	//printf("Wating Reponse from Agent\n");
 	int res = recvfromTimeOut(iRcvUniSock, iTimeout_sec, 0);
 
 	while(recvfromTimeOut(iRcvUniSock, iTimeout_sec, 0)!=0)
@@ -163,25 +177,32 @@ list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 		{
 		case 0:
 			Sleep(1);
-			printf("=================== Agent 정보 수신 Time Out ===================\n");
+			//printf("=================== Agent 정보 수신 Time Out ===================\n");
 			break;
 		case -1:
-			printf("RcvTimeOut Error\n");
+			//printf("RcvTimeOut Error\n");
 			break;
+		
 		default:
 			recvfrom(iRcvUniSock, cRcvBuf, sizeof(cRcvBuf), 0, NULL, 0);
 
 			memcpy(&MyAgtInfoMsg, cRcvBuf, sizeof(MyAgtInfoMsg));
-			cout << "//////////////////////////////////////////////////" <<endl;
-			printf("Rcvd Agt IP : ");
-			printf(MyAgtInfoMsg.cAgtIPAddr);
-			printf("\n");
-			printf("Rcvd Agt Name : ");
-			printf(MyAgtInfoMsg.cAgtName);
-			printf("\n");
-			printf("Rcvd Agt File List : ");
-			printf("\n");
-			printf(MyAgtInfoMsg.cAgtFileList);
+			//cout << "//////////////////////////////////////////////////" <<endl;
+			//printf("Rcvd Agt IP : ");
+			//printf(MyAgtInfoMsg.cAgtIPAddr);
+			//printf("\n");
+			//printf("Rcvd Agt Name : ");
+			//printf(MyAgtInfoMsg.cAgtName);
+			//printf("\n");
+			//printf("Rcvd Agt File List : ");
+			//printf("\n");
+			//printf(MyAgtInfoMsg.cAgtFileList);
+
+			//Agent한대당 XML파일 하나 생성 후 데이터 입력
+			mXMLManager.CreatXML_AgentInfo(MyAgtInfoMsg.cAgtIPAddr);
+			mXMLManager.EditElementXML("AgentInfo", "AgentIP", MyAgtInfoMsg.cAgtIPAddr);
+			mXMLManager.EditElementXML("AgentInfo", "AgentName", MyAgtInfoMsg.cAgtName);
+			mXMLManager.EditElementXML("AgentInfo", "AgentLogFileList", MyAgtInfoMsg.cAgtFileList);
 
 			MyAgtInfoMsg.cAgtFileList[strlen(MyAgtInfoMsg.cAgtFileList)-1] = '\0';
 
@@ -203,7 +224,7 @@ list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 				MyAgtInfoList.AgtFileList.push_back(sIPwithFileName);	
 			}
 
-			cout << "//////////////////////////////////////////////////" <<endl;
+			//cout << "//////////////////////////////////////////////////" <<endl;
 
 			break;
 		}
@@ -212,8 +233,102 @@ list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 	return MyAgtInfoList.AgtFileList;
 }
 
+list<string> UDPCommunication::RcvInfor_nonTimeout(int iRcvUniSock, int iTimeout_sec)
+{
+	char cRcvBuf[4096];
+	char cRcvdIP[16];
+
+	memset(cRcvBuf, 0, sizeof(cRcvBuf));
+	memset(cRcvdIP, 0, sizeof(cRcvdIP));
+
+	AgtInfoMsgStruct MyAgtInfoMsg = AgtInfoMsgStruct();
+	AgtInfoList MyAgtInfoList = AgtInfoList();
+
+	int iListStartFlag = 0;
+
+	switch(recvfromTimeOut(iRcvUniSock, iTimeout_sec, 0))
+	{
+		case 0:
+			Sleep(1);
+			break;
+		case -1:
+			Sleep(1);
+			break;
+
+		default:
+			recvfrom(iRcvUniSock, cRcvBuf, sizeof(cRcvBuf), 0, NULL, 0);
+
+			memcpy(&MyAgtInfoMsg, cRcvBuf, sizeof(MyAgtInfoMsg));
+
+			//Agent한대당 XML파일 하나 생성 후 데이터 입력
+			mXMLManager.CreatXML_AgentInfo(MyAgtInfoMsg.cAgtIPAddr);
+			mXMLManager.EditElementXML("AgentInfo", "AgentIP", MyAgtInfoMsg.cAgtIPAddr);
+			mXMLManager.EditElementXML("AgentInfo", "AgentName", MyAgtInfoMsg.cAgtName);
+			mXMLManager.EditElementXML("AgentInfo", "AgentLogFileList", MyAgtInfoMsg.cAgtFileList);
+
+			MyAgtInfoMsg.cAgtFileList[strlen(MyAgtInfoMsg.cAgtFileList)-1] = '\0';
+
+			std::string sAgtFileList(MyAgtInfoMsg.cAgtFileList);
+			std::stringstream strmAgtFileList(sAgtFileList);
+
+			std::string sSingleFileName;
+			std::string sIPwithFileName;
+
+			strcat(MyAgtInfoMsg.cAgtIPAddr, "/");
+
+			while(strmAgtFileList.good())
+			{
+				getline(strmAgtFileList, sSingleFileName,'\n');
+
+				sIPwithFileName = MyAgtInfoMsg.cAgtIPAddr;
+				sIPwithFileName += sSingleFileName;
+
+				MyAgtInfoList.AgtFileList.push_back(sIPwithFileName);	
+			}
+			break;
+	}
+
+	return MyAgtInfoList.AgtFileList;
+}
+
 
 //특정 Agent에 파일을 요청하기 위한 함수 또는 에이전트가 실행중인 노드전체에 파일을 요청하기 위한 함수
+
+BOOL UDPCommunication::SndDataReq_MFC(int iSndSockUni, string sAgtIP, string sReqFileName, int iWtcPort)
+{
+	char cWtcName[64];
+	string sWatcherIP;
+	SOCKADDR_IN AgtAddr;
+
+	struct DataReqMsgStruct MyDataReqMsg;
+
+	memset(cWtcName, 0, sizeof(cWtcName));
+	memset(&MyDataReqMsg, 0, sizeof(struct DataReqMsgStruct));
+	memset(&AgtAddr, 0, sizeof(AgtAddr));
+	
+	int nError = gethostname(cWtcName, sizeof(cWtcName));
+	if (nError == 0)
+	{
+		pHostInfo = gethostbyname(cWtcName);
+		// ip address 파악
+		sWatcherIP = inet_ntoa(*(struct in_addr*)pHostInfo->h_addr_list[0]);
+	}
+	
+	//port 1883;
+	memcpy(&MyDataReqMsg.cWatcherIP, sWatcherIP.c_str(), sizeof(sWatcherIP.c_str()));
+	memcpy(&MyDataReqMsg.cReqFileName, sReqFileName.c_str(), sizeof(sReqFileName.c_str()));
+	MyDataReqMsg.iWatcherPort = iWtcPort;
+	MyDataReqMsg.nReqType = 1;
+	
+	AgtAddr.sin_family = AF_INET;
+	AgtAddr.sin_addr.s_addr = inet_addr(sAgtIP.c_str());
+	AgtAddr.sin_port = htons(1883/*agtPort*/);
+	
+	if(sendto(iSndSockUni, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0, (SOCKADDR*)&AgtAddr, sizeof(AgtAddr)))
+		return TRUE;
+
+	return FALSE;
+}
 
 char* UDPCommunication::SndDataReq(int iSndSockUni, list<string> lIPandFileList)
 {
@@ -260,7 +375,99 @@ char* UDPCommunication::SndDataReq(int iSndSockUni, list<string> lIPandFileList)
 		iterStartList ++;
 	}
 
+	sReqFileName = *iterStartList;
+	std::stringstream strmReqFileInfo(sReqFileName);
 
+	std::string sAgtIP;
+	std::string sFileName;
+
+	iIndex = 0;
+
+	//리스트에서 IP와 파일이름을 분리하는 단계
+	while(strmReqFileInfo.good())
+	{
+		if(iIndex == 0)
+		{
+			getline(strmReqFileInfo, sAgtIP,'/');
+			iIndex++;
+		}
+		else
+		{
+			getline(strmReqFileInfo, sFileName,'/');
+		}
+	}
+	sSlctAgtIP = sAgtIP;
+
+	strcpy(cFileName, sFileName.c_str());
+
+	int nError = gethostname(cWtcName, sizeof(cWtcName));
+	if (nError == 0)
+	{
+		pHostInfo = gethostbyname(cWtcName);
+		// ip address 파악
+		strcpy(cWtcIP, inet_ntoa(*(struct in_addr*)pHostInfo->h_addr_list[0]));
+	}
+
+	//port 1883;
+	MyDataReqMsg.iWatcherPort = 1883;
+	MyDataReqMsg.nReqType = 1;
+	memcpy(&MyDataReqMsg.cWatcherIP, cWtcIP, strlen(cWtcIP));
+	memcpy(&MyDataReqMsg.cReqFileName, cFileName, strlen(cFileName));
+
+	AgtAddr.sin_family = AF_INET;
+	AgtAddr.sin_addr.s_addr = inet_addr(sAgtIP.c_str());
+	AgtAddr.sin_port = htons(1883);
+
+	if(sendto(iSndSockUni, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0, (SOCKADDR*)&AgtAddr, sizeof(AgtAddr))==-1)
+		printf("Agent Info Trans Failed\n");
+
+	return cFileName;
+}
+/*
+char* UDPCommunication::SndDataReq(int iSndSockUni, list<string> lIPandFileList)
+{
+	int sel = 0;
+	int iIndex = 0;
+	char cIndex[100];
+	char cWtcName[64];
+	char cWtcIP[15];
+	string sReturnFail = "F";
+
+	SOCKADDR_IN AgtAddr;
+
+	char cFileName[256];
+	string sReqFileName = "";
+
+	struct DataReqMsgStruct MyDataReqMsg;
+
+	memset(cFileName, 0, sizeof(cFileName));
+	memset(&MyDataReqMsg, 0, sizeof(struct DataReqMsgStruct));
+	memset(&AgtAddr, 0, sizeof(AgtAddr));
+
+	cout << " 요청하고자 하는 파일을 선택하세요. " << endl;		
+
+	list<string>::iterator iterStartList = lIPandFileList.begin();
+	list<string>::iterator iterEndList = lIPandFileList.end();
+
+	while(iterStartList != iterEndList)
+	{		
+		cout<< iIndex << ". " << *iterStartList <<endl;
+		iIndex++;
+		iterStartList++;
+	}
+
+	cout << " 요청하고자 하는 파일 번호: ";
+	cin >> sel;
+
+	if(lIPandFileList.size()<(sel+1))
+		return (char*)sReturnFail.c_str();
+
+	iterStartList = lIPandFileList.begin();
+
+	for(int i = 0;i != sel;i++)
+	{
+		iterStartList ++;
+	}
 
 	sReqFileName = *iterStartList;
 	std::stringstream strmReqFileInfo(sReqFileName);
@@ -301,15 +508,13 @@ char* UDPCommunication::SndDataReq(int iSndSockUni, list<string> lIPandFileList)
 	memcpy(&MyDataReqMsg.cWatcherIP, cWtcIP, strlen(cWtcIP));
 	memcpy(&MyDataReqMsg.cReqFileName, cFileName, strlen(cFileName));
 
-
 	AgtAddr.sin_family = AF_INET;
 	AgtAddr.sin_addr.s_addr = inet_addr(sAgtIP.c_str());
 	AgtAddr.sin_port = htons(1883);
 
-
 	if(sendto(iSndSockUni, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0, (SOCKADDR*)&AgtAddr, sizeof(AgtAddr))==-1)
 		printf("Agent Info Trans Failed\n");
 
-
 	return cFileName;
 }
+*/
