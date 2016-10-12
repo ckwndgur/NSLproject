@@ -6,19 +6,19 @@ using namespace std;
 class TreeviewData
 {
 public:
-	TreeviewData(list<CString> directory, CString filename);
+	TreeviewData();
 	~TreeviewData(void);
 
-	void setFullDirectory(list<CString> full);
-	list<CString> getFullDirectory();
+	void setFullDirectory(CString full);
+	CString getFullDirectory();
 	void setFileName(CString filename);
 	CString getFileName();
 
 	void setListIndex(int index);
 	int getListIndex();
 
-private:
+public:
 	int iListIndex;
-	list<CString> cslFullDirectory;
 	CString csFileName;
+	CString csFullDirectory;
 };

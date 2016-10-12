@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "SWLogDebuggingTool(W).h"
-
+#include "MainFrm.h"
 #include "SWLogDebuggingTool(W)Doc.h"
 #include "SWLogDebuggingTool(W)View.h"
 
@@ -38,6 +38,7 @@ CSWLogDebuggingToolWView::CSWLogDebuggingToolWView()
 
 CSWLogDebuggingToolWView::~CSWLogDebuggingToolWView()
 {
+	/*delete m_btn;*/
 }
 
 BOOL CSWLogDebuggingToolWView::PreCreateWindow(CREATESTRUCT& cs)
@@ -58,20 +59,38 @@ BOOL CSWLogDebuggingToolWView::PreCreateWindow(CREATESTRUCT& cs)
 	AddrStruct.sin_port = htons(1883);
 	bind(iUdpUniSock, (SOCKADDR*)&AddrStruct, sizeof(AddrStruct));
 
+	
+
 	return CView::PreCreateWindow(cs);
+}
+
+void CSWLogDebuggingToolWView::OnInitialUpdate()
+{
+	CView::OnInitialUpdate();
+
+// 	m_btn = new CButton();
+// 	m_btn->Create("a", BS_DEFPUSHBUTTON, CRect(0,0,200,50), this, 100);
+
 }
 
 // CSWLogDebuggingToolWView 그리기
 
-void CSWLogDebuggingToolWView::OnDraw(CDC* /*pDC*/)
+void CSWLogDebuggingToolWView::OnDraw(CDC* pDC)
 {
+	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
+	CSWLogDebuggingToolWView *pView = (CSWLogDebuggingToolWView *)pFrame->GetActiveView();
+	
+
 	CSWLogDebuggingToolWDoc* pDoc = GetDocument();
+/*	m_btn->ShowWindow(SW_SHOW);*/
+	
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
-
+	pDC->TextOut(0,0,_T("sdsa"));
+	
 }
 
 

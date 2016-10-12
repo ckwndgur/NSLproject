@@ -22,7 +22,7 @@ public:
 public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
-
+	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
 // 구현입니다.
 public:
 	virtual ~CSWLogDebuggingToolWDoc();

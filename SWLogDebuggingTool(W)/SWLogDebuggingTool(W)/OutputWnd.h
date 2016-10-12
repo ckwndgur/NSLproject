@@ -43,6 +43,8 @@ protected:
 	COutputList m_wndOutputDebug;
 	COutputList m_wndOutputFind;
 
+	
+
 protected:
 	void FillBuildWindow();
 	void FillDebugWindow();

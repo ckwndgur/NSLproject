@@ -59,6 +59,7 @@ int COutputWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndOutputBuild.SetFont(&m_Font);
 	m_wndOutputDebug.SetFont(&m_Font);
 	m_wndOutputFind.SetFont(&m_Font);
+	
 
 	CString strTabName;
 	BOOL bNameValid;
@@ -73,6 +74,7 @@ int COutputWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	bNameValid = strTabName.LoadString(IDS_FIND_TAB);
 	ASSERT(bNameValid);
 	m_wndTabs.AddTab(&m_wndOutputFind, strTabName, (UINT)2);
+	
 
 	// 출력 탭을 더미 텍스트로 채웁니다.
 	FillBuildWindow();

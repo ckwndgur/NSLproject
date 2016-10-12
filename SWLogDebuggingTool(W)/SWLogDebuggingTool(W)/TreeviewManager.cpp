@@ -77,7 +77,7 @@ list<TreeviewData> TreeviewManager::FindLogFile(LPCTSTR pstr)
 				FullDirectory.push_back(temp);
 			}
 
-			TreeviewList.push_back(TreeviewData(FullDirectory, finder.GetFileTitle()));
+//			TreeviewList.push_back(TreeviewData(FullDirectory, finder.GetFileTitle()));
 			FullDirectory.clear();
 		}
 	}
@@ -85,51 +85,6 @@ list<TreeviewData> TreeviewManager::FindLogFile(LPCTSTR pstr)
 
 	return TreeviewList;
 };
-
-// list<CString> TreeviewManager::OrderDirectory(int order)
-// {
-// 	list<TreeviewData> csLogFileList;
-// 	list<CString> orderdirec;
-// 	 
-//  	if (FindLogFile("C:\\LogDebugging").size() >0 )
-//  	{
-// 		for (list<TreeviewData>::iterator iterPos = csLogFileList.begin(); iterPos != csLogFileList.end(); ++iterPos)
-// 		{
-// 			list<CString> fulldirec;
-// 			fulldirec = iterPos->getFullDirectory();
-// 
-// 			for (list<CString>::iterator iterPoslow = fulldirec.begin(); iterPoslow != fulldirec.end(); ++iterPoslow)
-// 			{
-// 				int i = 1;
-// 				if ((order == 0)&&(i == 1))
-// 				{
-// 					orderdirec.push_back(*iterPos);
-// 				} 
-// 				else if ((order == 1)&&(i == 2))
-// 				{
-// 					orderdirec.push_back(*iterPos);
-// 				}
-// 				if (i==1 ) i = 2;
-// 				else i = 1;
-// 			}
-// 		}
-//  	} 
-// 	return orderdirec;
-// };
-
-// list<TreeviewData> TreeviewManager::SortingList(list<TreeviewData> input)
-// {
-// 	for (list<TreeviewData>::iterator iterPos = input.begin(); iterPos != input.end(); ++iterPos)
-// 	{
-// 		list<CString> fulldirec;
-// 		fulldirec = iterPos->getFullDirectory();
-// 		
-// 		for (list<CString>::iterator iterPoslow = fulldirec.begin(); iterPoslow != fulldirec.end(); ++iterPoslow)
-// 		{
-// 			
-// 		}
-// 	}
-// };
 
 
 void TreeviewManager::SetupListIndex(list<TreeviewData> input)
@@ -141,14 +96,3 @@ void TreeviewManager::SetupListIndex(list<TreeviewData> input)
 		listsize ++;
 	}
 };
-
-// int TreeviewManager::GetListSize(list<TreeviewData> input)
-// {
-// 	int listsize = 0;
-// 	for (list<TreeviewData>::iterator iterPos = input.begin(); iterPos != input.end(); ++iterPos)
-// 	{
-// 		listsize++;
-// 	}
-// 	
-// 	return listsize;
-// };
