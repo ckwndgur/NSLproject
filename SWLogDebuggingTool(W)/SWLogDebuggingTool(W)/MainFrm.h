@@ -7,7 +7,7 @@
 #include "ClassView.h"
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
-#include "FolderManager.h"
+
 
 class CMainFrame : public CMDIFrameWndEx
 {

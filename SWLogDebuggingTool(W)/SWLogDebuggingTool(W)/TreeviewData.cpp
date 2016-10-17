@@ -1,10 +1,9 @@
 #include "StdAfx.h"
 #include "TreeviewData.h"
 
-TreeviewData::TreeviewData(list<CString> directory, CString filename)
+TreeviewData::TreeviewData()
 {
-	this->cslFullDirectory = directory;
-	this->csFileName = filename;
+	
 }
 
 TreeviewData::~TreeviewData(void)
@@ -12,13 +11,13 @@ TreeviewData::~TreeviewData(void)
 
 }
 
-void TreeviewData::setFullDirectory(list<CString> full)
+void TreeviewData::setFullDirectory(CString full)
 {
-	this->cslFullDirectory = full;
+	this->csFullDirectory = full;
 }
-list<CString> TreeviewData::getFullDirectory()
+CString TreeviewData::getFullDirectory()
 {
-	return cslFullDirectory;
+	return csFullDirectory;
 }
 
 void TreeviewData::setListIndex(int index)

@@ -95,6 +95,7 @@ void CFileView::MakeTreeview(CString pstr) // Folder searching and make tree vie
 	CFileFind finder;
 	CString strWildcard(pstr);
 	int treeindex;
+	
 
 	strWildcard += _T("\\*.*");
 
@@ -115,18 +116,30 @@ void CFileView::MakeTreeview(CString pstr) // Folder searching and make tree vie
 
 			if (treeindex == 0)
 			{
+				TreeviewData *mTreeviewData = new TreeviewData();
 				hSrc = m_wndFileView.InsertItem(temp, 0, 0, hRoot);
+				mTreeviewData->csFileName = temp;
+				mTreeviewData->csFullDirectory = finder.GetFilePath();
+				m_wndFileView.SetItemData(hSrc, (DWORD)mTreeviewData);
 			} 
 			else if (treeindex == 1)
 			{
+				TreeviewData *mTreeviewData = new TreeviewData();
 				hInc = m_wndFileView.InsertItem(temp, 0, 0, hSrc);
+				mTreeviewData->csFileName = temp;
+				mTreeviewData->csFullDirectory = finder.GetFilePath();
+				m_wndFileView.SetItemData(hInc, (DWORD)mTreeviewData);
 			}
 
 			MakeTreeview(str);
 		}
 		else
 		{
+			TreeviewData *mTreeviewData = new TreeviewData();
 			m_wndFileView.InsertItem(finder.GetFileTitle(), 1, 1, hInc);
+			mTreeviewData->csFileName = finder.GetFileTitle();
+			mTreeviewData->csFullDirectory = finder.GetFilePath();
+			m_wndFileView.SetItemData(hInc, (DWORD)mTreeviewData);
 		}
 	}
 	finder.Close();
