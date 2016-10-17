@@ -180,11 +180,20 @@ void CFileView::OnContextMenu(CWnd* pWnd, CPoint point)
 
 		UINT flags = 0;
 		HTREEITEM hTreeItem = pWndTree->HitTest(ptTree, &flags);
+		csTVDataFileName = pWndTree->GetItemText(hTreeItem);
+
+		hTreeItem = pWndTree->GetNextItem(hTreeItem, TVGN_PARENT);
+		CString mid = pWndTree->GetItemText(hTreeItem);
+
+		hTreeItem = pWndTree->GetNextItem(hTreeItem, TVGN_PARENT);
+		CString first = pWndTree->GetItemText(hTreeItem);
+
+
+		csTVDataFilePath = "C:\\LogDebugging\\" + first + "\\" + mid + "\\" + csTVDataFileName +".txt";
 		
-		CString a = m_wndFileView.GetItemText(hTreeItem);
-		mSelTVData = (TreeviewData *)m_wndFileView.GetItemData(hTreeItem);
-		csTVDataFileName = mSelTVData->getFileName();
-		csTVDataFilePath = mSelTVData->getFullDirectory();
+		//mSelTVData = (TreeviewData *)pWndTree->GetItemData(hTreeItem);
+		//csTVDataFileName = mSelTVData->getFileName();
+		//csTVDataFilePath = mSelTVData->getFullDirectory();
 		
 		if (hTreeItem != NULL)
 		{

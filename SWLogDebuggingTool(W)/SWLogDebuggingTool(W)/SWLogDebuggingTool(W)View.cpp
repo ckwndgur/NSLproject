@@ -25,10 +25,6 @@ BEGIN_MESSAGE_MAP(CSWLogDebuggingToolWView, CView)
 	ON_COMMAND(ID_Log_Req, &CClassView::OnLogReq)
 	ON_COMMAND(ID_Info_Req, &CClassView::OnInfoReq)
 	ON_COMMAND(ID_Info_Load, &CClassView::OnInfoLoad)
-	ON_WM_ACTIVATE()
-	ON_WM_SIZE()
-	ON_WM_VSCROLL()
-	ON_WM_HSCROLL()
 END_MESSAGE_MAP()
 
 CClassView* pClassView = (CClassView*)AfxGetApp();
@@ -91,11 +87,23 @@ void CSWLogDebuggingToolWView::OnDraw(CDC* pDC)
 // 		pDC->TextOut(0,0,m_strView);
 // 		m_bView = FALSE;
 // 	}
-	int a = 200;
-	for (int i = 0; i<m_strView.GetLength()/a;i++)
+	if (m_strView.GetLength() >200)
 	{
-		pDC->TextOut(0,i*15,m_strView.Mid(i*a, (i+1)*a));
+		int a = 200;
+		for (int i = 0; i<m_strView.GetLength()/a;i++)
+		{
+			pDC->TextOut(0,i*15,m_strView.Mid(i*a, (i+1)*a));
+		}
 	}
+	else
+	{
+		int a = 50;
+		for (int i = 0; i<m_strView.GetLength()/a;i++)
+		{
+			pDC->TextOut(0,i*15,m_strView.Mid(i*a, (i+1)*a));
+		}
+	}
+	
 	
 	
 	//pDC->TextOut(0,15,m_strView);
