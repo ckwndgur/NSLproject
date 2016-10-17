@@ -1,15 +1,21 @@
 
 #pragma once
-
+#include <string>
+#include <sstream>
 #include "ViewTree.h"
+#include "UserConfig.h"
+#include "XMLManager.h"
+#include "AgtInfoList.h"
+#include "UDPCommunication.h"
+#include "afxcmn.h"
 
 class CClassToolBar : public CMFCToolBar
 {
+	
 	virtual void OnUpdateCmdUI(CFrameWnd* /*pTarget*/, BOOL bDisableIfNoHndler)
 	{
 		CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), bDisableIfNoHndler);
 	}
-
 	virtual BOOL AllowShowOnList() const { return FALSE; }
 };
 
@@ -21,16 +27,40 @@ public:
 
 	void AdjustLayout();
 	void OnChangeVisualStyle();
+	
+	UDPCommunication mUDPCommunication;
+	SOCKADDR_IN AddrStruct;
+	int iUdpMultiSock, iUdpUniSock, iUdpSndSock;
+	AgtInfoList mAgtInfoList;
 
-protected:
+	XMLManager mXMLManager;
+	FolderManager mFolderManager;
+	string sAgentXMLDir;
+	
+	WIN32_FIND_DATA FindData;
+	HANDLE hFind, hFile;
+	UserConfig mUserConfig;
+	list<string> lAgtInfoList;
+
+	//COutputWnd mCOutputWnd;
+
+	HTREEITEM hRoot;
+	HTREEITEM hClass;
+
+	void SocketBinding(int& iSocket, SOCKADDR_IN mSocketAddr, int iAddrFamily, long lSourceIP, int iSourcePort);
+	void DisplayAllElement_List(list<string> lList);
+
+	list<string> OpenXML(string sXMLDir);
+
+//protected:
 	CClassToolBar m_wndToolBar;
-	CViewTree m_wndClassView;
+	//CViewTree m_wndClassView;
 	CImageList m_ClassViewImages;
 	UINT m_nCurrSort;
 
 	void FillClassView();
 
-// 재정의입니다.
+//재정의입니다.
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -50,5 +80,9 @@ protected:
 	afx_msg void OnUpdateSort(CCmdUI* pCmdUI);
 
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnLogReq();
+	afx_msg void OnInfoReq();
+	afx_msg void OnInfoLoad();
 };
 

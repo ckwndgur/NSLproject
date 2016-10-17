@@ -20,7 +20,7 @@ void TextManager::WriteText(char* filedirectory, char* filename, string data)
 
 	strcpy(ctemp, mStringManager.AppendChar(filedirectory, filename));
 
-	ctemp[strlen(ctemp) - 1] = NULL;
+	//ctemp[strlen(ctemp) - 1] = NULL;
 
 	ofstream ofile(ctemp, ios_base::out | ios_base::app);
 	ofile<< data <<endl;

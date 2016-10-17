@@ -87,13 +87,25 @@
 #define ID_AGENT32772                   32772
 #define ID_AGENT_INFOR                  32773
 #define ID_AGENT_XML_LOAD               32774
+#define ID_32775                        32775
+#define ID_LOGFILE_REQ                  32776
+#define ID_32777                        32777
+#define ID_AGT_LOG_REQ                  32778
+#define ID_32779                        32779
+#define ID_AGTLOG_REQ                   32780
+#define ID_32781                        32781
+#define ID_Log_Req                      32782
+#define ID_AGENT32783                   32783
+#define ID_AGENT32784                   32784
+#define ID_Info_Req                     32785
+#define ID_Info_Load                    32786
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_COMMAND_VALUE         32787
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

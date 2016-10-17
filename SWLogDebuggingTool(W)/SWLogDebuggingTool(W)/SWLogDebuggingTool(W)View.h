@@ -4,6 +4,8 @@
 #include "OutputWnd.h"
 #include "XMLManager.h"
 #include "GetDataFromAgent_WIN.h"
+#include "ClassView.h"
+
 
 // SWLogDebuggingTool(W)View.h : CSWLogDebuggingToolWView 클래스의 인터페이스
 //
@@ -26,22 +28,13 @@ public:
 
 
 	//원격지 정보 저장 부분 - XML
-	XMLManager mXMLManager;
 
 	//원격지 정보 불러오기 부분 - XML
-	WIN32_FIND_DATA FindData;
-	HANDLE hFind;
-	HANDLE hFile;
-	UserConfig mUserConfig;
-	list<string> lAgtXMLStorage;
 
 	//UDP통신부분 - Agent Info
-	SOCKADDR_IN AddrStruct;
-	int iUdpMultiSock, iUdpUniSock, iUdpSndSock;
-	list<string> lAgtInfoList;
+
 	COutputWnd mCOutputWnd;
-	UDPCommunication mUDPCommunication;
-	AgtInfoList mAgtInfoList;
+
 
 	// 재정의입니다.
 public:
@@ -68,9 +61,6 @@ protected:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg void OnAgentInfor();
-	afx_msg void OnAgentXmlLoad();
 };
 
 #ifndef _DEBUG  // SWLogDebuggingTool(W)View.cpp의 디버그 버전

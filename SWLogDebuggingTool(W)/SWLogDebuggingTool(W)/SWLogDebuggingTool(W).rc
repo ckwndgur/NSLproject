@@ -232,7 +232,7 @@ BEGIN
         MENUITEM "인쇄 미리 보기(&V)",                ID_FILE_PRINT_PREVIEW
         MENUITEM "인쇄 설정(&R)...",                ID_FILE_PRINT_SETUP
         MENUITEM SEPARATOR
-        MENUITEM "최근에 사용한 파일",                  ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM "최근에 사용한 파일",                  ID_FILE_MRU_FILE1
         MENUITEM SEPARATOR
         MENUITEM "끝내기(&X)",                     ID_APP_EXIT
     END
@@ -277,8 +277,8 @@ BEGIN
     END
     POPUP "Agent관련 기능"
     BEGIN
-        MENUITEM "Agent정보요청",                   ID_AGENT_INFOR
-        MENUITEM "Agent정보로드",                   ID_AGENT_XML_LOAD
+        MENUITEM "Agent정보 요청",                  ID_Info_Req
+        MENUITEM "Agent정보 로드",                  ID_Info_Load
     END
 END
 
@@ -300,6 +300,7 @@ BEGIN
         MENUITEM "형식별 정렬(&T)",                  ID_SORTING_SORTBYTYPE
         MENUITEM "액세스별 정렬(&E)",                 ID_SORTING_SORTBYACCESS
         MENUITEM "형식별 그룹화(&Y)",                 ID_SORTING_GROUPBYTYPE
+        MENUITEM "파일 요청",                       ID_Log_Req
     END
 END
 

@@ -16,7 +16,7 @@ public:
 	~FolderManager(void);
 
 	void MakeDirectory(char* filedirectory, char* filename);
-	
+	void MakeDirectory(char* filedirectory);
 
 private:
 	StringManager mStringManager;
