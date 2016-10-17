@@ -39,3 +39,11 @@ BOOL CViewTree::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 
 	return bRes;
 }
+
+void CViewTree::RefreshData()
+{
+	this->SetRedraw(FALSE);
+	this->DeleteAllItems();
+	this->SetRedraw(TRUE);
+	this->Invalidate();
+}

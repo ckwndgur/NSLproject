@@ -31,17 +31,21 @@ void XMLManager::initXML()
 void XMLManager::CreatXML_AgentInfo(string AgentName)
 {
 	sConfigFileDirectory = mUserConfig.GetExeDirectory()+"AgtInfo\\"+ AgentName + ".xml";
+	sConfigDirectory = (mUserConfig.GetExeDirectory()+"AgtInfo\\");
+	sConfigFileName = AgentName;
 
+	string title = "AgentInfo";
+	string childelement[3] = {"AgentIP", "AgentName", "AgentLogFileList"};
+	string contents[3] = {"ExampleIP", "ExampleName", "ExampleList"};
+	
+	mFolderManager.MakeDirectory(&sConfigDirectory[0u],&sConfigFileName[0u]);
+	
 	if (mXMLDocument.LoadFile(sConfigFileDirectory.c_str()) == false)
 	{
 
 	}
 	else
 	{
-		string title = "AgentInfo";
-		string childelement[3] = {"AgentIP", "AgentName", "AgentLogFileList"};
-		string contents[3] = {"ExampleIP", "ExampleName", "ExampleList"};
-
 		WriteXML(title, childelement, contents, sizeof(contents)/sizeof(contents[0]));
 	}
 }
@@ -49,7 +53,6 @@ void XMLManager::CreatXML_AgentInfo(string AgentName)
 
 bool XMLManager::WriteXML(string NodeTitle, string* ChildElement, string* Contents, int ChildCnt)
 {
-
 	mNode = mXMLDocument.NewElement(NodeTitle.c_str());
 	mXMLDocument.InsertFirstChild(mNode);
 
@@ -160,18 +163,18 @@ string XMLManager::ParsingXML(string ChildTitle, string ChildElement)
 	}
 }
 
-//정해진 경로의 Agent Info XML파일을 읽어들이기 위한 함수
-//원격지 정보 로딩에 사용될 예정
-string XMLManager::LoadAllXMLinDir(string sFileDir, string ChildTitle, string ChildElement)
+string XMLManager::Parsing_Target_XML(string sTargetDir, string ChildTitle, string ChildElement)
 {
-	if (mXMLDocument.LoadFile(sFileDir.c_str()) == false)
+	mXMLDocument.Clear();
+
+	if (mXMLDocument.LoadFile(sTargetDir.c_str()) == false)
 	{
 		mNode = mXMLDocument.FirstChildElement(ChildTitle.c_str())->FirstChildElement(ChildElement.c_str());
-
 		return (string) mNode->ToElement()->GetText();
-	}
+	} 
 	else
 	{
-		return (string) sFileDir.c_str()+"_Failed";
+		return (string) sTargetDir.c_str();
 	}
+
 }

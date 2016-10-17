@@ -10,7 +10,7 @@ public:
 struct AgtDataMsgStruct
 {
 	short nReqType;
-	char cLogData[2048];
+	char cLogData[15000];
 	long lTotalDataSize;
 	bool bLastPacket;
 };

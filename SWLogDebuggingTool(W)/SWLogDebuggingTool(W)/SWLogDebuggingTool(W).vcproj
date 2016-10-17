@@ -100,7 +100,7 @@
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="2"
-			CharacterSet="1"
+			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -274,6 +274,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TCPCommunication.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\TextManager.cpp"
 				>
 			</File>
@@ -385,6 +389,10 @@
 			</File>
 			<File
 				RelativePath=".\targetver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TCPCommunication.h"
 				>
 			</File>
 			<File

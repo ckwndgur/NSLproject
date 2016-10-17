@@ -21,6 +21,28 @@ UDPCommunication::~UDPCommunication(void)
 {
 }
 
+int UDPCommunication::GetDate()
+{
+	tTimer = time(NULL);
+
+	localtime_s(&tTimer_St, &tTimer);
+
+	iToday = (tTimer_St.tm_year + 1900) * 10000000000 + (tTimer_St.tm_mon + 1) * 100000000 + (tTimer_St.tm_mday)*1000000+(tTimer_St.tm_hour)*10000+(tTimer_St.tm_min)*100+(tTimer_St.tm_sec);	
+
+	return iToday;
+}
+
+int UDPCommunication::GetDate_DAY()
+{
+	tTimer = time(NULL);
+
+	localtime_s(&tTimer_St, &tTimer);
+
+	iToday = (tTimer_St.tm_year + 1900) * 10000 + (tTimer_St.tm_mon + 1) * 100 + (tTimer_St.tm_mday);	
+
+	return iToday;
+}
+
 int UDPCommunication::recvfromTimeOut(SOCKET socket, long sec, long usec)
 {
 	// Setup timeval variable
@@ -76,9 +98,7 @@ void UDPCommunication::MultiGroupRcvSet(int iRcvSocket, char* MultiGroupAddr, in
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr.sin_port = htons(MultiGroupPort);
-
-	if(bind(iRcvSocket, (SOCKADDR*)&addr, sizeof(addr)) == SOCKET_ERROR)
-		fputs("bind() error\n", stderr);
+	bind(iRcvSocket, (SOCKADDR*)&addr, sizeof(addr));
 
 	//ip_mreq구조체에 가입할 그룹의 주소지정
 	Rcv_Mreq.imr_multiaddr.s_addr = inet_addr(MultiGroupAddr);           //클레스 D의 멀티캐스트 주소
@@ -128,20 +148,34 @@ void UDPCommunication::LogFileRcv(int iRcvSocket, char* cFileDir, char* cFileNam
 
 	mFolderManager.MakeDirectory(cFileDir, cFileName);
 
-	while(1)
+	int res = recvfromTimeOut(iRcvSocket, 3, 0);
+
+	while(recvfromTimeOut(iRcvSocket, 3, 0)!=0)
 	{
-		recvfrom(iRcvSocket, (char*)&MyAgtDataMsg, sizeof(struct AgtDataMsgStruct), 0, NULL, 0);
-
-		sWriteData = "";
-		sWriteData = MyAgtDataMsg.cLogData;
-
-		//WriteFile(hFile, sWriteData.c_str(), strlen(sWriteData.c_str()), &dLen, 0);
-		mTextManager.WriteText(cFileDir, cFileName, sWriteData);
-
-		if(MyAgtDataMsg.bLastPacket == TRUE)
+		switch(res)
 		{
-			printf("File Download Complete.\n");
+		case 0:
+			Sleep(1);
 			break;
+		case -1:
+			//printf("RcvTimeOut Error\n");
+			break;
+
+		default:
+			recvfrom(iRcvSocket, (char*)&MyAgtDataMsg, sizeof(struct AgtDataMsgStruct), 0, NULL, 0);
+
+			sWriteData = "";
+			sWriteData = MyAgtDataMsg.cLogData;
+
+			//WriteFile(hFile, sWriteData.c_str(), strlen(sWriteData.c_str()), &dLen, 0);
+			mTextManager.WriteText(cFileDir, cFileName, sWriteData);
+
+			if(MyAgtDataMsg.bLastPacket == TRUE)
+			{
+				//printf("File Download Complete.\n");
+				AfxMessageBox("File Download Done");
+				break;
+			}
 		}
 	}
 }
@@ -315,8 +349,8 @@ BOOL UDPCommunication::SndDataReq_MFC(int iSndSockUni, string sAgtIP, string sRe
 	}
 	
 	//port 1883;
-	memcpy(&MyDataReqMsg.cWatcherIP, sWatcherIP.c_str(), sizeof(sWatcherIP.c_str()));
-	memcpy(&MyDataReqMsg.cReqFileName, sReqFileName.c_str(), sizeof(sReqFileName.c_str()));
+	memcpy(&MyDataReqMsg.cWatcherIP, sWatcherIP.c_str(), strlen(sWatcherIP.c_str()));
+	memcpy(&MyDataReqMsg.cReqFileName, sReqFileName.c_str(), strlen(sReqFileName.c_str()));
 	MyDataReqMsg.iWatcherPort = iWtcPort;
 	MyDataReqMsg.nReqType = 1;
 	

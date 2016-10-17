@@ -39,6 +39,9 @@ public:
 	list<string> RcvInfor(int iRcvUniSock, int iTimeout_sec);
 	list<string> RcvInfor_nonTimeout(int iRcvUniSock, int iTimeout_sec);
 
+	int GetDate();
+	int GetDate_DAY();
+
 	BOOL SndDataReq_MFC(int iSndSockUni, string sAgtIP, string sReqFileName, int iWtcPort);
 	void LogFileRcv(int iRcvSocket, char* cFileDir, char* cFileName);
 	char* SndDataReq(int iSndSockUni, list<string> lIPandFileList);

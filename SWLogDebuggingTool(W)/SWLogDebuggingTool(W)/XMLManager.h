@@ -1,8 +1,11 @@
 #pragma once
 #include <string>
+#include <sstream>
 #include "tinyxml2.h"
 #include "StringManager.h"
 #include "UserConfig.h"
+#include "FolderManager.h"
+
 
 using namespace std;
 
@@ -12,6 +15,7 @@ public:
 	XMLManager(void);
 	~XMLManager(void);
 
+	FolderManager mFolderManager;
 
 	void initXML();
 	void CreatXML_AgentInfo(string AgentName);
@@ -22,11 +26,14 @@ public:
 	bool AddXML(string NodeTitle, string* ChildElement, string* Contents, int ChildCnt);
 	bool EditElementXML(string ChildTitle, string ChildElement, string Contents);
 
+	string Parsing_Target_XML(string sTargetDir, string ChildTitle, string ChildElement);
 	string ParsingXML(string ChildTitle, string ChildElement);
-	string LoadAllXMLinDir(string sFileDir, string ChildTitle, string ChildElement);
 
-private:
+//private:
+	string sConfigDirectory;
 	string sConfigFileDirectory;
+	string sConfigFileName;
+
 	string sAgentInfoDirectory;
 	UserConfig mUserConfig;
 	StringManager mStringManager;

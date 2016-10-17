@@ -18,6 +18,8 @@ protected:
 public:
 	virtual ~CViewTree();
 
+	void RefreshData();
+
 protected:
 	DECLARE_MESSAGE_MAP()
 };
