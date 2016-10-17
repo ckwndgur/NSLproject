@@ -89,7 +89,7 @@ BOOL CSWLogDebuggingToolWApp::InitInstance()
 
 	// 응용 프로그램의 문서 템플릿을 등록합니다. 문서 템플릿은
 	//  문서, 프레임 창 및 뷰 사이의 연결 역할을 합니다.
-	CMultiDocTemplate* pDocTemplate;
+	
 	pDocTemplate = new CMultiDocTemplate(IDR_SWLogDebuggingTTYPE,
 		RUNTIME_CLASS(CSWLogDebuggingToolWDoc),
 		RUNTIME_CLASS(CChildFrame), // 사용자 지정 MDI 자식 프레임입니다.
@@ -112,6 +112,8 @@ BOOL CSWLogDebuggingToolWApp::InitInstance()
 
 	// 표준 셸 명령, DDE, 파일 열기에 대한 명령줄을 구문 분석합니다.
 	CCommandLineInfo cmdInfo;
+	if(cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew )
+		cmdInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
 	ParseCommandLine(cmdInfo);
 
 
@@ -120,9 +122,9 @@ BOOL CSWLogDebuggingToolWApp::InitInstance()
 	//if (!ProcessShellCommand(cmdInfo))
 	//	return FALSE;
 
-	CSWLogDebuggingToolWDoc* pDoc = (CSWLogDebuggingToolWDoc*) pDocTemplate->OpenDocumentFile(NULL);
-	CString strPath = "C:\\LogDebugging\\20160417\\202.31.137.138\\1234.txt";
-	pDoc->OnOpenDocument(strPath);
+	//CSWLogDebuggingToolWDoc* pDoc = (CSWLogDebuggingToolWDoc*) pDocTemplate->OpenDocumentFile(NULL);
+	//CString strPath = "C:\\LogDebugging\\20160417\\202.31.137.138\\1234.txt";
+	//pDoc->OnOpenDocument(strPath);
 	/*pDoc->SetTitle("1234.txt");*/
 	
 

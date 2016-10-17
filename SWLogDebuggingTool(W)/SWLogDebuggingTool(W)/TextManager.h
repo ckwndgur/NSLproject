@@ -14,6 +14,7 @@ public:
 	int GetFileSize(char* filedirectory, char* filename);
 
 	string ReadText(char* filedirectory, char* filename);
+	string ReadText(char* fulldirectory);
 
 private:
 	StringManager mStringManager;

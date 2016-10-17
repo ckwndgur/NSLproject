@@ -32,7 +32,7 @@ CSWLogDebuggingToolWDoc::~CSWLogDebuggingToolWDoc()
 {
 }
 
-BOOL CSWLogDebuggingToolWDoc::OnNewDocument()
+BOOL CSWLogDebuggingToolWDoc::OnNewDocument(LPCTSTR lpszPathName)
 {
 	if (!CDocument::OnNewDocument())
 		return FALSE;
@@ -45,8 +45,8 @@ BOOL CSWLogDebuggingToolWDoc::OnNewDocument()
 
 BOOL CSWLogDebuggingToolWDoc::OnOpenDocument(LPCTSTR lpszPathName)
 {
-	//if (!CDocument::OnOpenDocument(lpszPathName))
-	//	return FALSE;
+	if (!CDocument::OnOpenDocument(lpszPathName))
+		return FALSE;
 
 	return TRUE;
 }

@@ -548,5 +548,9 @@
 		</File>
 	</Files>
 	<Globals>
+		<Global
+			Name="RESOURCE_FILE"
+			Value="SWLogDebuggingTool(W).rc"
+		/>
 	</Globals>
 </VisualStudioProject>

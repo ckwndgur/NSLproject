@@ -45,6 +45,9 @@ public:
 
 	CButton *m_btn;
 
+	CString m_strView;
+	BOOL m_bView;
+
 	// 재정의입니다.
 public:
 	virtual void OnDraw(CDC* pDC);  // 이 뷰를 그리기 위해 재정의되었습니다.
@@ -74,6 +77,10 @@ protected:
 public:
 	afx_msg void OnAgentInfor();
 	afx_msg void OnAgentXmlLoad();
+	afx_msg void OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 };
 
 #ifndef _DEBUG  // SWLogDebuggingTool(W)View.cpp의 디버그 버전

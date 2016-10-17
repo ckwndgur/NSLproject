@@ -47,6 +47,25 @@ string TextManager::ReadText(char* filedirectory, char* filename)
 	return strOutput;
 }
 
+string TextManager::ReadText(char* fulldirectory)
+{
+	ifstream infile;
+	char input[2048];
+	string strOutput = "";
+
+	infile.open(fulldirectory);
+
+	while(!infile.eof()){
+		infile.getline(input, 2048);
+		strOutput.append(input);
+		strOutput.append("\n");
+	}
+
+	infile.close();
+
+	return strOutput;
+}
+
 int TextManager::GetFileSize(char* filedirectory, char* filename){
 	FILE *fpMe;
 	long len;

@@ -14,6 +14,7 @@
 #endif
 
 
+
 // CSWLogDebuggingToolWView
 
 IMPLEMENT_DYNCREATE(CSWLogDebuggingToolWView, CView)
@@ -26,6 +27,10 @@ BEGIN_MESSAGE_MAP(CSWLogDebuggingToolWView, CView)
 
 	ON_COMMAND(ID_AGENT_INFOR, &CSWLogDebuggingToolWView::OnAgentInfor)
 	ON_COMMAND(ID_AGENT_XML_LOAD, &CSWLogDebuggingToolWView::OnAgentXmlLoad)
+	ON_WM_ACTIVATE()
+	ON_WM_SIZE()
+	ON_WM_VSCROLL()
+	ON_WM_HSCROLL()
 END_MESSAGE_MAP()
 
 // CSWLogDebuggingToolWView 생성/소멸
@@ -60,8 +65,12 @@ BOOL CSWLogDebuggingToolWView::PreCreateWindow(CREATESTRUCT& cs)
 	bind(iUdpUniSock, (SOCKADDR*)&AddrStruct, sizeof(AddrStruct));
 
 	
+//	cs.style &= (ES_AUTOHSCROLL|ES_AUTOVSCROLL);
 
-	return CView::PreCreateWindow(cs);
+	BOOL a = CView::PreCreateWindow(cs);
+	//cs.style = ES_AUTOHSCROLL | ES_AUTOVSCROLL;
+
+	return a;
 }
 
 void CSWLogDebuggingToolWView::OnInitialUpdate()
@@ -77,19 +86,34 @@ void CSWLogDebuggingToolWView::OnInitialUpdate()
 
 void CSWLogDebuggingToolWView::OnDraw(CDC* pDC)
 {
-	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
-	CSWLogDebuggingToolWView *pView = (CSWLogDebuggingToolWView *)pFrame->GetActiveView();
-	
-
-	CSWLogDebuggingToolWDoc* pDoc = GetDocument();
+// 	CMainFrame *pFrame = (CMainFrame *)AfxGetMainWnd();
+// 	CSWLogDebuggingToolWView *pView = (CSWLogDebuggingToolWView *)pFrame->GetActiveView();
+// 	
+// 
+// 	CSWLogDebuggingToolWDoc* pDoc = GetDocument();
 /*	m_btn->ShowWindow(SW_SHOW);*/
 	
-	ASSERT_VALID(pDoc);
-	if (!pDoc)
-		return;
+// 	ASSERT_VALID(pDoc);
+// 	if (!pDoc)
+// 		return;
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
-	pDC->TextOut(0,0,_T("sdsa"));
+
+
+// 	if (m_bView == TRUE)
+// 	{
+// 		pDC->TextOut(0,0,m_strView);
+// 		m_bView = FALSE;
+// 	}
+	int a = 200;
+	for (int i = 0; i<m_strView.GetLength()/a;i++)
+	{
+		pDC->TextOut(0,i*15,m_strView.Mid(i*a, (i+1)*a));
+	}
+	
+	
+	//pDC->TextOut(0,15,m_strView);
+	
 	
 }
 
@@ -223,4 +247,32 @@ void CSWLogDebuggingToolWView::OnAgentXmlLoad()
 		AfxMessageBox(sListElement.c_str());
 		iterStartList++;
 	}
+}
+
+void CSWLogDebuggingToolWView::OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized)
+{
+	CView::OnActivate(nState, pWndOther, bMinimized);
+
+	// TODO: Add your message handler code here
+}
+
+void CSWLogDebuggingToolWView::OnSize(UINT nType, int cx, int cy)
+{
+	CView::OnSize(nType, cx, cy);
+
+	// TODO: Add your message handler code here
+}
+
+void CSWLogDebuggingToolWView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CView::OnVScroll(nSBCode, nPos, pScrollBar);
+}
+
+void CSWLogDebuggingToolWView::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	CView::OnHScroll(nSBCode, nPos, pScrollBar);
 }
