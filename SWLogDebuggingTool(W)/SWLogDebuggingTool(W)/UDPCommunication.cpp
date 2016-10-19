@@ -10,8 +10,8 @@ MFC에서는 printf나 fput으로 출력이 불가능하여 주석처리 하였습니다.
 #include "StdAfx.h"
 #include "UDPCommunication.h"
 
-TextManager mTextManager = TextManager();
-FolderManager mFolderManager = FolderManager();
+TextManager mTextManager;
+FolderManager mFolderManager;
 
 UDPCommunication::UDPCommunication(void)
 {
@@ -134,7 +134,6 @@ void UDPCommunication::InforReq(int iSndSock, int iWatcherPort, char* cMultiGrou
 	MyDataReqMsg.iWatcherPort = iWatcherPort;
 
 	sendto(iSndSock, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0, (SOCKADDR*)&addr, sizeof(addr));
-	printf("InfoReq Message Send Complete\n");
 }
 
 void UDPCommunication::LogFileRcv(int iRcvSocket, char* cFileDir, char* cFileName)

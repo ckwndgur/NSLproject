@@ -582,8 +582,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FILE_VIEW           "파일 뷰"
-    IDS_CLASS_VIEW          "클래스 뷰"
+    IDS_FILE_VIEW           "Watcher"
+    IDS_CLASS_VIEW          "Agent"
     IDS_OUTPUT_WND          "출력"
     IDS_PROPERTIES_WND      "속성"
 END

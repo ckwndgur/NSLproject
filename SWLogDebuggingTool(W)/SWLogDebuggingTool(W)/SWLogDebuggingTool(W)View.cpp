@@ -48,6 +48,7 @@ BOOL CSWLogDebuggingToolWView::PreCreateWindow(CREATESTRUCT& cs)
 
 	
 //	cs.style &= (ES_AUTOHSCROLL|ES_AUTOVSCROLL);
+	
 
 	BOOL a = CView::PreCreateWindow(cs);
 	//cs.style = ES_AUTOHSCROLL | ES_AUTOVSCROLL;
@@ -59,6 +60,16 @@ void CSWLogDebuggingToolWView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
 
+	m_ButtonSearch.Create(TEXT("BUTTON"), TEXT("Search"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(300,0,450,20),this,1233);
+	m_EditSearch.Create(TEXT("EDIT"),TEXT(""), WS_CHILD|WS_VISIBLE|WS_BORDER, CRect(150,0,300,20), this, 1232);
+
+	m_ComboBox.Create(WS_CHILD | WS_VISIBLE | WS_VSCROLL | CBS_DROPDOWN, CRect(0,0,150,140), this, 123);
+	m_ComboBox.AddString("1. ErrorLevel");
+	m_ComboBox.AddString("2. Time");
+	m_ComboBox.AddString("3. Path");
+	m_ComboBox.AddString("4. LineNumber");
+	m_ComboBox.AddString("5. Description");
+	m_ComboBox.AddString("6. Total");
 // 	m_btn = new CButton();
 // 	m_btn->Create("a", BS_DEFPUSHBUTTON, CRect(0,0,200,50), this, 100);
 
@@ -90,17 +101,32 @@ void CSWLogDebuggingToolWView::OnDraw(CDC* pDC)
 	if (m_strView.GetLength() >200)
 	{
 		int a = 200;
+		int b = 40;
 		for (int i = 0; i<m_strView.GetLength()/a;i++)
 		{
-			pDC->TextOut(0,i*15,m_strView.Mid(i*a, (i+1)*a));
+			if (i == 0)
+			{
+				pDC->TextOut(0,b,m_strView.Mid(i*a, (i+1)*a));
+			}
+			else
+				pDC->TextOut(0,b+i*20,m_strView.Mid(i*a, (i+1)*a));
+			
 		}
 	}
 	else
 	{
 		int a = 50;
+		int b = 40;
 		for (int i = 0; i<m_strView.GetLength()/a;i++)
 		{
-			pDC->TextOut(0,i*15,m_strView.Mid(i*a, (i+1)*a));
+			if (i == 0)
+			{
+				pDC->TextOut(0,b + i*20,m_strView.Mid(i*a, (i+1)*a));
+			} 
+			else
+			{
+			}
+			pDC->TextOut(0,b+i*20,m_strView.Mid(i*a, (i+1)*a));
 		}
 	}
 	
@@ -168,5 +194,25 @@ CSWLogDebuggingToolWDoc* CSWLogDebuggingToolWView::GetDocument() const // 디버그
 	return (CSWLogDebuggingToolWDoc*)m_pDocument;
 }
 #endif //_DEBUG
+
+
+
+BOOL CSWLogDebuggingToolWView::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	if(wParam == 1233){
+
+		int Category = m_ComboBox.GetCurSel() + 1;
+		CString WantedLog1;
+		GetDlgItemTextA(1232,WantedLog1);
+		CT2CA pszConvertedAnsiString(WantedLog1);
+		string WantedLog(pszConvertedAnsiString);
+
+		string Title=mFilter.CreatingTime(WantedLog);
+		mFilter.DoFilter(Category, WantedLog, Title, m_strViewPath);
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////여기까지
+	return CView::OnCommand(wParam, lParam);
+}
 
 

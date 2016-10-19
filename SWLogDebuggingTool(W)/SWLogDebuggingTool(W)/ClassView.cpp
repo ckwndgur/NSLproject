@@ -5,6 +5,8 @@
 #include "SWLogDebuggingTool(W).h"
 
 CViewTree m_wndClassView;
+UDPCommunication mUDPCommunication;
+int iUdpMultiSock, iUdpUniSock, iUdpSndSock;
 
 class CClassViewMenuButton : public CMFCToolBarMenuButton
 {
@@ -72,7 +74,8 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//통신 기능 초기화 - 소켓 생성 및 멀티캐스트 그룹주소 설정 등
 	mUDPCommunication.WSAInit();
 	mUDPCommunication.InitSocket_Wt(iUdpMultiSock, iUdpUniSock, iUdpSndSock);
-	
+	mXMLManager.initXML();
+
 	int iRcvSockBufSize = 1048576*2;
 	setsockopt(iUdpMultiSock, SOL_SOCKET, SO_RCVBUF, (const char*) &iRcvSockBufSize, sizeof(iRcvSockBufSize));
 
@@ -460,6 +463,17 @@ void CClassView::OnLogReq()
 	sLogDir += "\\" + sDate.str() + "\\" + sAgentIP + "\\";
 
 	mUDPCommunication.LogFileRcv(iUdpUniSock, (char*)sLogDir.c_str(), (char*)sLogFileName.c_str());
+
+	mCFileView.RefreshFileView();
+
+}
+
+void CClassView::RefreshClassView()
+{
+	m_wndClassView.DeleteAllItems();
+	FillClassView();
+	m_wndClassView.Invalidate();
+	m_wndClassView.UpdateWindow();
 }
 
 void CClassView::OnInfoReq()
@@ -467,9 +481,8 @@ void CClassView::OnInfoReq()
 	// TODO: Add your command handler code here
 	SocketBinding(iUdpUniSock, AddrStruct, AF_INET, INADDR_ANY, 1883);
 	mUDPCommunication.InforReq(iUdpSndSock, 1883, "234.56.78.9");
-
-	lAgtInfoList = mUDPCommunication.RcvInfor(iUdpUniSock, 5);
-
+	mUDPCommunication.RcvInfor(iUdpUniSock, 5);
+	RefreshClassView();
 	/*Agent Info 수신확인 코드*/
 	//DisplayAllElement_List(lAgtInfoList);
 }
@@ -478,10 +491,8 @@ void CClassView::OnInfoReq()
 void CClassView::OnInfoLoad()
 {
 	// TODO: Add your command handler code here
-	m_wndClassView.DeleteAllItems();
-	FillClassView();
-	m_wndClassView.Invalidate();
-	m_wndClassView.UpdateWindow();
+	
+	RefreshClassView();
 
 	//m_wndClassView.DeleteItem(hItem);
 

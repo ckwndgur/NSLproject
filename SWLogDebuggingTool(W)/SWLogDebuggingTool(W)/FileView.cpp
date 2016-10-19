@@ -93,12 +93,19 @@ void CFileView::OnSize(UINT nType, int cx, int cy)
 	AdjustLayout();
 }
 
+void CFileView::RefreshFileView()
+{
+	m_wndFileView.DeleteAllItems();
+	MakeTreeview("C:\\LogDebugging");
+	m_wndFileView.Invalidate();
+	m_wndFileView.UpdateWindow();
+
+}
 void CFileView::MakeTreeview(CString pstr) // Folder searching and make tree view + going to use SetItemData for saving information
 {
 	CFileFind finder;
 	CString strWildcard(pstr);
 	int treeindex;
-	
 
 	strWildcard += _T("\\*.*");
 
@@ -240,6 +247,7 @@ void CFileView::OnFileOpen()
 		csData =mTextManager.ReadText((LPSTR)(LPCTSTR)csTVDataFilePath).c_str();
 		pView->m_strView = csData;
 		pView->m_bView = TRUE;
+		pView->m_strViewPath = csTVDataFilePath;
 		pView->Invalidate(TRUE);
 		
 	} 

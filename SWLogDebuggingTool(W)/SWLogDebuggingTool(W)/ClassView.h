@@ -8,6 +8,7 @@
 #include "AgtInfoList.h"
 #include "UDPCommunication.h"
 #include "afxcmn.h"
+#include "FileView.h"
 
 class CClassToolBar : public CMFCToolBar
 {
@@ -28,9 +29,9 @@ public:
 	void AdjustLayout();
 	void OnChangeVisualStyle();
 	
-	UDPCommunication mUDPCommunication;
+	//UDPCommunication mUDPCommunication;
 	SOCKADDR_IN AddrStruct;
-	int iUdpMultiSock, iUdpUniSock, iUdpSndSock;
+	//int iUdpMultiSock, iUdpUniSock, iUdpSndSock;
 	AgtInfoList mAgtInfoList;
 
 	XMLManager mXMLManager;
@@ -49,11 +50,12 @@ public:
 
 	void SocketBinding(int& iSocket, SOCKADDR_IN mSocketAddr, int iAddrFamily, long lSourceIP, int iSourcePort);
 	void DisplayAllElement_List(list<string> lList);
-
+	void RefreshClassView();
 	list<string> OpenXML(string sXMLDir);
 
 //protected:
 	CClassToolBar m_wndToolBar;
+	CFileView mCFileView;
 	//CViewTree m_wndClassView;
 	CImageList m_ClassViewImages;
 	UINT m_nCurrSort;

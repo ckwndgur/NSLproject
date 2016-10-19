@@ -5,6 +5,7 @@
 #include "XMLManager.h"
 #include "GetDataFromAgent_WIN.h"
 #include "ClassView.h"
+#include "Filter.h"
 
 
 // SWLogDebuggingTool(W)View.h : CSWLogDebuggingToolWView 클래스의 인터페이스
@@ -34,11 +35,15 @@ public:
 	//UDP통신부분 - Agent Info
 
 	COutputWnd mCOutputWnd;
+	Filter mFilter;
+	CWnd m_EditSearch;
+	CWnd m_ButtonSearch;
+	CComboBox m_ComboBox;
 
-
-	CButton *m_btn;
+	//CButton *m_btn;
 
 	CString m_strView;
+	CString m_strViewPath;
 	BOOL m_bView;
 
 	// 재정의입니다.
@@ -71,6 +76,8 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+	//afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 };
 
 #ifndef _DEBUG  // SWLogDebuggingTool(W)View.cpp의 디버그 버전

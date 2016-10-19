@@ -32,7 +32,7 @@ public:
 	CString getData();
 	CString csData;
 
-
+	void RefreshFileView();
 	void AdjustLayout();
 	void OnChangeVisualStyle();
 
@@ -79,5 +79,6 @@ private:
 	CString csTVDataFileName;
 
 	void MakeTreeview(CString pstr);
+	
 };
 
