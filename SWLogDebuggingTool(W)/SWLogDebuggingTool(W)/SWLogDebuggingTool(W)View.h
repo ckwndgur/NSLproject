@@ -14,7 +14,7 @@
 #pragma once
 
 
-class CSWLogDebuggingToolWView : public CView
+class CSWLogDebuggingToolWView : public CScrollView
 {
 protected: // serialization에서만 만들어집니다.
 	CSWLogDebuggingToolWView();
@@ -27,30 +27,30 @@ public:
 	// 작업입니다.
 public:
 
-
-	//원격지 정보 저장 부분 - XML
-
-	//원격지 정보 불러오기 부분 - XML
-
-	//UDP통신부분 - Agent Info
-
 	COutputWnd mCOutputWnd;
 	Filter mFilter;
 	CWnd m_EditSearch;
 	CWnd m_ButtonSearch;
 	CComboBox m_ComboBox;
 
-	//CButton *m_btn;
+	
 
-	CString m_strView;
+	list<CString> m_strView;
 	CString m_strViewPath;
+	CSize m_textsize;
+	
+	
 	BOOL m_bView;
+
+private:
+	void SetScrollView(int x, int y);
 
 	// 재정의입니다.
 public:
 	virtual void OnDraw(CDC* pDC);  // 이 뷰를 그리기 위해 재정의되었습니다.
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual void OnInitialUpdate();
+	
 protected:
 	virtual BOOL OnPreparePrinting(CPrintInfo* pInfo);
 	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);

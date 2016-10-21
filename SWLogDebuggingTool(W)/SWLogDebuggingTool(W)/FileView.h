@@ -77,8 +77,11 @@ private:
 	HTREEITEM hRoot, hSrc, hInc;
 	CString csTVDataFilePath;
 	CString csTVDataFileName;
+	int scroll_cx; 
+	int scroll_cy; 
 
 	void MakeTreeview(CString pstr);
+	CSize Cal_scrollview(CString fulldirectory);
 	
 };
 

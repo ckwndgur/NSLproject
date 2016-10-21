@@ -244,14 +244,26 @@ void CFileView::OnFileOpen()
 
 	if (csTVDataFilePath.GetLength() >0 )
 	{
-		csData =mTextManager.ReadText((LPSTR)(LPCTSTR)csTVDataFilePath).c_str();
-		pView->m_strView = csData;
+		pView->m_strView = mTextManager.ReadTextList((LPSTR)(LPCTSTR)csTVDataFilePath);
 		pView->m_bView = TRUE;
 		pView->m_strViewPath = csTVDataFilePath;
+		pView->m_textsize = Cal_scrollview(csTVDataFilePath);
+		
 		pView->Invalidate(TRUE);
 		
 	} 
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+}
+
+CSize CFileView::Cal_scrollview(CString fulldirectory)
+{
+	CSize textsize;
+	
+	textsize.cx = mTextManager.GetMaxLineSize((LPSTR)(LPCTSTR)fulldirectory);
+	textsize.cy = mTextManager.GetLinelength((LPSTR)(LPCTSTR)fulldirectory);
+	
+	return textsize;
+	
 }
 
 CString CFileView::getData()
