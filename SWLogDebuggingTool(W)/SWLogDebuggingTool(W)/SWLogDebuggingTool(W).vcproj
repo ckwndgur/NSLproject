@@ -218,6 +218,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FilterView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\FolderManager.cpp"
 				>
 			</File>
@@ -341,6 +345,10 @@
 			</File>
 			<File
 				RelativePath=".\Filter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FilterView.h"
 				>
 			</File>
 			<File
