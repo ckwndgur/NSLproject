@@ -4,6 +4,8 @@
 
 #include "stdafx.h"
 #include "SWLogDebuggingTool(W).h"
+#include "LogFileView.h"
+#include "LogFtView.h"
 
 #include "ChildFrm.h"
 
@@ -28,6 +30,18 @@ CChildFrame::~CChildFrame()
 {
 }
 
+BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pContext)
+{
+	if (!m_wndSplitter.CreateStatic(this, 2, 1))
+	{
+		return FALSE;
+	}
+
+	m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(LogFileView), CSize(100, 100), pContext);
+	m_wndSplitter.CreateView(1, 0, RUNTIME_CLASS(LogFtView), CSize(100, 100), pContext);
+
+	return TRUE;
+}
 
 BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& cs)
 {

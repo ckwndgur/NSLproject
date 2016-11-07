@@ -1,9 +1,4 @@
-#include "UDPCommunication.h"
-#include "AgtInfoList.h"
 #include "TextManager.h"
-#include "XMLManager.h"
-#include "GetDataFromAgent_WIN.h"
-#include "ClassView.h"
 #include "Filter.h"
 
 

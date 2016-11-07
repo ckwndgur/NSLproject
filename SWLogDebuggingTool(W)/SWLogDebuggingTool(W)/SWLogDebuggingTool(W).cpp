@@ -9,7 +9,7 @@
 
 #include "ChildFrm.h"
 #include "SWLogDebuggingTool(W)Doc.h"
-#include "SWLogDebuggingTool(W)View.h"
+#include "LogFileView.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -93,7 +93,7 @@ BOOL CSWLogDebuggingToolWApp::InitInstance()
 	pDocTemplate = new CMultiDocTemplate(IDR_SWLogDebuggingTTYPE,
 		RUNTIME_CLASS(CSWLogDebuggingToolWDoc),
 		RUNTIME_CLASS(CChildFrame), // 사용자 지정 MDI 자식 프레임입니다.
-		RUNTIME_CLASS(CSWLogDebuggingToolWView));
+		RUNTIME_CLASS(LogFileView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);

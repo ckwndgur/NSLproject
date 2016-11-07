@@ -7,7 +7,7 @@
 #include "MainFrm.h"
 #include "SWLogDebuggingTool(W).h"
 #include "SWLogDebuggingTool(W)Doc.h"
-#include "SWLogDebuggingTool(W)View.h"
+#include "LogFileView.h"
 
 
 #ifdef _DEBUG
@@ -239,7 +239,7 @@ void CFileView::OnFileOpen()
 	CSWLogDebuggingToolWDoc *pDoc = (CSWLogDebuggingToolWDoc *)pApp->pDocTemplate->OpenDocumentFile(csTVDataFilePath);
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	CMDIChildWnd *pChild = (CMDIChildWnd *) pFrame->GetActiveFrame();
-	CSWLogDebuggingToolWView *pView = (CSWLogDebuggingToolWView *)pChild->GetActiveView(); 
+	LogFileView *pView = (LogFileView *)pChild->GetActiveView(); 
 	
 
 	if (csTVDataFilePath.GetLength() >0 )

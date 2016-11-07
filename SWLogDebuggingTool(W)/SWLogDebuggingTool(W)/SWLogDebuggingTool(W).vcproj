@@ -230,6 +230,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LogFileView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LogFtView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MainFrm.cpp"
 				>
 			</File>
@@ -302,10 +310,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ViewSearch.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ViewTree.cpp"
 				>
 			</File>
@@ -361,6 +365,14 @@
 			</File>
 			<File
 				RelativePath=".\GetDataFromAgent_WIN.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LogFileView.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LogFtView.h"
 				>
 			</File>
 			<File
@@ -425,10 +437,6 @@
 			</File>
 			<File
 				RelativePath=".\UserConfig.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ViewSearch.h"
 				>
 			</File>
 			<File

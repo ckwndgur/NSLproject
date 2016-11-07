@@ -22,6 +22,7 @@ public:
 
 // 재정의입니다.
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 
 // 구현입니다.
 public:

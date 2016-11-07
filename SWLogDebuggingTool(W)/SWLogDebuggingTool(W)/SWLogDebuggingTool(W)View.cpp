@@ -22,9 +22,6 @@ BEGIN_MESSAGE_MAP(CSWLogDebuggingToolWView, CScrollView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CSWLogDebuggingToolWView::OnFilePrintPreview)
-	ON_COMMAND(ID_Log_Req, &CClassView::OnLogReq)
-	ON_COMMAND(ID_Info_Req, &CClassView::OnInfoReq)
-	ON_COMMAND(ID_Info_Load, &CClassView::OnInfoLoad)
 END_MESSAGE_MAP()
 
 CClassView* pClassView = (CClassView*)AfxGetApp();
@@ -60,22 +57,17 @@ void CSWLogDebuggingToolWView::OnInitialUpdate()
 {
 	CScrollView::OnInitialUpdate();
 
-	m_ButtonSearch.Create(TEXT("BUTTON"), TEXT("Search"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(300,0,450,20),this,1233);
-	m_EditSearch.Create(TEXT("EDIT"),TEXT(""), WS_CHILD|WS_VISIBLE|WS_BORDER, CRect(150,0,300,20), this, 1232);
-
-	m_ComboBox.Create(WS_CHILD | WS_VISIBLE | WS_VSCROLL | CBS_DROPDOWN, CRect(0,0,150,140), this, 123);
-	m_ComboBox.AddString("1. ErrorLevel");
-	m_ComboBox.AddString("2. Time");
-	m_ComboBox.AddString("3. Path");
-	m_ComboBox.AddString("4. LineNumber");
-	m_ComboBox.AddString("5. Description");
-	m_ComboBox.AddString("6. Total");
-// 	m_btn = new CButton();
-// 	m_btn->Create("a", BS_DEFPUSHBUTTON, CRect(0,0,200,50), this, 100);
-	
-	//GetClientRect(&rlClientRect);
+// 	m_ButtonSearch.Create(TEXT("BUTTON"), TEXT("Search"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(300,0,450,20),this,1233);
+// 	m_EditSearch.Create(TEXT("EDIT"),TEXT(""), WS_CHILD|WS_VISIBLE|WS_BORDER, CRect(150,0,300,20), this, 1232);
+// 
+// 	m_ComboBox.Create(WS_CHILD | WS_VISIBLE | WS_VSCROLL | CBS_DROPDOWN, CRect(0,0,150,140), this, 123);
+// 	m_ComboBox.AddString("1. ErrorLevel");
+// 	m_ComboBox.AddString("2. Time");
+// 	m_ComboBox.AddString("3. Path");
+// 	m_ComboBox.AddString("4. LineNumber");
+// 	m_ComboBox.AddString("5. Description");
+// 	m_ComboBox.AddString("6. Total");
 	SetScrollView(0, 0);
-
 
 }
 
@@ -208,7 +200,7 @@ CSWLogDebuggingToolWDoc* CSWLogDebuggingToolWView::GetDocument() const // µð¹ö±×
 BOOL CSWLogDebuggingToolWView::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	// TODO: Add your specialized code here and/or call the base class
-	if(wParam == 1233){
+	if(wParam == 1234){
 
 		int Category = m_ComboBox.GetCurSel() + 1;
 		CString WantedLog1;
