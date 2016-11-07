@@ -48,39 +48,7 @@ CMainFrame::CMainFrame()
 CMainFrame::~CMainFrame()
 {
 }
-// HRESULT CMainFrame::OnSWLogDebuggingToolViewEvent(WPARAM wParam, LPARAM lParam)
-// {
-// 	if ((wParam ==1)&&(lParam ==1))
-// 	{
-// 		if (m_wndOutput.GetSafeHwnd())
-// 		{
-// 			m_wndOutput.DestroyWindow();
-// 			delete m_wndOutput;
-// 			m_wndOutput = NULL;
-// 
-// 
-// 			m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
-// 			DockPane(&m_wndOutput);
-// 
-// 			BOOL bNameValid;
-// 			CString strOutputWnd;
-// 			bNameValid = strOutputWnd.LoadString(IDS_OUTPUT_WND);
-// 			ASSERT(bNameValid);
-// 			if (!m_wndOutput.Create(strOutputWnd, this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_OUTPUTWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_BOTTOM | CBRS_FLOAT_MULTI))
-// 			{
-// 				TRACE0("출력 창을 만들지 못했습니다.\n");
-// 				return FALSE; // 만들지 못했습니다.
-// 			}
-// 
-// 			HICON hOutputBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
-// 			m_wndOutput.SetIcon(hOutputBarIcon, FALSE);
-// 			UpdateMDITabbedBarsIcons();
-// 
-// 		}
-// 		
-// 	}
-// 	return TRUE;
-// }
+
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
@@ -169,6 +137,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	DockPane(&m_wndOutput);
 	m_wndProperties.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_wndProperties);
+	m_wndFilter.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_wndFilter);
 
 	// 향상된 창 관리 대화 상자를 활성화합니다.
 	EnableWindowsDialog(ID_WINDOW_MANAGER, IDS_WINDOWS_MANAGER, TRUE);
@@ -275,6 +245,18 @@ BOOL CMainFrame::CreateDockingWindows()
 		return FALSE; // 만들지 못했습니다.
 	}
 
+	// 필터 창을 만듭니다.
+	CString strFilterWnd;
+	bNameValid = strFilterWnd.LoadString(IDS_FILTER_WND);
+	ASSERT(bNameValid);
+	if (!m_wndFilter.Create(strFilterWnd, this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_FILTERWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
+	{
+		TRACE0("필터 창을 만들지 못했습니다.\n");
+		return FALSE; // 만들지 못했습니다.
+	}
+
+	//m_FolderManager.FindDirectory("C:\\LogDebugging");
+
 	SetDockingWindowIcons(theApp.m_bHiColorIcons);
 	return TRUE;
 }
@@ -292,6 +274,9 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 
 	HICON hPropertiesBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	m_wndProperties.SetIcon(hPropertiesBarIcon, FALSE);
+
+	HICON hFilterBarIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(bHiColorIcons ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	m_wndFilter.SetIcon(hFilterBarIcon, FALSE);
 
 	UpdateMDITabbedBarsIcons();
 }

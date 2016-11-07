@@ -7,6 +7,7 @@
 #include "ClassView.h"
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
+#include "FilterView.h"
 
 class CMainFrame : public CMDIFrameWndEx
 {
@@ -42,7 +43,7 @@ protected:  // 컨트롤 모음이 포함된 멤버입니다.
 	CClassView        m_wndClassView;
 	COutputWnd        m_wndOutput;
 	CPropertiesWnd    m_wndProperties;
-
+	CFilterWnd		  m_wndFilter;
 	//FolderManager	  m_FolderManager;
 
 
@@ -54,7 +55,6 @@ protected:
 	afx_msg LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
 	afx_msg void OnApplicationLook(UINT id);
 	afx_msg void OnUpdateApplicationLook(CCmdUI* pCmdUI);
-	//afx_msg HRESULT OnSWLogDebuggingToolViewEvent(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 	BOOL CreateDockingWindows();
