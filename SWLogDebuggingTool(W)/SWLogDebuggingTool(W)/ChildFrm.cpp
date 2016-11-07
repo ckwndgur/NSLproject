@@ -43,6 +43,21 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pConte
 	return TRUE;
 }
 
+CScrollView* CChildFrame::GetFtViewPane()
+{
+	CWnd* pWnd = m_wndSplitter.GetPane(1, 0);
+	CScrollView* pView = DYNAMIC_DOWNCAST(CScrollView, pWnd);
+	return pView;
+}
+
+CScrollView* CChildFrame::GetFileViewPane()
+{
+	CWnd* pWnd = m_wndSplitter.GetPane(0, 0);
+	CScrollView* pView = DYNAMIC_DOWNCAST(CScrollView, pWnd);
+	return pView;
+}
+
+
 BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: CREATESTRUCT cs를 수정하여 여기에서 Window 클래스 또는 스타일을 수정합니다.

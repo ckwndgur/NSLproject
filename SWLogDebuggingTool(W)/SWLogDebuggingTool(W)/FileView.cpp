@@ -5,9 +5,11 @@
 #include "Resource.h"
 
 #include "MainFrm.h"
+#include "ChildFrm.h"
 #include "SWLogDebuggingTool(W).h"
 #include "SWLogDebuggingTool(W)Doc.h"
 #include "LogFileView.h"
+#include "LogFtView.h"
 
 
 #ifdef _DEBUG
@@ -238,16 +240,19 @@ void CFileView::OnFileOpen()
 	CSWLogDebuggingToolWApp *pApp = (CSWLogDebuggingToolWApp *)AfxGetApp();
 	CSWLogDebuggingToolWDoc *pDoc = (CSWLogDebuggingToolWDoc *)pApp->pDocTemplate->OpenDocumentFile(csTVDataFilePath);
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
-	CMDIChildWnd *pChild = (CMDIChildWnd *) pFrame->GetActiveFrame();
-	LogFileView *pView = (LogFileView *)pChild->GetActiveView(); 
+	CChildFrame *pChild = (CChildFrame *) pFrame->GetActiveFrame();
+	LogFileView *pView = (LogFileView *)pChild->GetFileViewPane(); 
+	LogFtView *pFtView = (LogFtView *)pChild->GetFtViewPane();
 	
 
 	if (csTVDataFilePath.GetLength() >0 )
 	{
 		pView->m_strView = mTextManager.ReadTextList((LPSTR)(LPCTSTR)csTVDataFilePath);
 		pView->m_bView = TRUE;
-		pView->m_strViewPath = csTVDataFilePath;
 		pView->m_textsize = Cal_scrollview(csTVDataFilePath);
+		pFtView->m_strViewPath = csTVDataFilePath;
+		pFtView->m_textsize = Cal_scrollview(csTVDataFilePath);
+		
 		pView->Invalidate(TRUE);
 		
 	} 

@@ -282,10 +282,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SWLogDebuggingTool(W)View.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\TCPCommunication.cpp"
 				>
 			</File>
@@ -405,10 +401,6 @@
 			</File>
 			<File
 				RelativePath=".\SWLogDebuggingTool(W)Doc.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SWLogDebuggingTool(W)View.h"
 				>
 			</File>
 			<File

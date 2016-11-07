@@ -16,6 +16,8 @@ protected:
 	
 // 특성입니다.
 public:
+	CScrollView* GetFileViewPane();
+	CScrollView* GetFtViewPane();
 
 // 작업입니다.
 public:

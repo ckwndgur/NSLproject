@@ -37,16 +37,7 @@ void LogFileView::OnInitialUpdate()
 	sizeTotal.cx = sizeTotal.cy = 100;
 	SetScrollSizes(MM_TEXT, sizeTotal);
 
-	m_ButtonSearch.Create(TEXT("BUTTON"), TEXT("Search"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(300,0,450,20),this,1233);
-	m_EditSearch.Create(TEXT("EDIT"),TEXT(""), WS_CHILD|WS_VISIBLE|WS_BORDER, CRect(150,0,300,20), this, 1232);
-
-	m_ComboBox.Create(WS_CHILD | WS_VISIBLE | WS_VSCROLL | CBS_DROPDOWN, CRect(0,0,150,140), this, 123);
-	m_ComboBox.AddString("1. ErrorLevel");
-	m_ComboBox.AddString("2. Time");
-	m_ComboBox.AddString("3. Path");
-	m_ComboBox.AddString("4. LineNumber");
-	m_ComboBox.AddString("5. Description");
-	m_ComboBox.AddString("6. Total");
+	
 	SetScrollView(0, 0);
 }
 
@@ -102,7 +93,7 @@ void LogFileView::OnDraw(CDC* pDC)
 	{
 		int C = 40;
 		int i = 0;
-		SetScrollView(m_textsize.cx * 8, C + m_textsize.cy*20) ;
+		SetScrollView(m_textsize.cx * 8, C + m_textsize.cy*20);
 		//text size * 8 -> wnd x size
 		//first line height + total line number * each line height
 		for (list<CString>::iterator iterPos = m_strView.begin(); iterPos != m_strView.end(); ++iterPos, ++i)
@@ -115,18 +106,18 @@ void LogFileView::OnDraw(CDC* pDC)
 BOOL LogFileView::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	// TODO: Add your specialized code here and/or call the base class
-	if(wParam == 1233){
-
-		int Category = m_ComboBox.GetCurSel() + 1;
-		CString WantedLog1;
-		GetDlgItemTextA(1232,WantedLog1);
-		CT2CA pszConvertedAnsiString(WantedLog1);
-		string WantedLog(pszConvertedAnsiString);
-
-		string Title=mFilter.CreatingTime(WantedLog);
-		m_strFilteredData = mFilter.DoFilter(Category, WantedLog, Title, m_strViewPath);
-
-	}
+// 	if(wParam == 1233){
+// 
+// 		int Category = m_ComboBox.GetCurSel() + 1;
+// 		CString WantedLog1;
+// 		GetDlgItemTextA(1232,WantedLog1);
+// 		CT2CA pszConvertedAnsiString(WantedLog1);
+// 		string WantedLog(pszConvertedAnsiString);
+// 
+// 		string Title=mFilter.CreatingTime(WantedLog);
+// 		m_strFilteredData = mFilter.DoFilter(Category, WantedLog, Title, m_strViewPath);
+// 
+// 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////여기까지
 
 	return CView::OnCommand(wParam, lParam);
