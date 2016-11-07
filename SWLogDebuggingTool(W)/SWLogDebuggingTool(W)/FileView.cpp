@@ -248,7 +248,6 @@ void CFileView::OnFileOpen()
 		pView->m_bView = TRUE;
 		pView->m_strViewPath = csTVDataFilePath;
 		pView->m_textsize = Cal_scrollview(csTVDataFilePath);
-		
 		pView->Invalidate(TRUE);
 		
 	} 

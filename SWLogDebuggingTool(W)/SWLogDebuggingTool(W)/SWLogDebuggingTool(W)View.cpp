@@ -217,9 +217,11 @@ BOOL CSWLogDebuggingToolWView::OnCommand(WPARAM wParam, LPARAM lParam)
 		string WantedLog(pszConvertedAnsiString);
 
 		string Title=mFilter.CreatingTime(WantedLog);
-		mFilter.DoFilter(Category, WantedLog, Title, m_strViewPath);
+		m_strFilteredData = mFilter.DoFilter(Category, WantedLog, Title, m_strViewPath);
+
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////여기까지
+
 	return CView::OnCommand(wParam, lParam);
 }
 

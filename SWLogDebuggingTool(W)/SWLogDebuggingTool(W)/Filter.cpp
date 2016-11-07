@@ -28,7 +28,7 @@ string Filter::CreatingTime(string WantedLog)
 }
 
 
-void Filter::DoFilter(int Category, string WantedLog, string Title, CString filepath)
+list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CString filepath)
 {
 	string Log;
 	string FilteredLog;
@@ -106,16 +106,20 @@ void Filter::DoFilter(int Category, string WantedLog, string Title, CString file
 			if((TargetPart>=TimeWantedLog[0]) & (TargetPart<=TimeWantedLog[1])){
 				FilteredLog = Log;
 				output << FilteredLog << endl;
+				cslstFilteredData.push_front(FilteredLog.c_str());
 			}
 		}
 		else{
 			if(((TargetPart.find(WantedLog) >=0) & (TargetPart.find(WantedLog) < TargetPart.length()))){
 				FilteredLog = Log;
 				output << FilteredLog << endl;
+				cslstFilteredData.push_front(FilteredLog.c_str());
 			}
 		}
 	}
 	input.close();
 	output.close();
+
+	return cslstFilteredData;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////여기까지

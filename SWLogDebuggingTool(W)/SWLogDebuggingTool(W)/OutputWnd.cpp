@@ -4,6 +4,9 @@
 #include "OutputWnd.h"
 #include "Resource.h"
 #include "MainFrm.h"
+#include "SWLogDebuggingTool(W).h"
+#include "SWLogDebuggingTool(W)Doc.h"
+#include "SWLogDebuggingTool(W)View.h"
 
 
 #ifdef _DEBUG
@@ -77,9 +80,9 @@ int COutputWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 
 	// 출력 탭을 더미 텍스트로 채웁니다.
-	FillBuildWindow();
-	FillDebugWindow();
-	FillFindWindow();
+
+	/*FillDebugWindow();*/
+	/*FillFindWindow();*/
 
 	return 0;
 }
@@ -111,54 +114,27 @@ void COutputWnd::AdjustHorzScroll(CListBox& wndListBox)
 	dc.SelectObject(pOldFont);
 }
 
-void COutputWnd::FillBuildWindow()
+void COutputWnd::FillBuildWindow(list<CString> input)
 {
-	m_wndOutputBuild.AddString(_T("여기에 빌드 출력이 표시됩니다."));
-	m_wndOutputBuild.AddString(_T("출력이 목록 뷰 행에 표시되지만"));
-	m_wndOutputBuild.AddString(_T("표시 방법을 원하는 대로 변경할 수 있습니다."));
+	int i = 0;
+	if (input.size() >0 )
+	{
+		for (list<CString>::iterator iterPos = input.begin(); iterPos != input.end(); ++iterPos, ++i)
+		{
+			m_wndOutputBuild.AddString((LPCTSTR)*iterPos);
+		}
+	}
+}
 
-	//mFolderManager = new FolderManager();
-// 	list<CString> csDirectoryList = m_FolderManager.FindDirectory("C:\\LogDebugging");
-// 	
-// 	for (list<CString>::iterator iterPos = csDirectoryList.begin(); iterPos != csDirectoryList.end(); ++iterPos)
-// 	{
-// 		m_wndOutputBuild.AddString((LPCTSTR)*iterPos);
-// 		//cout<< *iterPos <<endl;
-// 	}
+
+void COutputWnd::FillDebugWindow(list<CString> input)
+{
 	
 }
 
-void COutputWnd::FillDebugWindow()
+void COutputWnd::FillFindWindow(list<CString> input)
 {
-	m_wndOutputDebug.AddString(_T("여기에 디버그 출력이 표시됩니다."));
-	m_wndOutputDebug.AddString(_T("출력이 목록 뷰 행에 표시되지만"));
-	m_wndOutputDebug.AddString(_T("표시 방법을 원하는 대로 변경할 수 있습니다."));
-	
-// 	list<TreeviewData> csLogFileList;
-// 
-// 	if (m_TreeviewManager.FindLogFile("C:\\LogDebugging").size() >0 )
-// 	{
-// 		csLogFileList = m_TreeviewManager.FindLogFile("C:\\LogDebugging"); 
-// 		for (list<TreeviewData>::iterator iterPos = csLogFileList.begin(); iterPos != csLogFileList.end(); ++iterPos)
-// 		{
-// 			list<CString> fulldirectory;
-// 			fulldirectory = iterPos->getFullDirectory();
-// 			for (list<CString>::iterator iterPoslow = fulldirectory.begin(); iterPoslow != fulldirectory.end(); ++iterPoslow)
-// 			{
-// 				m_wndOutputDebug.AddString((LPCTSTR)*iterPoslow);
-// 			}
-// 			
-// 			m_wndOutputDebug.AddString((LPCTSTR)iterPos->getFileName());
-// 		}
-// 	} 
-	
-}
 
-void COutputWnd::FillFindWindow()
-{
-	m_wndOutputFind.AddString(_T("여기에 찾기 출력이 표시됩니다."));
-	m_wndOutputFind.AddString(_T("출력이 목록 뷰 행에 표시되지만"));
-	m_wndOutputFind.AddString(_T("표시 방법을 원하는 대로 변경할 수 있습니다."));
 }
 
 /////////////////////////////////////////////////////////////////////////////

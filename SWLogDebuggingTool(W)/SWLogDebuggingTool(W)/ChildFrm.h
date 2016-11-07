@@ -10,6 +10,10 @@ class CChildFrame : public CMDIChildWndEx
 public:
 	CChildFrame();
 
+protected:
+	CSplitterWndEx m_wndSplitter;
+	
+	
 // 특성입니다.
 public:
 
