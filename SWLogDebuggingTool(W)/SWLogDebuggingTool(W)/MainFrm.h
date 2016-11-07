@@ -9,7 +9,6 @@
 #include "PropertiesWnd.h"
 #include "FilterView.h"
 
-
 class CMainFrame : public CMDIFrameWndEx
 {
 	DECLARE_DYNAMIC(CMainFrame)

@@ -9,6 +9,8 @@
 #include "UDPCommunication.h"
 #include "afxcmn.h"
 #include "FileView.h"
+#include "TreeviewManager.h"
+#include "TreeviewData.h"
 
 class CClassToolBar : public CMFCToolBar
 {
@@ -46,6 +48,8 @@ public:
 	//COutputWnd mCOutputWnd;
 
 	HTREEITEM hRoot;
+	HTREEITEM hSrc;
+	HTREEITEM hInc;
 	HTREEITEM hClass;
 
 	void SocketBinding(int& iSocket, SOCKADDR_IN mSocketAddr, int iAddrFamily, long lSourceIP, int iSourcePort);
@@ -61,6 +65,9 @@ public:
 	UINT m_nCurrSort;
 
 	void FillClassView();
+
+private:
+	TreeviewManager m_TreeviewManager;
 
 //재정의입니다.
 public:

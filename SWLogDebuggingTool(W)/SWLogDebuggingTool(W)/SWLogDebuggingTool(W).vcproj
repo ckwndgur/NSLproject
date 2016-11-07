@@ -302,6 +302,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ViewSearch.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ViewTree.cpp"
 				>
 			</File>
@@ -421,6 +425,10 @@
 			</File>
 			<File
 				RelativePath=".\UserConfig.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ViewSearch.h"
 				>
 			</File>
 			<File

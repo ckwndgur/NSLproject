@@ -14,7 +14,6 @@
 // CChildFrame
 
 IMPLEMENT_DYNCREATE(CChildFrame, CMDIChildWndEx)
-
 BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 END_MESSAGE_MAP()
 
@@ -54,3 +53,5 @@ void CChildFrame::Dump(CDumpContext& dc) const
 #endif //_DEBUG
 
 // CChildFrame 메시지 처리기
+
+

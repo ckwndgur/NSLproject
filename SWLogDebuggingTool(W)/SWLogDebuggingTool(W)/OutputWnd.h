@@ -33,6 +33,8 @@ class COutputWnd : public CDockablePane
 public:
 	COutputWnd();
 
+	list<CString> m_strFilteredDataOut;
+
 // 특성입니다.
 protected:
 	CFont m_Font;
@@ -46,14 +48,15 @@ protected:
 	
 
 protected:
-	void FillBuildWindow();
-	void FillDebugWindow();
-	void FillFindWindow();
+	
 
 	void AdjustHorzScroll(CListBox& wndListBox);
 
 // 구현입니다.
 public:
+	void FillBuildWindow(list<CString> input);
+	void FillDebugWindow(list<CString> input);
+	void FillFindWindow(list<CString> input);
 	virtual ~COutputWnd();
 	/*FolderManager m_FolderManager;*/
 	TreeviewManager m_TreeviewManager;

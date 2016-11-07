@@ -224,7 +224,9 @@ void CClassView::FillClassView()
 			sFileDIrChk = mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName;
 			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentIP"));
 			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentName"));
+			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileDirectory"));
 			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList"));
+			
 		}
 	}while(FindNextFile(hFind, &FindData));
 
@@ -242,7 +244,17 @@ void CClassView::FillClassView()
 		sListElement += *iterStartList;
 		hClass = m_wndClassView.InsertItem(_T(sListElement.c_str()), 1, 1, hRoot);
 		
-		iterStartList++;	
+		iterStartList++;
+
+		//C:\Temp\CoreDebug
+		int index = 0;
+		CString str = *iterStartList;
+		index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
+
+		CString temp;
+		AfxExtractSubString(temp, str, index + 2, '\\');
+		hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
+		
 
 		sListElement = *iterStartList;
 		sListElement = sListElement.substr(0, sListElement.length()-1);
@@ -252,7 +264,7 @@ void CClassView::FillClassView()
 		while(strmFileList.good())
 		{
 			getline(strmFileList, sFileList,'\n');
-			m_wndClassView.InsertItem(_T(sFileList.c_str()), 3, 3, hClass);
+			m_wndClassView.InsertItem(_T(sFileList.c_str()), 1, 1, hSrc);
 		}
 		iterStartList++;
 	}

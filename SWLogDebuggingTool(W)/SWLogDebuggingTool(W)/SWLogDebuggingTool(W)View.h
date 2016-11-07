@@ -1,7 +1,6 @@
 #include "UDPCommunication.h"
 #include "AgtInfoList.h"
 #include "TextManager.h"
-#include "OutputWnd.h"
 #include "XMLManager.h"
 #include "GetDataFromAgent_WIN.h"
 #include "ClassView.h"
@@ -27,17 +26,17 @@ public:
 	// 작업입니다.
 public:
 
-	COutputWnd mCOutputWnd;
+	
 	Filter mFilter;
 	CWnd m_EditSearch;
 	CWnd m_ButtonSearch;
 	CComboBox m_ComboBox;
 
-	
-
 	list<CString> m_strView;
 	CString m_strViewPath;
 	CSize m_textsize;
+
+	list<CString> m_strFilteredData;
 	
 	
 	BOOL m_bView;
