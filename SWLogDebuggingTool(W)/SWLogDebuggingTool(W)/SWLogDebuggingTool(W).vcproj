@@ -230,6 +230,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LogFileView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LogFtView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MainFrm.cpp"
 				>
 			</File>
@@ -271,10 +279,6 @@
 			</File>
 			<File
 				RelativePath=".\SWLogDebuggingTool(W)Doc.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SWLogDebuggingTool(W)View.cpp"
 				>
 			</File>
 			<File
@@ -360,6 +364,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LogFileView.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LogFtView.h"
+				>
+			</File>
+			<File
 				RelativePath=".\MainFrm.h"
 				>
 			</File>
@@ -389,10 +401,6 @@
 			</File>
 			<File
 				RelativePath=".\SWLogDebuggingTool(W)Doc.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SWLogDebuggingTool(W)View.h"
 				>
 			</File>
 			<File

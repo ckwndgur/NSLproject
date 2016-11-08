@@ -66,11 +66,13 @@ int CFilterWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	CRect rectDummy;
 	rectDummy.SetRectEmpty();
+	CRect rect1(0, 0, 10, 10);
+	
 
 	// 콤보 상자를 만듭니다.
 	const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
-	if (!m_wndObjectCombo.Create(dwViewStyle, rectDummy, this, 1))
+	if (!m_wndObjectCombo.Create(dwViewStyle, rect1, this, 1))
 	{
 		TRACE0("사용자정의 필터를 만들지 못했습니다. \n");
 		return -1;      // 만들지 못했습니다.
@@ -81,7 +83,7 @@ int CFilterWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndObjectCombo.SetFont(CFont::FromHandle((HFONT) GetStockObject(DEFAULT_GUI_FONT)));
 	m_wndObjectCombo.SetCurSel(0);
 
-	if (!m_wndFilterList.Create(WS_VISIBLE | WS_CHILD, rectDummy, this, 2))
+	if (!m_wndFilterList.Create(WS_VISIBLE | WS_CHILD, rect1, this, 2))
 	{
 		TRACE0("필터 뷰를 만들지 못했습니다. \n");
 		return -1;      // 만들지 못했습니다.

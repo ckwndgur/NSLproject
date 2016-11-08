@@ -248,7 +248,7 @@ BOOL CMainFrame::CreateDockingWindows()
 	// 필터 창을 만듭니다.
 	CString strFilterWnd;
 	bNameValid = strFilterWnd.LoadString(IDS_FILTER_WND);
-	ASSERT(bNameValid);
+	//ASSERT(bNameValid);
 	if (!m_wndFilter.Create(strFilterWnd, this, CRect(0, 0, 100, 100), TRUE, ID_VIEW_FILTERWND, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_RIGHT | CBRS_FLOAT_MULTI))
 	{
 		TRACE0("필터 창을 만들지 못했습니다.\n");

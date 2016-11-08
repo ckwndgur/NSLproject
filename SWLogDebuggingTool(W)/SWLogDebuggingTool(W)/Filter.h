@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Windows.h>
 #include <iostream>
 #include <string>
@@ -6,7 +8,8 @@
 #include <list>
 using namespace std;
 
-class Filter{
+class Filter
+{
 public:
 	Filter();
 	~Filter();
