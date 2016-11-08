@@ -248,7 +248,7 @@ void CClassView::FillClassView()
 
 		//C:\Temp\CoreDebug
 		int index = 0;
-		CString str = *iterStartList;
+		CString str = (*iterStartList).c_str();
 		index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
 
 		CString temp;
