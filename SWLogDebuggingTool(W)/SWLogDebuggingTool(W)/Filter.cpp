@@ -73,7 +73,7 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 			break;
 		case 2 :
 			LogPartStartPoint = Log.find("[")+1;
-			LogPartEndPoint = Log.find("]");
+			LogPartEndPoint = Log.find("_");
 			break;
 		case 3 :
 			LogPartStartPoint = Log.find("]__") +3;
@@ -127,7 +127,7 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 		else{
 			if(divider == '&')
 			{
-				if(((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())) & ((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())))
+				if(((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())) & ((TargetPart.find(WantedLogPart[1]) >=0) & (TargetPart.find(WantedLogPart[1]) < TargetPart.length())))
 				{
 					FilteredLog = Log;
 					output << FilteredLog << endl;
@@ -136,7 +136,7 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 			}
 			else if(divider == '|')
 			{
-				if(((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())) | ((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())))
+				if(((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())) | ((TargetPart.find(WantedLogPart[1]) >=0) & (TargetPart.find(WantedLogPart[1]) < TargetPart.length())))
 				{
 					FilteredLog = Log;
 					output << FilteredLog << endl;
