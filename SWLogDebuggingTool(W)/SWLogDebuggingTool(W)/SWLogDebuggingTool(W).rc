@@ -73,7 +73,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\SWLogDebuggingTool(W).ico"
+IDR_MAINFRAME           ICON                    "res\\LoMIG.ico"
 IDR_SWLogDebuggingTTYPE ICON                    "res\\SWLogDebuggingTool(W)Doc.ico"
 IDI_FILE_VIEW           ICON                    "res\\file_view.ico"
 IDI_FILE_VIEW_HC        ICON                    "res\\file_view_hc.ico"
@@ -452,14 +452,14 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDR_MAINFRAME           "SWLogDebuggingTool(W)"
+    IDR_MAINFRAME           "LoMIG"
     IDR_SWLogDebuggingTTYPE "\nSWLogDebuggingT\nSWLogDebuggingT\n\n\nSWLogDebuggingToolW.Document\nSWLogDebuggingTool(W).Document"
     IDS_WINDOWS_MANAGER     "√¢(&W)..."
 END
 
 STRINGTABLE 
 BEGIN
-    AFX_IDS_APP_TITLE       "SWLogDebuggingTool(W)"
+    AFX_IDS_APP_TITLE       "LoMIG"
     AFX_IDS_IDLEMESSAGE     "¡ÿ∫Ò"
 END
 
