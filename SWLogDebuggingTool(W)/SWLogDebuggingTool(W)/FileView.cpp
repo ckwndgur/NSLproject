@@ -42,6 +42,7 @@ BEGIN_MESSAGE_MAP(CFileView, CDockablePane)
 	ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
 	ON_WM_PAINT()
 	ON_WM_SETFOCUS()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -190,6 +191,7 @@ void CFileView::OnContextMenu(CWnd* pWnd, CPoint point)
 		UINT flags = 0;
 		HTREEITEM hTreeItem = pWndTree->HitTest(ptTree, &flags);
 		csTVDataFileName = pWndTree->GetItemText(hTreeItem);
+		HTREEITEM hTreeItem_buf = hTreeItem;
 
 		hTreeItem = pWndTree->GetNextItem(hTreeItem, TVGN_PARENT);
 		CString mid = pWndTree->GetItemText(hTreeItem);
@@ -206,7 +208,7 @@ void CFileView::OnContextMenu(CWnd* pWnd, CPoint point)
 		
 		if (hTreeItem != NULL)
 		{
-			pWndTree->SelectItem(hTreeItem);
+			pWndTree->SelectItem(hTreeItem_buf);
 		}
 	}
 	pWndTree->SetFocus();
@@ -349,4 +351,20 @@ void CFileView::OnChangeVisualStyle()
 	m_wndFileView.SetImageList(&m_FileViewImages, TVSIL_NORMAL);
 }
 
+void CFileView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CTreeCtrl* pWndTree = (CTreeCtrl*) &m_wndFileView;
 
+	if (point != CPoint(-1, -1))
+	{
+		// 클릭한 항목을 선택합니다.
+		CPoint ptTree = point;
+		pWndTree->ScreenToClient(&ptTree);
+
+		UINT flags = 0;
+		HTREEITEM hTreeItem = pWndTree->HitTest(ptTree, &flags);
+		csTVDataFileName = pWndTree->GetItemText(hTreeItem);
+	}
+	
+	CWnd::OnLButtonDown(nFlags, point);
+}
