@@ -33,6 +33,21 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 	string Log;
 	string FilteredLog;
 	string TargetPart;
+	string WantedLogPart[2];
+	char divider;
+	if(WantedLog.find("&"))
+	{
+		WantedLogPart[0].assign(WantedLog,0, WantedLog.find("&"));
+		WantedLogPart[1].assign(WantedLog,WantedLog.find("&") + 1, WantedLog.length());
+		divider = '&';
+	}
+	if(WantedLog.find("|"))
+	{
+		WantedLogPart[0].assign(WantedLog,0, WantedLog.find("|"));
+		WantedLogPart[1].assign(WantedLog,WantedLog.find("|") + 1, WantedLog.length());
+		divider = '|';
+	}
+
 	const char* tmpTitle = Title.c_str();
 	ifstream input((CStringA)filepath, ios::in); // 
 	if(input.fail()){
@@ -43,10 +58,10 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 		cout << "파일을 쓰는 데 실패했습니다.1"<< endl;
 	}
 	int LogPartStartPoint= 0, LogPartEndPoint =0;
-	string TimeWantedLog[2];
-	if(Category == 2){
-		TimeWantedLog[0].assign(WantedLog,0, WantedLog.find("~"));
-		TimeWantedLog[1].assign(WantedLog, WantedLog.find("~")+1, WantedLog.length());
+	
+	if((Category == 2)){
+		WantedLogPart[0].assign(WantedLog,0, WantedLog.find("~"));
+		WantedLogPart[1].assign(WantedLog, WantedLog.find("~")+1, WantedLog.length());
 	}
 	while(!input.eof()){					
 		getline(input, Log);
@@ -103,23 +118,46 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 		}
 		TargetPart.assign(Log, LogPartStartPoint, LogPartEndPoint-LogPartStartPoint);
 		if(Category == 2){
-			if((TargetPart>=TimeWantedLog[0]) & (TargetPart<=TimeWantedLog[1])){
+			if((TargetPart>=WantedLogPart[0]) & (TargetPart<=WantedLogPart[1])){
 				FilteredLog = Log;
 				output << FilteredLog << endl;
 				cslstFilteredData.push_front(FilteredLog.c_str());
 			}
 		}
 		else{
-			if(((TargetPart.find(WantedLog) >=0) & (TargetPart.find(WantedLog) < TargetPart.length()))){
-				FilteredLog = Log;
-				output << FilteredLog << endl;
-				cslstFilteredData.push_front(FilteredLog.c_str());
+			if(divider == '&')
+			{
+				if(((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())) & ((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())))
+				{
+					FilteredLog = Log;
+					output << FilteredLog << endl;
+					cslstFilteredData.push_front(FilteredLog.c_str());
+				}
+			}
+			else if(divider == '|')
+			{
+				if(((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())) | ((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())))
+				{
+					FilteredLog = Log;
+					output << FilteredLog << endl;
+					cslstFilteredData.push_front(FilteredLog.c_str());
+				}
+			}
+			else
+			{
+				if(((TargetPart.find(WantedLog) >=0) & (TargetPart.find(WantedLog) < TargetPart.length())))
+				{
+					FilteredLog = Log;
+					output << FilteredLog << endl;
+					cslstFilteredData.push_front(FilteredLog.c_str());
+				}
 			}
 		}
 	}
+	char devider = '0';
 	input.close();
 	output.close();
 
 	return cslstFilteredData;
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////여기까지
+//(입력방법 : YYMMDD_hhmmssmsmsms~YYMMDD_hhmmssmsmsms"
