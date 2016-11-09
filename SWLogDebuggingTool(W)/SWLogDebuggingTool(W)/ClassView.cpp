@@ -8,6 +8,7 @@ CViewTree m_wndClassView;
 UDPCommunication mUDPCommunication;
 int iUdpMultiSock, iUdpUniSock, iUdpSndSock;
 
+
 class CClassViewMenuButton : public CMFCToolBarMenuButton
 {
 	friend class CClassView;

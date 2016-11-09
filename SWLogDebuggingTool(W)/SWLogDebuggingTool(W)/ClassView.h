@@ -69,6 +69,7 @@ public:
 private:
 	TreeviewManager m_TreeviewManager;
 
+
 //재정의입니다.
 public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);

@@ -280,6 +280,13 @@ CString CFileView::getData()
 void CFileView::OnFileOpenWith()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	hRoot = NULL;
+	hInc = NULL;
+	hSrc = NULL;
+	m_wndFileView.DeleteAllItems();
+	m_wndFileView.Invalidate(TRUE);
+	FillFileView();
+	
 }
 
 void CFileView::OnDummyCompile()

@@ -309,7 +309,7 @@ BEGIN
     POPUP "탐색기"
     BEGIN
         MENUITEM "열기(&O)",                      ID_OPEN
-        MENUITEM "연결 프로그램(&W)....",             ID_OPEN_WITH
+        MENUITEM "새로고침(&E)",             ID_OPEN_WITH
         MENUITEM SEPARATOR
         MENUITEM "컴파일(&C)",                     ID_DUMMY_COMPILE
         MENUITEM SEPARATOR
