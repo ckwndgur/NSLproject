@@ -85,5 +85,7 @@ private:
 	void MakeTreeview(CString pstr);
 	CSize Cal_scrollview(CString fulldirectory);
 	
+public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 

@@ -15,7 +15,7 @@ IMPLEMENT_DYNCREATE(LogFtView, CScrollView)
 
 LogFtView::LogFtView()
 {
-
+	
 }
 
 LogFtView::~LogFtView()
@@ -58,7 +58,7 @@ void LogFtView::OnDraw(CDC* pDC)
 	// TODO: add draw code here
 
 	FillFtView(m_strFilteredData, pDC);
-	SetScrollView(m_textsize.cx * 8, m_textsize.cy*20);
+	
 }
 
 BOOL LogFtView::OnCommand(WPARAM wParam, LPARAM lParam)
@@ -73,13 +73,12 @@ BOOL LogFtView::OnCommand(WPARAM wParam, LPARAM lParam)
 		string WantedLog(pszConvertedAnsiString);
 
 		string Title= mFilter.CreatingTime(WantedLog);
+		m_strFilteredData.clear();
 		m_strFilteredData = mFilter.DoFilter(Category, WantedLog, Title, m_strViewPath);
 		this->Invalidate(TRUE);
 
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////여기까지
-
-	
 
 	return CView::OnCommand(wParam, lParam);
 }
@@ -129,14 +128,17 @@ void LogFtView::SetScrollView(int x, int y)
 
 void LogFtView::FillFtView(list<CString> input, CDC* pdc)
 {
+	int C = 30;
 	int i = 0;
 	if (input.size() >0 )
 	{
+		SetScrollView(m_textsize.cx * 8, C + m_textsize.cy*20);
 		for (list<CString>::iterator iterPos = input.begin(); iterPos != input.end(); ++iterPos, ++i)
 		{
-			pdc->TextOut(0,i*20, *iterPos);
+			pdc->TextOut(0, C + i*20, *iterPos);
 		}
 	}
+
 }
 
 

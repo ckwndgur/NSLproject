@@ -91,14 +91,14 @@ void LogFileView::OnDraw(CDC* pDC)
 
 	if (m_strView.size() >0)
 	{
-		int C = 40;
+		//int C = 40;
 		int i = 0;
-		SetScrollView(m_textsize.cx * 8, C + m_textsize.cy*20);
+		SetScrollView(m_textsize.cx * 8, /*C +*/ m_textsize.cy*20);
 		//text size * 8 -> wnd x size
 		//first line height + total line number * each line height
 		for (list<CString>::iterator iterPos = m_strView.begin(); iterPos != m_strView.end(); ++iterPos, ++i)
 		{
-			pDC->TextOut(0, C+i*20, *iterPos);
+			pDC->TextOut(0, /*C+*/i*20, *iterPos);
 		}
 	}
 }
