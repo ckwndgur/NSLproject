@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////싹다 복붙
 #include "StdAfx.h"
 #include "Filter.h"
+#include "FolderManager.h"
 
 Filter::Filter()
 {
@@ -48,12 +49,23 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 		divider = '|';
 	}
 
-	const char* tmpTitle = Title.c_str();
+	
+	CString csfilepath, temp = ""; 
+	for (int i = 0; i<4; i++)
+	{
+		AfxExtractSubString(temp, filepath, i, '\\');
+		csfilepath += temp + '\\';
+	}
+	csfilepath = csfilepath + "Debug" + '\\' + Title.c_str();
+	
+	FolderManager mFolderManager;
+	mFolderManager.MakeDirectory((LPSTR)((LPCTSTR)csfilepath));
+
 	ifstream input((CStringA)filepath, ios::in); // 
 	if(input.fail()){
 		cout << "파일을 여는 데 실패했습니다."<< endl;
 	}
-	ofstream output(tmpTitle, ios::out); 
+	ofstream output(csfilepath, ios::out); 
 	if(output.fail()){
 		cout << "파일을 쓰는 데 실패했습니다.1"<< endl;
 	}
