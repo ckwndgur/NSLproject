@@ -21,7 +21,7 @@ string Filter::CreatingTime(string WantedLog)
 	sprintf_s(buffer,sizeof(buffer),"%04d-%02d-%02d %02dhour%02dmin%02dsec.txt", lst.wYear, lst.wMonth, lst.wDay, lst.wHour, lst.wMinute, lst.wSecond);
 	string Title1;
 	Title1 = buffer;
-	Title1 = "["+WantedLog + "]  "+ Title1;
+	Title1 = "["+WantedLog + "] "+ Title1;
 	char* Title = new char[Title1.size() +1];
 	strcpy_s(Title, Title1.size() + 1, Title1.c_str());
 
@@ -56,7 +56,10 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 		AfxExtractSubString(temp, filepath, i, '\\');
 		csfilepath += temp + '\\';
 	}
-	csfilepath = csfilepath + "Debug" + '\\' + Title.c_str();
+	AfxExtractSubString(temp, filepath, 4, '\\');
+	AfxExtractSubString(temp, temp, 0, '.');
+
+	csfilepath = csfilepath + "Debug" + '\\' + "(" + temp + ")" + Title.c_str();
 	
 	FolderManager mFolderManager;
 	mFolderManager.MakeDirectory((LPSTR)((LPCTSTR)csfilepath));
