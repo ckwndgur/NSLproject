@@ -247,7 +247,7 @@ void CClassView::FillClassView()
 		iterStartList++;
 
 		//C:\Temp\CoreDebug
-<<<<<<< HEAD
+//<<<<<<< HEAD
 		int index = 0;
 		CString str = (*iterStartList).c_str();
 		index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
@@ -256,7 +256,7 @@ void CClassView::FillClassView()
 		AfxExtractSubString(temp, str, index + 2, '\\');
 		hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
 		
-=======
+//=======
 // 		int index = 0;
 // 		CString str = (*iterStartList).c_str();
 // 		index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
@@ -266,7 +266,7 @@ void CClassView::FillClassView()
 // 		hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
 // 		
 // 		iterStartList++;
->>>>>>> 93c9376e81d76ada5e39c94b2b88927f98f46478
+//>>>>>>> 93c9376e81d76ada5e39c94b2b88927f98f46478
 
 		sListElement = *iterStartList;
 		sListElement = sListElement.substr(0, sListElement.length()-1);

@@ -6,7 +6,6 @@
 #include "MainFrm.h"
 #include "SWLogDebuggingTool(W).h"
 #include "SWLogDebuggingTool(W)Doc.h"
-#include "SWLogDebuggingTool(W)View.h"
 
 
 #ifdef _DEBUG
