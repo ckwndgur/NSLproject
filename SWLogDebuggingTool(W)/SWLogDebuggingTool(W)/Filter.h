@@ -1,20 +1,22 @@
+#pragma once
+
 #include <Windows.h>
 #include <iostream>
 #include <string>
 #include <stdio.h>
 #include <fstream>
+#include <list>
 using namespace std;
 
-class Filter{
+class Filter
+{
 public:
 	Filter();
 	~Filter();
-	int DoFilter();
-	void Init();
-private:
+	list<CString> DoFilter(int Category,string WantedLog,string Title, CString filepath);
+	string CreatingTime(string WantedLog);
+
 	string WantedLog;
-	string Log;
-	string TargetPart;
-	string FilteredLog;
-	int Category;
+
+	list<CString> cslstFilteredData;
 };

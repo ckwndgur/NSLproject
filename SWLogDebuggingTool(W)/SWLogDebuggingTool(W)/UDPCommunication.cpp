@@ -10,8 +10,8 @@ MFC에서는 printf나 fput으로 출력이 불가능하여 주석처리 하였습니다.
 #include "StdAfx.h"
 #include "UDPCommunication.h"
 
-TextManager mTextManager = TextManager();
-FolderManager mFolderManager = FolderManager();
+TextManager mTextManager;
+FolderManager mFolderManager;
 
 UDPCommunication::UDPCommunication(void)
 {
@@ -73,19 +73,19 @@ void UDPCommunication::InitSocket_Wt(int& hRecvSock, int& hRecvUniSock, int& hSn
 	//소켓생성
 	hRecvSock = socket(PF_INET, SOCK_DGRAM, 0);
 	if(hRecvSock == INVALID_SOCKET)
-		AfxMessageBox("Sock1 Error");
+		fputs("Rsocket() error\n", stderr);
 	// 	else
 	// 		printf("1st Socket Open Success\n");
 
 	hRecvUniSock = socket(PF_INET, SOCK_DGRAM, 0);
 	if(hRecvUniSock == INVALID_SOCKET)
-		AfxMessageBox("Sock2 Error");	
+		fputs("hRecvUniSock() error\n", stderr);
 	// 	else
 	// 		printf("2nb Socket Open Success\n");
 
 	hSndSock = socket(PF_INET, SOCK_DGRAM, 0);
 	if(hSndSock == INVALID_SOCKET)
-		AfxMessageBox("Sock3 Error");	
+		fputs("Ssocket() error\n", stderr);
 	// 	else
 	// 		printf("3rd Socket Open Success\n");
 
@@ -98,7 +98,6 @@ void UDPCommunication::MultiGroupRcvSet(int iRcvSocket, char* MultiGroupAddr, in
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr.sin_port = htons(MultiGroupPort);
-	
 	bind(iRcvSocket, (SOCKADDR*)&addr, sizeof(addr));
 
 	//ip_mreq구조체에 가입할 그룹의 주소지정
@@ -139,13 +138,13 @@ void UDPCommunication::InforReq(int iSndSock, int iWatcherPort, char* cMultiGrou
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = inet_addr(cMultiGroup);
 	addr.sin_port = htons(iWatcherPort);
-	
+
 	MyDataReqMsg.nReqType = 0;
 	memcpy(&MyDataReqMsg.cWatcherIP, cIPAddr, strlen(cIPAddr));
 	MyDataReqMsg.iWatcherPort = iWatcherPort;
 
 	nError = sendto(iSndSock, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0, (SOCKADDR*)&addr, sizeof(addr));
- }
+}
 
 void UDPCommunication::ResourceReq(int iSndSock, int iWatcherPort, char* cMultiGroup)
 {
@@ -242,7 +241,7 @@ list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 		case -1:
 			//printf("RcvTimeOut Error\n");
 			break;
-		
+
 		default:
 			recvfrom(iRcvUniSock, cRcvBuf, sizeof(cRcvBuf), 0, NULL, 0);
 

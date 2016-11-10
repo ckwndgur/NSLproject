@@ -12,7 +12,7 @@
 #include "XMLManager.h"
 #include "AgtRscMsg.h"
 
-#define WATCHERPORT 18840
+#define MY_TCP_PORT 18840
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
@@ -30,7 +30,7 @@ public:
 	UserConfig mUserConfig;
 
 	WSADATA wsaData;
-	
+
 	void InitWinSock();
 	void TCPSockInit(int& iTCPSock);
 	void TCPAddrAlloc(int& iTCPSock, int iTCPPort);

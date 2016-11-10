@@ -4,7 +4,12 @@
 #include "FileView.h"
 #include "Resource.h"
 
+#include "MainFrm.h"
+#include "ChildFrm.h"
 #include "SWLogDebuggingTool(W).h"
+#include "SWLogDebuggingTool(W)Doc.h"
+#include "LogFileView.h"
+#include "LogFtView.h"
 
 
 #ifdef _DEBUG
@@ -37,6 +42,7 @@ BEGIN_MESSAGE_MAP(CFileView, CDockablePane)
 	ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
 	ON_WM_PAINT()
 	ON_WM_SETFOCUS()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -64,7 +70,7 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndFileView.SetImageList(&m_FileViewImages, TVSIL_NORMAL);
 
 	m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_EXPLORER);
-	m_wndToolBar.LoadToolBar(IDR_EXPLORER, 0, 0, TRUE /* 잠금 */);
+	m_wndToolBar.LoadToolBar(IDR_EXPLORER, 0, 0, TRUE /*잠금*/);
 
 	OnChangeVisualStyle();
 
@@ -90,12 +96,19 @@ void CFileView::OnSize(UINT nType, int cx, int cy)
 	AdjustLayout();
 }
 
+void CFileView::RefreshFileView()
+{
+	m_wndFileView.DeleteAllItems();
+	MakeTreeview("C:\\LogDebugging");
+	m_wndFileView.Invalidate();
+	m_wndFileView.UpdateWindow();
+
+}
 void CFileView::MakeTreeview(CString pstr) // Folder searching and make tree view + going to use SetItemData for saving information
 {
 	CFileFind finder;
 	CString strWildcard(pstr);
 	int treeindex;
-	
 
 	strWildcard += _T("\\*.*");
 
@@ -118,16 +131,16 @@ void CFileView::MakeTreeview(CString pstr) // Folder searching and make tree vie
 			{
 				TreeviewData *mTreeviewData = new TreeviewData();
 				hSrc = m_wndFileView.InsertItem(temp, 0, 0, hRoot);
-				mTreeviewData->csFileName = temp;
-				mTreeviewData->csFullDirectory = finder.GetFilePath();
+				mTreeviewData->setFileName(temp);
+				mTreeviewData->setFullDirectory(finder.GetFilePath());
 				m_wndFileView.SetItemData(hSrc, (DWORD)mTreeviewData);
 			} 
 			else if (treeindex == 1)
 			{
 				TreeviewData *mTreeviewData = new TreeviewData();
 				hInc = m_wndFileView.InsertItem(temp, 0, 0, hSrc);
-				mTreeviewData->csFileName = temp;
-				mTreeviewData->csFullDirectory = finder.GetFilePath();
+				mTreeviewData->setFileName(temp);
+				mTreeviewData->setFullDirectory(finder.GetFilePath());
 				m_wndFileView.SetItemData(hInc, (DWORD)mTreeviewData);
 			}
 
@@ -137,8 +150,8 @@ void CFileView::MakeTreeview(CString pstr) // Folder searching and make tree vie
 		{
 			TreeviewData *mTreeviewData = new TreeviewData();
 			m_wndFileView.InsertItem(finder.GetFileTitle(), 1, 1, hInc);
-			mTreeviewData->csFileName = finder.GetFileTitle();
-			mTreeviewData->csFullDirectory = finder.GetFilePath();
+			mTreeviewData->setFileName(finder.GetFileName());
+			mTreeviewData->setFullDirectory(finder.GetFilePath());
 			m_wndFileView.SetItemData(hInc, (DWORD)mTreeviewData);
 		}
 	}
@@ -177,13 +190,25 @@ void CFileView::OnContextMenu(CWnd* pWnd, CPoint point)
 
 		UINT flags = 0;
 		HTREEITEM hTreeItem = pWndTree->HitTest(ptTree, &flags);
+		csTVDataFileName = pWndTree->GetItemText(hTreeItem);
+		HTREEITEM hTreeItem_buf = hTreeItem;
+
+		hTreeItem = pWndTree->GetNextItem(hTreeItem, TVGN_PARENT);
+		CString mid = pWndTree->GetItemText(hTreeItem);
+
+		hTreeItem = pWndTree->GetNextItem(hTreeItem, TVGN_PARENT);
+		CString first = pWndTree->GetItemText(hTreeItem);
+
+
+		csTVDataFilePath = "C:\\LogDebugging\\" + first + "\\" + mid + "\\" + csTVDataFileName +".txt";
 		
-		//CString a = m_wndFileView.GetItemText(hTreeItem);
-		//m_wndFileView.GetItemData(hTreeItem);
+		//mSelTVData = (TreeviewData *)pWndTree->GetItemData(hTreeItem);
+		//csTVDataFileName = mSelTVData->getFileName();
+		//csTVDataFilePath = mSelTVData->getFullDirectory();
 		
 		if (hTreeItem != NULL)
 		{
-			pWndTree->SelectItem(hTreeItem);
+			pWndTree->SelectItem(hTreeItem_buf);
 		}
 	}
 	pWndTree->SetFocus();
@@ -214,13 +239,54 @@ void CFileView::OnProperties()
 
 void CFileView::OnFileOpen()
 {
-	//m_FolderManager.FindDirectory("C:\\LogDebugging");
+	CSWLogDebuggingToolWApp *pApp = (CSWLogDebuggingToolWApp *)AfxGetApp();
+	CSWLogDebuggingToolWDoc *pDoc = (CSWLogDebuggingToolWDoc *)pApp->pDocTemplate->OpenDocumentFile(csTVDataFilePath);
+	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
+	CChildFrame *pChild = (CChildFrame *) pFrame->GetActiveFrame();
+	LogFileView *pView = (LogFileView *)pChild->GetFileViewPane(); 
+	LogFtView *pFtView = (LogFtView *)pChild->GetFtViewPane();
+	
+
+	if (csTVDataFilePath.GetLength() >0 )
+	{
+		pView->m_strView = mTextManager.ReadTextList((LPSTR)(LPCTSTR)csTVDataFilePath);
+		pView->m_bView = TRUE;
+		pView->m_textsize = Cal_scrollview(csTVDataFilePath);
+		pFtView->m_strViewPath = csTVDataFilePath;
+		pFtView->m_textsize = Cal_scrollview(csTVDataFilePath);
+		
+		pView->Invalidate(TRUE);
+		
+	} 
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+}
+
+CSize CFileView::Cal_scrollview(CString fulldirectory)
+{
+	CSize textsize;
+	
+	textsize.cx = mTextManager.GetMaxLineSize((LPSTR)(LPCTSTR)fulldirectory);
+	textsize.cy = mTextManager.GetLinelength((LPSTR)(LPCTSTR)fulldirectory);
+	
+	return textsize;
+	
+}
+
+CString CFileView::getData()
+{
+	return csData;
 }
 
 void CFileView::OnFileOpenWith()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	hRoot = NULL;
+	hInc = NULL;
+	hSrc = NULL;
+	m_wndFileView.DeleteAllItems();
+	m_wndFileView.Invalidate(TRUE);
+	FillFileView();
+	
 }
 
 void CFileView::OnDummyCompile()
@@ -292,4 +358,20 @@ void CFileView::OnChangeVisualStyle()
 	m_wndFileView.SetImageList(&m_FileViewImages, TVSIL_NORMAL);
 }
 
+void CFileView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CTreeCtrl* pWndTree = (CTreeCtrl*) &m_wndFileView;
 
+	if (point != CPoint(-1, -1))
+	{
+		// 클릭한 항목을 선택합니다.
+		CPoint ptTree = point;
+		pWndTree->ScreenToClient(&ptTree);
+
+		UINT flags = 0;
+		HTREEITEM hTreeItem = pWndTree->HitTest(ptTree, &flags);
+		csTVDataFileName = pWndTree->GetItemText(hTreeItem);
+	}
+	
+	CWnd::OnLButtonDown(nFlags, point);
+}

@@ -67,13 +67,12 @@ BEGIN_MESSAGE_MAP(CClassView, CDockablePane)
 	ON_WM_SETFOCUS()
 	ON_COMMAND_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnSort)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnUpdateSort)
-	ON_COMMAND(ID_Log_Req, &OnLogReq)
-	ON_COMMAND(ID_Info_Req, &OnInfoReq)
-	ON_COMMAND(ID_Info_Load, &OnInfoLoad)
+	ON_COMMAND(ID_Log_Req, &CClassView::OnLogReq)
+	ON_COMMAND(ID_Info_Req, &CClassView::OnInfoReq)
+	ON_COMMAND(ID_Info_Load, &CClassView::OnInfoLoad)
 	ON_COMMAND(ID_AGENT_RscReq, &CClassView::OnAgentRscreq)
 	//ON_NOTIFY(TVN_SELCHANGED, IDC_MY_TREE_VIEW, &OnAgentRcsoReq_OnClick)
 	ON_NOTIFY(NM_CLICK, IDC_MY_TREE_VIEW, &OnAgentRcsoReq_OnClick)
-
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -84,7 +83,7 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//통신 기능 초기화 - 소켓 생성 및 멀티캐스트 그룹주소 설정 등
 	mUDPCommunication.WSAInit();
 	mUDPCommunication.InitSocket_Wt(iUdpMultiSock, iUdpUniSock, iUdpSndSock);
-
+	
 	mXMLManager.initXML();
 
 	int iRcvSockBufSize = 1048576*2;
@@ -110,7 +109,7 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("클래스 뷰를 만들지 못했습니다.\n");
 		return -1;      // 만들지 못했습니다.
 	}
-	
+
 	// 이미지를 로드합니다.
 	m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_SORT);
 	m_wndToolBar.LoadToolBar(IDR_SORT, 0, 0, TRUE /* 잠금 */);
@@ -235,7 +234,9 @@ void CClassView::FillClassView()
 			sFileDIrChk = mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName;
 			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentIP"));
 			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentName"));
+			//AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileDirectory"));
 			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList"));
+			
 		}
 	}while(FindNextFile(hFind, &FindData));
 
@@ -253,7 +254,29 @@ void CClassView::FillClassView()
 		sListElement += *iterStartList;
 		hClass = m_wndClassView.InsertItem(_T(sListElement.c_str()), 1, 1, hRoot);
 		
-		iterStartList++;	
+		iterStartList++;
+
+		//C:\Temp\CoreDebug
+//<<<<<<< HEAD
+		int index = 0;
+		CString str = (*iterStartList).c_str();
+		index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
+
+		CString temp;
+		AfxExtractSubString(temp, str, index + 2, '\\');
+		hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
+		
+//=======
+// 		int index = 0;
+// 		CString str = (*iterStartList).c_str();
+// 		index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
+// 
+// 		CString temp;
+// 		AfxExtractSubString(temp, str, index + 2, '\\');
+// 		hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
+// 		
+// 		iterStartList++;
+//>>>>>>> 93c9376e81d76ada5e39c94b2b88927f98f46478
 
 		sListElement = *iterStartList;
 		sListElement = sListElement.substr(0, sListElement.length()-1);
@@ -263,7 +286,7 @@ void CClassView::FillClassView()
 		while(strmFileList.good())
 		{
 			getline(strmFileList, sFileList,'\n');
-			m_wndClassView.InsertItem(_T(sFileList.c_str()), 3, 3, hClass);
+			m_wndClassView.InsertItem(_T(sFileList.c_str()), 1, 1, hSrc);
 		}
 		iterStartList++;
 	}
@@ -434,24 +457,23 @@ void CClassView::OnChangeVisualStyle()
 
 void CClassView::OnLogReq()
 {
-	//TCP Initailize
+	// TODO: Add your command handler code here
 	HTREEITEM hItem = m_wndClassView.GetSelectedItem();
-
-	mTCPCommunication.TCPSockInit(iTCPSocket);
 	string sLogFileName = "";
 	string sLogDir = "";
 	string sAgentIPwithName = "";
 	string sAgentIP = "";
-	int iIndex = 0;
 	stringstream sDate;
 	BOOL bSuccessFlag = FALSE;
+	int iIndex = 0;
+
 	if(hItem != NULL)
 	{
 		sLogFileName = m_wndClassView.GetItemText(hItem);
-	
+
 		hItem = m_wndClassView.GetParentItem(hItem);
 		sAgentIPwithName = m_wndClassView.GetItemText(hItem);
-	
+
 		iIndex = sAgentIPwithName.find_first_of("/");
 		sAgentIP = sAgentIPwithName.substr(0, iIndex);
 	}
@@ -503,6 +525,7 @@ void CClassView::RefreshClassView()
 	m_wndClassView.UpdateWindow();
 }
 
+
 void CClassView::OnInfoLoad()
 {
 	// TODO: Add your command handler code here
@@ -545,7 +568,7 @@ void CClassView::OnAgentRcsoReq_OnClick(NMHDR *pNMHDR, LRESULT *pResult)
 			iIndex = sItem.find_first_of("/");
 			sAgentIP = sItem.substr(0, iIndex);
 			char* pcAgtIP = &sAgentIP[0u];
-			
+
 			mTCPCommunication.TCPSockInit(iTCPSocket);
 			bCnctFlag = mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT);
 			if(bCnctFlag == TRUE)

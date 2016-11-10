@@ -48,7 +48,7 @@ public:
 	char* SndDataReq(int iSndSockUni, list<string> lIPandFileList);
 	void ResourceReq(int iSndSock, int iWatcherPort, char* cMultiGroup);
 	void RcvRsc(int iRcvUniSock, int iTimeout_sec);
-;
+	;
 	WSADATA wsaData;
 	SOCKADDR_IN addr;
 	struct ip_mreq Rcv_Mreq;

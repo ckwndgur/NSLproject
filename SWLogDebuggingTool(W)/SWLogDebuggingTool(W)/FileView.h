@@ -9,6 +9,8 @@
 #include <iostream>
 #include <afxwin.h>
 #include <Windows.h>
+#include "TextManager.h"
+
 
 class CFileViewToolBar : public CMFCToolBar
 {
@@ -27,7 +29,10 @@ public:
 	CFileView();
 	
 	
+	CString getData();
+	CString csData;
 
+	void RefreshFileView();
 	void AdjustLayout();
 	void OnChangeVisualStyle();
 
@@ -46,7 +51,9 @@ protected:
 public:
 	virtual ~CFileView();
 
-	TreeviewManager m_TreeviewManager;
+	
+
+	
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -65,8 +72,20 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
+	TextManager mTextManager;
+	TreeviewData *mSelTVData;
+	TreeviewManager m_TreeviewManager;
+
 	HTREEITEM hRoot, hSrc, hInc;
+	CString csTVDataFilePath;
+	CString csTVDataFileName;
+	int scroll_cx; 
+	int scroll_cy; 
 
 	void MakeTreeview(CString pstr);
+	CSize Cal_scrollview(CString fulldirectory);
+	
+public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 

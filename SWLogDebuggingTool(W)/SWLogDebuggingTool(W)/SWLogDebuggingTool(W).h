@@ -18,7 +18,7 @@ class CSWLogDebuggingToolWApp : public CWinAppEx
 {
 public:
 	CSWLogDebuggingToolWApp();
-
+	CMultiDocTemplate* pDocTemplate;
 
 // 재정의입니다.
 public:
@@ -34,6 +34,8 @@ public:
 
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
+
+	
 };
 
 extern CSWLogDebuggingToolWApp theApp;

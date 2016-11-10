@@ -13,5 +13,4 @@ public:
 	list<string> AgtFileList;
 
 	void PrintList(list<char*> TargetList);
-
 };

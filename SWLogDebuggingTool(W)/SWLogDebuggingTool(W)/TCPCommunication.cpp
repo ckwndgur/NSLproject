@@ -20,10 +20,10 @@ void TCPCommunication::TCPSockInit(int& iTCPSock)
 
 	//int nTimeout = 3000; // 3 seconds
 	//setsockopt(iTCPSock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&nTimeout, sizeof(nTimeout));
-	
+
 	int iRcvSockBufSize = 1048576*2;
 	setsockopt(iTCPSock, SOL_SOCKET, SO_RCVBUF, (const char*) &iRcvSockBufSize, sizeof(iRcvSockBufSize));
-	
+
 	if(iTCPSock == INVALID_SOCKET)
 		AfxMessageBox("TCPSOCK_INIT_ERROR");
 }
@@ -60,7 +60,7 @@ void TCPCommunication::TCPAddrAlloc_Auto(int& iTCPSock, int& iTCPPort)
 	{
 		//bind success
 	}
-	
+
 	int m_socklen_t = sizeof(sServAddr);
 
 	if (getsockname(iTCPSock, (SOCKADDR*) &sServAddr, &m_socklen_t) == -1)
@@ -86,9 +86,9 @@ BOOL TCPCommunication::TryCnct(int& iTCPSock, char* cIP ,int iPort)
 	sockAddr.sin_family = AF_INET;
 	sockAddr.sin_addr.s_addr = inet_addr(cIP);
 	sockAddr.sin_port = htons(iPort);
-	
+
 	ioctlsocket(iTCPSock, FIONBIO, &uNonBlkOpt);
-	
+
 	int m_socklen_t = sizeof(sockAddr);
 
 	Ret = connect(iTCPSock, (SOCKADDR*) &sockAddr, sizeof(sockAddr));
@@ -96,7 +96,7 @@ BOOL TCPCommunication::TryCnct(int& iTCPSock, char* cIP ,int iPort)
 	if(Ret == SOCKET_ERROR)
 	{
 		dwErr = WSAGetLastError();
-		
+
 		if(dwErr ==WSAEWOULDBLOCK)
 		{
 			fd_set         Write, Err;
@@ -178,10 +178,10 @@ list<string> TCPCommunication::InfoRcv(int& iTCPServSock)
 
 		iRcvdDataLen = recv(iTCPServSock, cRcvBuf, sizeof(cRcvBuf), 0);
 
-			if(iRcvdDataLen == 0)
-				break;
-			if(iRcvdDataLen == -1)
-				break;
+		if(iRcvdDataLen == 0)
+			break;
+		if(iRcvdDataLen == -1)
+			break;
 
 		memcpy(&MyAgtInfoMsg, cRcvBuf, sizeof(MyAgtInfoMsg));
 
@@ -189,7 +189,7 @@ list<string> TCPCommunication::InfoRcv(int& iTCPServSock)
 		mXMLManager.EditElementXML("AgentInfo", "AgentIP", MyAgtInfoMsg.cAgtIPAddr);
 		mXMLManager.EditElementXML("AgentInfo", "AgentName", MyAgtInfoMsg.cAgtName);
 		mXMLManager.EditElementXML("AgentInfo", "AgentLogFileList", MyAgtInfoMsg.cAgtFileList);
-		
+
 		std::string sAgtFileList(MyAgtInfoMsg.cAgtFileList);
 		std::stringstream strmAgtFileList(sAgtFileList);
 
@@ -254,7 +254,7 @@ void TCPCommunication::LogFileReq(int& iRcvSocket, string sSaveDir, string sReqF
 
 	memset(cWtcName, 0, sizeof(cWtcName));
 	memset(&MyDataReqMsg, 0, sizeof(struct DataReqMsgStruct));
-	
+
 	int nError = gethostname(cWtcName, sizeof(cWtcName));
 	if (nError == 0)
 	{
@@ -266,7 +266,7 @@ void TCPCommunication::LogFileReq(int& iRcvSocket, string sSaveDir, string sReqF
 	//port 1883;
 	memcpy(&MyDataReqMsg.cWatcherIP, sWatcherIP.c_str(), strlen(sWatcherIP.c_str()));
 	memcpy(&MyDataReqMsg.cReqFileName, sReqFileName.c_str(), strlen(sReqFileName.c_str()));
-	MyDataReqMsg.iWatcherPort = WATCHERPORT;
+	MyDataReqMsg.iWatcherPort = MY_TCP_PORT;
 	MyDataReqMsg.nReqType = 2;
 	memset(&MyAgtDataMsg, 0, sizeof(struct AgtDataMsgStruct));
 	send(iRcvSocket, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0);
@@ -276,7 +276,7 @@ void TCPCommunication::LogFileReq(int& iRcvSocket, string sSaveDir, string sReqF
 
 	cSaveDir = &sSaveDir[0u];
 	cReqFileName = &sReqFileName[0u];
-	
+
 	mTextManager.MakeDirectory(cSaveDir, cReqFileName);
 
 	while (1)
@@ -299,9 +299,9 @@ void TCPCommunication::LogFileReq(int& iRcvSocket, string sSaveDir, string sReqF
 		}
 	}
 
-	
+
 	AfxMessageBox("File Download Done");
-	
+
 	shutdown(iRcvSocket, SD_SEND);
 	closesocket(iRcvSocket);
 }
@@ -356,12 +356,12 @@ char* TCPCommunication::ReqRsc(int& iTCPSock, float& CPUUsage, DWORD& RAMUsage)
 
 	//port 1883;
 	memcpy(&MyDataReqMsg.cWatcherIP, sWatcherIP.c_str(), strlen(sWatcherIP.c_str()));
-	MyDataReqMsg.iWatcherPort = WATCHERPORT;
+	MyDataReqMsg.iWatcherPort = MY_TCP_PORT;
 	MyDataReqMsg.nReqType = 3;
 
 	send(iTCPSock, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0);
 	Sleep(1);
-	
+
 	while(1)
 	{
 		iRcvLen = recv(iTCPSock, (char*)&MyAgtRcsMsg, sizeof(struct AgtRcsMsgStruct), 0);
@@ -372,7 +372,7 @@ char* TCPCommunication::ReqRsc(int& iTCPSock, float& CPUUsage, DWORD& RAMUsage)
 	RAMUsage = MyAgtRcsMsg.dwRAMUsage;
 	memcpy(&HDDUsage, MyAgtRcsMsg.cHDDUsage, sizeof(HDDUsage));
 
-	AfxMessageBox("Rsc Req and Rcv is Done");
+	//AfxMessageBox("Rsc Req and Rcv is Done");
 	shutdown(iTCPSock, SD_SEND);
 	closesocket(iTCPSock);
 

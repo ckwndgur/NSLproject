@@ -7,7 +7,7 @@
 #include "ClassView.h"
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
-
+#include "FilterView.h"
 
 class CMainFrame : public CMDIFrameWndEx
 {
@@ -42,8 +42,11 @@ protected:  // 컨트롤 모음이 포함된 멤버입니다.
 	CFileView         m_wndFileView;
 	CClassView        m_wndClassView;
 	COutputWnd        m_wndOutput;
+	
+	CFilterWnd		  m_wndFilter;
+	
+public:
 	CPropertiesWnd    m_wndProperties;
-	//FolderManager	  m_FolderManager;
 
 
 // 생성된 메시지 맵 함수

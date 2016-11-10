@@ -10,14 +10,21 @@ class CChildFrame : public CMDIChildWndEx
 public:
 	CChildFrame();
 
+protected:
+	CSplitterWndEx m_wndSplitter;
+	
+	
 // 특성입니다.
 public:
+	CScrollView* GetFileViewPane();
+	CScrollView* GetFtViewPane();
 
 // 작업입니다.
 public:
 
 // 재정의입니다.
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual BOOL OnCreateClient(LPCREATESTRUCT lpcs, CCreateContext* pContext);
 
 // 구현입니다.
 public:
