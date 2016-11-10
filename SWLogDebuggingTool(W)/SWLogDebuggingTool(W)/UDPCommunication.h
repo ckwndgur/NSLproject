@@ -18,6 +18,7 @@
 #include "TextManager.h"
 #include "FolderManager.h"
 #include "XMLManager.h"
+#include "AgtRscMsg.h"
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
@@ -45,7 +46,9 @@ public:
 	BOOL SndDataReq_MFC(int iSndSockUni, string sAgtIP, string sReqFileName, int iWtcPort);
 	void LogFileRcv(int iRcvSocket, char* cFileDir, char* cFileName);
 	char* SndDataReq(int iSndSockUni, list<string> lIPandFileList);
-
+	void ResourceReq(int iSndSock, int iWatcherPort, char* cMultiGroup);
+	void RcvRsc(int iRcvUniSock, int iTimeout_sec);
+;
 	WSADATA wsaData;
 	SOCKADDR_IN addr;
 	struct ip_mreq Rcv_Mreq;

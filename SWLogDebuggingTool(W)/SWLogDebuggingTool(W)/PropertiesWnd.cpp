@@ -161,29 +161,6 @@ void CPropertiesWnd::InitPropList()
 	m_wndPropList.SetVSDotNetLook();
 	m_wndPropList.MarkModifiedProperties();
 
-	CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(_T("Agent"));
-	CMFCPropertyGridProperty* pAgentProp1 = new CMFCPropertyGridProperty(_T("Name"), (_variant_t) _T(""), _T("Agent의 Name입니다."));
-	CMFCPropertyGridProperty* pAgentProp2 = new CMFCPropertyGridProperty(_T("IP"), (_variant_t) _T(""), _T("Agent의 IP입니다."));
-	CMFCPropertyGridProperty* pAgentProp3 = new CMFCPropertyGridProperty(_T("CPU"), (_variant_t) _T(""), _T("Agent의 CPU 사용량입니다."));
-	CMFCPropertyGridProperty* pAgentProp4 = new CMFCPropertyGridProperty(_T("MEM"), (_variant_t) _T(""), _T("Agent의 Memory 사용량입니다."));
-	CMFCPropertyGridProperty* pAgentProp5 = new CMFCPropertyGridProperty(_T("DISK"), (_variant_t) _T(""), _T("Agent의 Disk 사용량입니다."));
-	pGroup1->AddSubItem(pAgentProp1);
-	pGroup1->AddSubItem(pAgentProp2);
-	pGroup1->AddSubItem(pAgentProp3);
-	pGroup1->AddSubItem(pAgentProp4);
-	pGroup1->AddSubItem(pAgentProp5);
-	m_wndPropList.AddProperty(pGroup1);
-
-	CMFCPropertyGridProperty* pGroup2 = new CMFCPropertyGridProperty(_T("Log File"));
-	CMFCPropertyGridProperty* pLogProp1 = new CMFCPropertyGridProperty(_T("Name"), (_variant_t) _T(""), _T("Log File의 이름입니다."));
-	CMFCPropertyGridProperty* pLogProp2 = new CMFCPropertyGridProperty(_T("Path"), (_variant_t) _T(""), _T("Log File의 경로입니다."));
-	CMFCPropertyGridProperty* pLogProp3 = new CMFCPropertyGridProperty(_T("Size"), (_variant_t) _T(""), _T("Log File의 크기입니다."));
-	pGroup2->AddSubItem(pLogProp1);
-	pGroup2->AddSubItem(pLogProp2);
-	pGroup2->AddSubItem(pLogProp3);
-	m_wndPropList.AddProperty(pGroup2);
-
-/*
 	CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(_T("모양"));
 
 	pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("3D 모양"), (_variant_t) false, _T("창에 굵은 글꼴이 아닌 글꼴을 지정하고, 컨트롤에 3D 테두리를 지정합니다.")));
@@ -256,8 +233,6 @@ void CPropertiesWnd::InitPropList()
 
 	pGroup4->Expand(FALSE);
 	m_wndPropList.AddProperty(pGroup4);
-
-	*/
 }
 
 void CPropertiesWnd::OnSetFocus(CWnd* pOldWnd)

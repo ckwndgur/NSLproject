@@ -11,31 +11,18 @@ TreeviewData::~TreeviewData(void)
 
 }
 
-int iListIndex;
-CString csFileName;
-CString csFullDirectory;
-
 void TreeviewData::setFullDirectory(CString full)
 {
-	csFullDirectory = full;
+	this->csFullDirectory = full;
 }
 CString TreeviewData::getFullDirectory()
 {
 	return csFullDirectory;
 }
 
-void TreeviewData::setFileName(CString name)
-{
-	csFileName = name;
-}
-CString TreeviewData::getFileName()
-{
-	return csFileName;
-}
-
 void TreeviewData::setListIndex(int index)
 {
-	iListIndex = index;
+	this->iListIndex = index;
 }
 
 int TreeviewData::getListIndex()

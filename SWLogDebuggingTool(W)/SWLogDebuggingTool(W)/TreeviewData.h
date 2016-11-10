@@ -18,5 +18,7 @@ public:
 	int getListIndex();
 
 public:
-	
+	int iListIndex;
+	CString csFileName;
+	CString csFullDirectory;
 };

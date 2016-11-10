@@ -198,6 +198,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AgtRscMsg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ChildFrm.cpp"
 				>
 			</File>
@@ -218,10 +222,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FilterView.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FolderManager.cpp"
 				>
 			</File>
@@ -230,15 +230,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LogFileView.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LogFtView.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\MainFrm.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MyClock.cpp"
 				>
 			</File>
 			<File
@@ -279,6 +275,10 @@
 			</File>
 			<File
 				RelativePath=".\SWLogDebuggingTool(W)Doc.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SWLogDebuggingTool(W)View.cpp"
 				>
 			</File>
 			<File
@@ -332,6 +332,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AgtRscMsg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ChildFrm.h"
 				>
 			</File>
@@ -352,10 +356,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\FilterView.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FolderManager.h"
 				>
 			</File>
@@ -364,15 +364,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\LogFileView.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LogFtView.h"
-				>
-			</File>
-			<File
 				RelativePath=".\MainFrm.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MyClock.h"
 				>
 			</File>
 			<File
@@ -401,6 +397,10 @@
 			</File>
 			<File
 				RelativePath=".\SWLogDebuggingTool(W)Doc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SWLogDebuggingTool(W)View.h"
 				>
 			</File>
 			<File

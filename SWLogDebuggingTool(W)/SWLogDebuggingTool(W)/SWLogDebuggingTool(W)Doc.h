@@ -20,7 +20,7 @@ public:
 
 // 재정의입니다.
 public:
-	virtual BOOL OnNewDocument(LPCTSTR lpszPathName);
+	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
 	virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
 // 구현입니다.

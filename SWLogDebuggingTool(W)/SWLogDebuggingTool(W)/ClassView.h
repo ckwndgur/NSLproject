@@ -7,10 +7,11 @@
 #include "XMLManager.h"
 #include "AgtInfoList.h"
 #include "UDPCommunication.h"
+#include "TCPCommunication.h"
 #include "afxcmn.h"
-#include "FileView.h"
-#include "TreeviewManager.h"
-#include "TreeviewData.h"
+
+#define WATCHERPORT 1883
+#define IDC_MY_TREE_VIEW 2
 
 class CClassToolBar : public CMFCToolBar
 {
@@ -48,27 +49,23 @@ public:
 	//COutputWnd mCOutputWnd;
 
 	HTREEITEM hRoot;
-	HTREEITEM hSrc;
-	HTREEITEM hInc;
 	HTREEITEM hClass;
 
 	void SocketBinding(int& iSocket, SOCKADDR_IN mSocketAddr, int iAddrFamily, long lSourceIP, int iSourcePort);
 	void DisplayAllElement_List(list<string> lList);
 	void RefreshClassView();
+	void OnAgentResourceReq();
+	void OnAgentRcsoReq_OnClick(NMHDR *pNMHDR, LRESULT *pResult);
+
 	list<string> OpenXML(string sXMLDir);
 
-//protected:
+protected:
 	CClassToolBar m_wndToolBar;
-	CFileView mCFileView;
 	//CViewTree m_wndClassView;
 	CImageList m_ClassViewImages;
 	UINT m_nCurrSort;
 
 	void FillClassView();
-
-private:
-	TreeviewManager m_TreeviewManager;
-
 
 //재정의입니다.
 public:
@@ -94,5 +91,7 @@ public:
 	afx_msg void OnLogReq();
 	afx_msg void OnInfoReq();
 	afx_msg void OnInfoLoad();
+	afx_msg void OnAgentRscreq();
+
 };
 

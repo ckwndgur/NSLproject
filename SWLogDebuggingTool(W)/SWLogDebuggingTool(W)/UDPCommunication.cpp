@@ -10,8 +10,8 @@ MFC에서는 printf나 fput으로 출력이 불가능하여 주석처리 하였습니다.
 #include "StdAfx.h"
 #include "UDPCommunication.h"
 
-TextManager mTextManager;
-FolderManager mFolderManager;
+TextManager mTextManager = TextManager();
+FolderManager mFolderManager = FolderManager();
 
 UDPCommunication::UDPCommunication(void)
 {
@@ -73,19 +73,19 @@ void UDPCommunication::InitSocket_Wt(int& hRecvSock, int& hRecvUniSock, int& hSn
 	//소켓생성
 	hRecvSock = socket(PF_INET, SOCK_DGRAM, 0);
 	if(hRecvSock == INVALID_SOCKET)
-		fputs("Rsocket() error\n", stderr);
+		AfxMessageBox("Sock1 Error");
 	// 	else
 	// 		printf("1st Socket Open Success\n");
 
 	hRecvUniSock = socket(PF_INET, SOCK_DGRAM, 0);
 	if(hRecvUniSock == INVALID_SOCKET)
-		fputs("hRecvUniSock() error\n", stderr);
+		AfxMessageBox("Sock2 Error");	
 	// 	else
 	// 		printf("2nb Socket Open Success\n");
 
 	hSndSock = socket(PF_INET, SOCK_DGRAM, 0);
 	if(hSndSock == INVALID_SOCKET)
-		fputs("Ssocket() error\n", stderr);
+		AfxMessageBox("Sock3 Error");	
 	// 	else
 	// 		printf("3rd Socket Open Success\n");
 
@@ -98,6 +98,7 @@ void UDPCommunication::MultiGroupRcvSet(int iRcvSocket, char* MultiGroupAddr, in
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	addr.sin_port = htons(MultiGroupPort);
+	
 	bind(iRcvSocket, (SOCKADDR*)&addr, sizeof(addr));
 
 	//ip_mreq구조체에 가입할 그룹의 주소지정
@@ -124,12 +125,47 @@ void UDPCommunication::InforReq(int iSndSock, int iWatcherPort, char* cMultiGrou
 		// ip address 파악
 		strcpy(cIPAddr, inet_ntoa(*(struct in_addr*)pHostInfo->h_addr_list[0]));
 	}
+	int ttl = 15;
+	int iyes = 1;
+	int state = setsockopt(iSndSock,IPPROTO_IP,IP_MULTICAST_TTL,(char*)&ttl,sizeof(ttl));
+	if(state == SOCKET_ERROR)
+		fputs("sock reuse error\n", stderr);
+
+	state = setsockopt(iSndSock, SOL_SOCKET,SO_REUSEADDR, (char*)&iyes, sizeof(iyes));
+	if(state == SOCKET_ERROR)
+		fputs("sock reuse error\n", stderr);
 
 	memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = inet_addr(cMultiGroup);
 	addr.sin_port = htons(iWatcherPort);
+	
+	MyDataReqMsg.nReqType = 0;
+	memcpy(&MyDataReqMsg.cWatcherIP, cIPAddr, strlen(cIPAddr));
+	MyDataReqMsg.iWatcherPort = iWatcherPort;
 
+	nError = sendto(iSndSock, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0, (SOCKADDR*)&addr, sizeof(addr));
+ }
+
+void UDPCommunication::ResourceReq(int iSndSock, int iWatcherPort, char* cMultiGroup)
+{
+	struct DataReqMsgStruct MyDataReqMsg;
+	memset(&MyDataReqMsg, 0, sizeof(struct DataReqMsgStruct));
+
+	int nError = gethostname(cHostName, sizeof(cHostName));
+
+	if (nError == 0)
+	{
+		pHostInfo = gethostbyname(cHostName);
+		// ip address 파악
+		strcpy(cIPAddr, inet_ntoa(*(struct in_addr*)pHostInfo->h_addr_list[0]));
+	}
+
+	memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_addr.s_addr = inet_addr(cMultiGroup);
+	addr.sin_port = htons(iWatcherPort);
+	MyDataReqMsg.nReqType = 1;
 	memcpy(&MyDataReqMsg.cWatcherIP, cIPAddr, strlen(cIPAddr));
 	MyDataReqMsg.iWatcherPort = iWatcherPort;
 
@@ -147,9 +183,9 @@ void UDPCommunication::LogFileRcv(int iRcvSocket, char* cFileDir, char* cFileNam
 
 	mFolderManager.MakeDirectory(cFileDir, cFileName);
 
-	int res = recvfromTimeOut(iRcvSocket, 3, 0);
+	int res = recvfromTimeOut(iRcvSocket, 5, 0);
 
-	while(recvfromTimeOut(iRcvSocket, 3, 0)!=0)
+	while(recvfromTimeOut(iRcvSocket, 5, 0)!=0)
 	{
 		switch(res)
 		{
@@ -167,7 +203,7 @@ void UDPCommunication::LogFileRcv(int iRcvSocket, char* cFileDir, char* cFileNam
 			sWriteData = MyAgtDataMsg.cLogData;
 
 			//WriteFile(hFile, sWriteData.c_str(), strlen(sWriteData.c_str()), &dLen, 0);
-			mTextManager.WriteText(cFileDir, cFileName, sWriteData);
+			mTextManager.WriteText(cFileDir, cFileName, sWriteData, false);
 
 			if(MyAgtDataMsg.bLastPacket == TRUE)
 			{
@@ -179,22 +215,13 @@ void UDPCommunication::LogFileRcv(int iRcvSocket, char* cFileDir, char* cFileNam
 	}
 }
 
-/*
-int UCommunication::MsgHeaderDecision(int iRcvSocket)
-{
-
-}
-*/
-
 //현재 에이전트가 실행중인 노드의 IP/로그파일경로/경로에 존재하는 파일 목록 을 요청하기 위한 함수
 list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 {
 	char cRcvBuf[4096];
-	char cRcvdIP[16];
 	//char* cSingleFileName;
 
 	memset(cRcvBuf, 0, sizeof(cRcvBuf));
-	memset(cRcvdIP, 0, sizeof(cRcvdIP));
 
 	AgtInfoMsgStruct MyAgtInfoMsg = AgtInfoMsgStruct();
 	AgtInfoList MyAgtInfoList = AgtInfoList();
@@ -220,21 +247,12 @@ list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 			recvfrom(iRcvUniSock, cRcvBuf, sizeof(cRcvBuf), 0, NULL, 0);
 
 			memcpy(&MyAgtInfoMsg, cRcvBuf, sizeof(MyAgtInfoMsg));
-			//cout << "//////////////////////////////////////////////////" <<endl;
-			//printf("Rcvd Agt IP : ");
-			//printf(MyAgtInfoMsg.cAgtIPAddr);
-			//printf("\n");
-			//printf("Rcvd Agt Name : ");
-			//printf(MyAgtInfoMsg.cAgtName);
-			//printf("\n");
-			//printf("Rcvd Agt File List : ");
-			//printf("\n");
-			//printf(MyAgtInfoMsg.cAgtFileList);
 
 			//Agent한대당 XML파일 하나 생성 후 데이터 입력
 			mXMLManager.CreatXML_AgentInfo(MyAgtInfoMsg.cAgtIPAddr);
 			mXMLManager.EditElementXML("AgentInfo", "AgentIP", MyAgtInfoMsg.cAgtIPAddr);
 			mXMLManager.EditElementXML("AgentInfo", "AgentName", MyAgtInfoMsg.cAgtName);
+			mXMLManager.EditElementXML("AgentInfo", "AgentLogDir", MyAgtInfoMsg.cAgtLogDir);
 			mXMLManager.EditElementXML("AgentInfo", "AgentLogFileList", MyAgtInfoMsg.cAgtFileList);
 
 			MyAgtInfoMsg.cAgtFileList[strlen(MyAgtInfoMsg.cAgtFileList)-1] = '\0';
@@ -256,14 +274,45 @@ list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 
 				MyAgtInfoList.AgtFileList.push_back(sIPwithFileName);	
 			}
-
-			//cout << "//////////////////////////////////////////////////" <<endl;
-
 			break;
 		}
 	}
 
 	return MyAgtInfoList.AgtFileList;
+}
+
+void UDPCommunication::RcvRsc(int iRcvUniSock, int iTimeout_sec)
+{
+	char cRcvBuf[6000];
+	//char* cSingleFileName;
+
+	memset(cRcvBuf, 0, sizeof(cRcvBuf));
+
+	AgtRcsMsgStruct MyAgtRcsMsg = AgtRcsMsgStruct();
+
+	int iListStartFlag = 0;
+
+	//printf("Wating Reponse from Agent\n");
+	int res = recvfromTimeOut(iRcvUniSock, iTimeout_sec, 0);
+
+	while(recvfromTimeOut(iRcvUniSock, iTimeout_sec, 0)!=0)
+	{
+		switch(res)
+		{
+		case 0:
+			Sleep(1);
+			break;
+		case -1:
+			//RcvTimeOut Error
+			break;
+
+		default:
+			recvfrom(iRcvUniSock, cRcvBuf, sizeof(cRcvBuf), 0, NULL, 0);
+			memcpy(&MyAgtRcsMsg, cRcvBuf, sizeof(MyAgtRcsMsg));
+
+			break;
+		}
+	}
 }
 
 list<string> UDPCommunication::RcvInfor_nonTimeout(int iRcvUniSock, int iTimeout_sec)
@@ -456,98 +505,3 @@ char* UDPCommunication::SndDataReq(int iSndSockUni, list<string> lIPandFileList)
 
 	return cFileName;
 }
-/*
-char* UDPCommunication::SndDataReq(int iSndSockUni, list<string> lIPandFileList)
-{
-	int sel = 0;
-	int iIndex = 0;
-	char cIndex[100];
-	char cWtcName[64];
-	char cWtcIP[15];
-	string sReturnFail = "F";
-
-	SOCKADDR_IN AgtAddr;
-
-	char cFileName[256];
-	string sReqFileName = "";
-
-	struct DataReqMsgStruct MyDataReqMsg;
-
-	memset(cFileName, 0, sizeof(cFileName));
-	memset(&MyDataReqMsg, 0, sizeof(struct DataReqMsgStruct));
-	memset(&AgtAddr, 0, sizeof(AgtAddr));
-
-	cout << " 요청하고자 하는 파일을 선택하세요. " << endl;		
-
-	list<string>::iterator iterStartList = lIPandFileList.begin();
-	list<string>::iterator iterEndList = lIPandFileList.end();
-
-	while(iterStartList != iterEndList)
-	{		
-		cout<< iIndex << ". " << *iterStartList <<endl;
-		iIndex++;
-		iterStartList++;
-	}
-
-	cout << " 요청하고자 하는 파일 번호: ";
-	cin >> sel;
-
-	if(lIPandFileList.size()<(sel+1))
-		return (char*)sReturnFail.c_str();
-
-	iterStartList = lIPandFileList.begin();
-
-	for(int i = 0;i != sel;i++)
-	{
-		iterStartList ++;
-	}
-
-	sReqFileName = *iterStartList;
-	std::stringstream strmReqFileInfo(sReqFileName);
-
-	std::string sAgtIP;
-	std::string sFileName;
-
-	iIndex = 0;
-
-	//리스트에서 IP와 파일이름을 분리하는 단계
-	while(strmReqFileInfo.good())
-	{
-		if(iIndex == 0)
-		{
-			getline(strmReqFileInfo, sAgtIP,'/');
-			iIndex++;
-		}
-		else
-		{
-			getline(strmReqFileInfo, sFileName,'/');
-		}
-	}
-	sSlctAgtIP = sAgtIP;
-
-	strcpy(cFileName, sFileName.c_str());
-
-	int nError = gethostname(cWtcName, sizeof(cWtcName));
-	if (nError == 0)
-	{
-		pHostInfo = gethostbyname(cWtcName);
-		// ip address 파악
-		strcpy(cWtcIP, inet_ntoa(*(struct in_addr*)pHostInfo->h_addr_list[0]));
-	}
-
-	//port 1883;
-	MyDataReqMsg.iWatcherPort = 1883;
-	MyDataReqMsg.nReqType = 1;
-	memcpy(&MyDataReqMsg.cWatcherIP, cWtcIP, strlen(cWtcIP));
-	memcpy(&MyDataReqMsg.cReqFileName, cFileName, strlen(cFileName));
-
-	AgtAddr.sin_family = AF_INET;
-	AgtAddr.sin_addr.s_addr = inet_addr(sAgtIP.c_str());
-	AgtAddr.sin_port = htons(1883);
-
-	if(sendto(iSndSockUni, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0, (SOCKADDR*)&AgtAddr, sizeof(AgtAddr))==-1)
-		printf("Agent Info Trans Failed\n");
-
-	return cFileName;
-}
-*/

@@ -1,7 +1,5 @@
-//////////////////////////////////////////////////////////////////////////////////////////////싹다 복붙
 #include "StdAfx.h"
 #include "Filter.h"
-#include "FolderManager.h"
 
 Filter::Filter()
 {
@@ -11,9 +9,59 @@ Filter::~Filter()
 {
 }
 
+void Filter::Init()
+{
+	int CategoryPass = 1;
+	do{
+		cout << "-------------------- 검색할 카테고리를 고르시오. ---------------------------" << endl;
+		cout << "   1.ERROR      2.TIME      3.PATH      4.LINE      5.INFORMATION    6.Total" << endl;
+		cin >> Category;
+		switch(Category){
+			case 1:
+				cout << "1.ERROR" << endl;
+				cout << "검색할 단어 : ";
+				cin >> WantedLog;
+				CategoryPass = 0;
+				break;
+			case 2:
+				cout << "2.TIME (입력방법 : YYMMDD_hhmmssmsmsms~YYMMDD_hhmmssmsmsms" << endl;
+				cout << "검색할 시간 : ";
+				cin >> WantedLog;
+				CategoryPass = 0;
+				break;
+			case 3:
+				cout << "3.PATH" << endl;
+				cout << "검색할 폴더 : ";
+				cin >> WantedLog;
+				CategoryPass = 0;
+				break;
+			case 4:
+				cout << "4.LINE" << endl;
+				cout << "검색할 라인 : ";
+				cin >> WantedLog;
+				CategoryPass = 0;
+				break;
+			case 5:
+				cout << "5.INFORMATION" << endl;
+				cout << "검색할 정보 : ";
+				cin >> WantedLog;
+				CategoryPass = 0;
+				break;
+			case 6:
+				cout << "6.Total" << endl;
+				cout << "검색할 단어 : ";
+				cin >> WantedLog;
+				CategoryPass = 0;
+				break;
+			default:
+				cout << "1~5인 값을 입력해주세요." << endl;
+				break;
+		}
+	}while (CategoryPass);
+}
 
 
-string Filter::CreatingTime(string WantedLog)
+int Filter::DoFilter()
 {
 	SYSTEMTIME lst;
 	GetLocalTime(&lst);
@@ -21,65 +69,29 @@ string Filter::CreatingTime(string WantedLog)
 	sprintf_s(buffer,sizeof(buffer),"%04d-%02d-%02d %02dhour%02dmin%02dsec.txt", lst.wYear, lst.wMonth, lst.wDay, lst.wHour, lst.wMinute, lst.wSecond);
 	string Title1;
 	Title1 = buffer;
-	Title1 = "["+WantedLog + "] "+ Title1;
+	Title1 = "["+WantedLog + "]  "+ Title1;
 	char* Title = new char[Title1.size() +1];
-	strcpy_s(Title, Title1.size() + 1, Title1.c_str());
-
-	return Title;
-}
-
-
-list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CString filepath)
-{
-	string Log;
-	string FilteredLog;
-	string TargetPart;
-	string WantedLogPart[2];
-	char divider;
-	if(WantedLog.find("&"))
-	{
-		WantedLogPart[0].assign(WantedLog,0, WantedLog.find("&"));
-		WantedLogPart[1].assign(WantedLog,WantedLog.find("&") + 1, WantedLog.length());
-		divider = '&';
-	}
-	if(WantedLog.find("|"))
-	{
-		WantedLogPart[0].assign(WantedLog,0, WantedLog.find("|"));
-		WantedLogPart[1].assign(WantedLog,WantedLog.find("|") + 1, WantedLog.length());
-		divider = '|';
-	}
-
-	
-	CString csfilepath, temp = ""; 
-	for (int i = 0; i<4; i++)
-	{
-		AfxExtractSubString(temp, filepath, i, '\\');
-		csfilepath += temp + '\\';
-	}
-	AfxExtractSubString(temp, filepath, 4, '\\');
-	AfxExtractSubString(temp, temp, 0, '.');
-
-	csfilepath = csfilepath + "Debug" + '\\' + "(" + temp + ")" + Title.c_str();
-	
-	FolderManager mFolderManager;
-	mFolderManager.MakeDirectory((LPSTR)((LPCTSTR)csfilepath));
-
-	ifstream input((CStringA)filepath, ios::in); // 
+	strcpy_s(Title,Title1.size() + 1, Title1.c_str());
+	ifstream input("LogFile.txt", ios::in);
 	if(input.fail()){
-		cout << "파일을 여는 데 실패했습니다."<< endl;
+			cout << "파일을 여는 데 실패했습니다."<< endl;
 	}
-	ofstream output(csfilepath, ios::out); 
+	ofstream output(Title, ios::out);
 	if(output.fail()){
-		cout << "파일을 쓰는 데 실패했습니다.1"<< endl;
+			cout << "파일을 쓰는 데 실패했습니다.1"<< endl;
 	}
 	int LogPartStartPoint= 0, LogPartEndPoint =0;
-	
-	if((Category == 2)){
-		WantedLogPart[0].assign(WantedLog,0, WantedLog.find("~"));
-		WantedLogPart[1].assign(WantedLog, WantedLog.find("~")+1, WantedLog.length());
+	string TimeWantedLog[2];
+	if(Category == 2){
+		TimeWantedLog[0].assign(WantedLog,0, WantedLog.find("~"));
+		TimeWantedLog[1].assign(WantedLog, WantedLog.find("~")+1, WantedLog.length());
 	}
-	while(!input.eof()){					
+	while(!input.eof()){
+
 		getline(input, Log);
+		if(Log.length() <= 0){
+			return 0;
+		}
 		switch(Category)
 		{
 		case 1 :
@@ -88,7 +100,7 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 			break;
 		case 2 :
 			LogPartStartPoint = Log.find("[")+1;
-			LogPartEndPoint = Log.find("_");
+			LogPartEndPoint = Log.find("]");
 			break;
 		case 3 :
 			LogPartStartPoint = Log.find("]__") +3;
@@ -102,7 +114,7 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 			LogPartStartPoint = Log.find('.');
 			do{
 				do{
-					LogPartStartPoint++;
+						LogPartStartPoint++;
 				}while(Log.at(LogPartStartPoint) != '_');
 				LogPartEndPoint = LogPartStartPoint;
 				do{
@@ -114,11 +126,11 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 			LogPartStartPoint = Log.find('.');
 			do{
 				do{
-					LogPartStartPoint++;
+						LogPartStartPoint++;
 				}while(Log.at(LogPartStartPoint) != '_');
 				LogPartEndPoint = LogPartStartPoint;
 				do{
-					LogPartEndPoint++;
+						LogPartEndPoint++;
 				}while(Log.at(LogPartEndPoint) != '_');
 			}while( !((LogPartEndPoint - LogPartStartPoint >= 1) & (LogPartEndPoint - LogPartStartPoint <= 8)));
 			LogPartStartPoint = LogPartEndPoint+1;
@@ -128,51 +140,47 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 			LogPartStartPoint = 0;
 			LogPartEndPoint = Log.length();
 			break;
-		default : AfxMessageBox(TEXT("카테고리 범주가 아닙니다."));
-			break;
+		default : cout << "해당 카테고리는 존재하지 않습니다." << endl;
 		}
 		TargetPart.assign(Log, LogPartStartPoint, LogPartEndPoint-LogPartStartPoint);
 		if(Category == 2){
-			if((TargetPart>=WantedLogPart[0]) & (TargetPart<=WantedLogPart[1])){
+			if((TargetPart>=TimeWantedLog[0]) & (TargetPart<=TimeWantedLog[1])){
 				FilteredLog = Log;
 				output << FilteredLog << endl;
-				cslstFilteredData.push_front(FilteredLog.c_str());
 			}
 		}
 		else{
-			if(divider == '&')
-			{
-				if(((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())) & ((TargetPart.find(WantedLogPart[1]) >=0) & (TargetPart.find(WantedLogPart[1]) < TargetPart.length())))
-				{
-					FilteredLog = Log;
-					output << FilteredLog << endl;
-					cslstFilteredData.push_front(FilteredLog.c_str());
-				}
-			}
-			else if(divider == '|')
-			{
-				if(((TargetPart.find(WantedLogPart[0]) >=0) & (TargetPart.find(WantedLogPart[0]) < TargetPart.length())) | ((TargetPart.find(WantedLogPart[1]) >=0) & (TargetPart.find(WantedLogPart[1]) < TargetPart.length())))
-				{
-					FilteredLog = Log;
-					output << FilteredLog << endl;
-					cslstFilteredData.push_front(FilteredLog.c_str());
-				}
-			}
-			else
-			{
-				if(((TargetPart.find(WantedLog) >=0) & (TargetPart.find(WantedLog) < TargetPart.length())))
-				{
-					FilteredLog = Log;
-					output << FilteredLog << endl;
-					cslstFilteredData.push_front(FilteredLog.c_str());
-				}
+			if(((TargetPart.find(WantedLog) >=0) & (TargetPart.find(WantedLog) < TargetPart.length()))){
+				FilteredLog = Log;
+				output << FilteredLog << endl;
 			}
 		}
 	}
-	char devider = '0';
 	input.close();
 	output.close();
 
-	return cslstFilteredData;
+	return 0;
 }
-//(입력방법 : YYMMDD_hhmmssmsmsms~YYMMDD_hhmmssmsmsms"
+
+
+int main()
+{
+	Filter filter;
+	filter.Init();
+
+	LARGE_INTEGER startingTime, endingTime, elapsed;
+	LARGE_INTEGER frequency;
+	QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&startingTime);
+
+	int Result = filter.DoFilter();
+
+	QueryPerformanceCounter(&endingTime);
+	elapsed.QuadPart = endingTime.QuadPart - startingTime.QuadPart;
+	elapsed.QuadPart *= 1000000;
+	elapsed.QuadPart /= frequency.QuadPart;
+
+	cout << "Running Time(us) : " << elapsed.QuadPart << "us" << endl;
+
+	return 0;
+}

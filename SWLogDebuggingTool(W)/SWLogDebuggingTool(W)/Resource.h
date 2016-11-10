@@ -43,8 +43,6 @@
 #define IDS_CLASS_VIEW                  156
 #define IDS_OUTPUT_WND                  157
 #define IDS_PROPERTIES_WND              158
-#define IDS_FILTER_WND					159
-#define ID_VIEW_FILTERWND	            160
 #define IDI_FILE_VIEW                   161
 #define IDI_FILE_VIEW_HC                162
 #define IDI_CLASS_VIEW                  163
@@ -101,13 +99,15 @@
 #define ID_AGENT32784                   32784
 #define ID_Info_Req                     32785
 #define ID_Info_Load                    32786
+#define ID_AGENT32787                   32787
+#define ID_AGENT_RscReq                 32788
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32787
+#define _APS_NEXT_COMMAND_VALUE         32789
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

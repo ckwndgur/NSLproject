@@ -73,7 +73,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\LoMIG.ico"
+IDR_MAINFRAME           ICON                    "res\\SWLogDebuggingTool(W).ico"
 IDR_SWLogDebuggingTTYPE ICON                    "res\\SWLogDebuggingTool(W)Doc.ico"
 IDI_FILE_VIEW           ICON                    "res\\file_view.ico"
 IDI_FILE_VIEW_HC        ICON                    "res\\file_view_hc.ico"
@@ -279,6 +279,7 @@ BEGIN
     BEGIN
         MENUITEM "Agent정보 요청",                  ID_Info_Req
         MENUITEM "Agent정보 로드",                  ID_Info_Load
+        MENUITEM "Agent자원 정보 요청",               ID_AGENT_RscReq
     END
 END
 
@@ -309,7 +310,7 @@ BEGIN
     POPUP "탐색기"
     BEGIN
         MENUITEM "열기(&O)",                      ID_OPEN
-        MENUITEM "새로고침(&E)",             ID_OPEN_WITH
+        MENUITEM "연결 프로그램(&W)....",             ID_OPEN_WITH
         MENUITEM SEPARATOR
         MENUITEM "컴파일(&C)",                     ID_DUMMY_COMPILE
         MENUITEM SEPARATOR
@@ -452,14 +453,14 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDR_MAINFRAME           "LoMIG"
+    IDR_MAINFRAME           "SWLogDebuggingTool(W)"
     IDR_SWLogDebuggingTTYPE "\nSWLogDebuggingT\nSWLogDebuggingT\n\n\nSWLogDebuggingToolW.Document\nSWLogDebuggingTool(W).Document"
     IDS_WINDOWS_MANAGER     "창(&W)..."
 END
 
 STRINGTABLE 
 BEGIN
-    AFX_IDS_APP_TITLE       "LoMIG"
+    AFX_IDS_APP_TITLE       "SWLogDebuggingTool(W)"
     AFX_IDS_IDLEMESSAGE     "준비"
 END
 
@@ -582,8 +583,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FILE_VIEW           "Watcher"
-    IDS_CLASS_VIEW          "Agent"
+    IDS_FILE_VIEW           "파일 뷰"
+    IDS_CLASS_VIEW          "클래스 뷰"
     IDS_OUTPUT_WND          "출력"
     IDS_PROPERTIES_WND      "속성"
 END
