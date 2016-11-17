@@ -6,6 +6,13 @@
 #include "MainFrm.h"
 #include "SWLogDebuggingTool(W).h"
 
+#define ERRORSTR	0
+#define DATESTR		1
+#define PATHSTR		2
+#define LINESTR		3
+#define DESSTR		4
+#define TOTALSTR	5
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -27,6 +34,9 @@ CFilterWnd::~CFilterWnd()
 BEGIN_MESSAGE_MAP(CFilterWnd, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
+	ON_COMMAND(ID_FILTERING, ProcessFilter)
+	
+	/*
 	ON_COMMAND(ID_EXPAND_ALL, OnExpandAllFilter)
 	ON_UPDATE_COMMAND_UI(ID_EXPAND_ALL, OnUpdateExpandAllFilter)
 	ON_COMMAND(ID_SORTPROPERTIES, OnSortFilter)
@@ -35,9 +45,10 @@ BEGIN_MESSAGE_MAP(CFilterWnd, CDockablePane)
 	ON_UPDATE_COMMAND_UI(ID_PROPERTIES1, OnUpdateFilter1)
 	ON_COMMAND(ID_PROPERTIES2, OnFilter2)
 	ON_UPDATE_COMMAND_UI(ID_PROPERTIES2, OnUpdateFilter2)
+	*/
 	ON_WM_SETFOCUS()
 	ON_WM_SETTINGCHANGE()
-END_MESSAGE_MAP()
+	END_MESSAGE_MAP()
 
 void CFilterWnd::AdjustLayout()
 {
@@ -91,10 +102,10 @@ int CFilterWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	InitFilterList();
 
-	m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_PROPERTIES);
-	m_wndToolBar.LoadToolBar(IDR_PROPERTIES, 0, 0, TRUE /* 잠금 */);
+	m_wndToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_FILTER);
+	m_wndToolBar.LoadToolBar(IDR_FILTER, 0, 0, TRUE /* 잠금 */);
 	m_wndToolBar.CleanUpLockedImages();
-	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_PROPERTIES_HC : IDR_PROPERTIES, 0, 0, TRUE /* 잠금 */);
+	m_wndToolBar.LoadBitmap(theApp.m_bHiColorIcons ? IDB_PROPERTIES_HC : IDR_FILTER, 0, 0, TRUE /* 잠금 */);
 
 	m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
 	m_wndToolBar.SetPaneStyle(m_wndToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
@@ -146,12 +157,53 @@ void CFilterWnd::OnUpdateFilter1(CCmdUI* /*pCmdUI*/)
 void CFilterWnd::OnFilter2()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+
 }
 
-void CFilterWnd::OnUpdateFilter2(CCmdUI* /*pCmdUI*/)
+void CFilterWnd::OnUpdateFilter2(CCmdUI* pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 }
+
+//필터링 버튼 클릭 이벤트 시 실행
+void CFilterWnd::ProcessFilter()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+
+	//필터 윈도우에 입력된 문자열을 받아옵니다.
+	CString errorstr;
+	errorstr = GetSearchString(ERRORSTR);//에러레벨 필터링 값
+
+	CString datestr;
+	datestr  = GetSearchString(DATESTR);//날짜 필터링 값
+
+	CString pathstr;
+	pathstr = GetSearchString(PATHSTR);//경로 필터링 값
+
+	CString linestr;
+	linestr = GetSearchString(LINESTR);//라인 필터링 값
+
+	CString descriptionstr;
+	descriptionstr = GetSearchString(DESSTR);//설명 필터링 값
+
+	CString totalstr;
+	totalstr = GetSearchString(TOTALSTR);//문자열 필터링 값
+}
+
+CString CFilterWnd::GetSearchString(/*필터 카테고리*/int search_type)
+{
+	//필터링 문자열 값을 얻어옵니다.
+	CMFCPropertyGridProperty *filterdata_buf = m_wndFilterList.GetProperty(search_type);
+	CMFCPropertyGridProperty *filterdata;
+	filterdata = filterdata_buf->GetSubItem(0);
+	COleVariant vars= filterdata->GetValue();
+	wchar_t* strs = vars.bstrVal;
+	CString searchstr;
+	searchstr =  CString(strs);
+
+	return searchstr;
+}
+
 
 void CFilterWnd::InitFilterList()
 {

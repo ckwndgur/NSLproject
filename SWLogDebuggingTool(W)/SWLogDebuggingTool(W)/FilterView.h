@@ -37,6 +37,9 @@ protected:
 // 구현입니다.
 public:
 	virtual ~CFilterWnd();
+	void ProcessFilter();
+	CString GetSearchString(int search_type);
+
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
