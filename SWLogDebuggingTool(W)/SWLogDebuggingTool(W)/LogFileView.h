@@ -31,6 +31,7 @@ public:
 	CString openfilepath;
 	BOOL m_openflag;
 	CListCtrl m_OriginLoglist;
+	
 
 private:
 	void SetScrollView(int x, int y);

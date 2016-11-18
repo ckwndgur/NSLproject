@@ -199,8 +199,7 @@ void LogFileView::DLogtoList(CString filepath)
 				liststr_buf = alinelog_buf.substr(0, valstart);
 				liststr = liststr_buf.c_str();
 				
-				m_OriginLoglist.SetItemText(listno, columnno+1, liststr);//서브아이템을 추가합니다.
-				alinelog_buf.erase(0,valstart);
+				m_OriginLoglist.SetItemText(listno, columnno+1, liststr);//서브아이템을 추가합니다.				alinelog_buf.erase(0,valstart);
 				
 				valstart = alinelog_buf.find("《");
 
