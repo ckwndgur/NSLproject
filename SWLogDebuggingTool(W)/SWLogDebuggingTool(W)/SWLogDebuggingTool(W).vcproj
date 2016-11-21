@@ -210,6 +210,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DFilterView.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DFilterView.h"
+				>
+			</File>
+			<File
 				RelativePath=".\FileView.cpp"
 				>
 			</File>

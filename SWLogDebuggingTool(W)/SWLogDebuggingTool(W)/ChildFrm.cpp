@@ -6,6 +6,7 @@
 #include "SWLogDebuggingTool(W).h"
 #include "LogFileView.h"
 #include "LogFtView.h"
+#include "DFilterView.h"
 
 #include "ChildFrm.h"
 
@@ -36,9 +37,19 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pConte
 	{
 		return FALSE;
 	}
+	if (!m_wndSplitterDown.CreateStatic(&m_wndSplitter, 1, 2, WS_CHILD | WS_VISIBLE | WS_BORDER,m_wndSplitter.IdFromRowCol(1, 0)))
+	{
+		return FALSE;
+	}
 
-	m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(LogFileView), CSize(100, 200), pContext);
-	m_wndSplitter.CreateView(1, 0, RUNTIME_CLASS(LogFtView), CSize(100, 100), pContext);
+	m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(LogFileView), CSize(300, 300), pContext);
+	m_wndSplitterDown.CreateView(0, 0, RUNTIME_CLASS(LogFtView), CSize(200, 300), pContext);
+	m_wndSplitterDown.CreateView(0, 1, RUNTIME_CLASS(DFilterView), CSize(100, 300), pContext);
+
+	m_wndSplitter.SetRowInfo(0, 300, 300);
+	m_wndSplitter.SetRowInfo(1, 300, 300);
+	m_wndSplitterDown.SetColumnInfo(0, 200, 0);
+	m_wndSplitterDown.SetColumnInfo(1, 100, 0);
 
 	return TRUE;
 }
