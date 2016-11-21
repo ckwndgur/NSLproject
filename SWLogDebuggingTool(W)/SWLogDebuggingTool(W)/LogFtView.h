@@ -29,7 +29,6 @@ private:
 		CWnd m_EditSearch;
 		CWnd m_ButtonSearch;
 		CComboBox m_ComboBox;
-		CListCtrl m_list;
 	//view
 		Filter mFilter;
 	//class

@@ -103,7 +103,6 @@ IDR_MENU_IMAGES         BITMAP                  "res\\menuimages.bmp"
 IDB_MENU_IMAGES_24      BITMAP                  "res\\menuimages_hc.bmp"
 IDR_PROPERTIES          BITMAP                  "res\\properties.bmp"
 IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
-IDR_TOOLBAR1            BITMAP                  "res\\toolbar1.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
