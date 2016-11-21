@@ -486,6 +486,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\LoMIG.ico"
+				>
+			</File>
+			<File
 				RelativePath=".\res\menuimages.bmp"
 				>
 			</File>
@@ -543,6 +547,10 @@
 			</File>
 			<File
 				RelativePath=".\res\Toolbar.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\toolbar1.bmp"
 				>
 			</File>
 			<File

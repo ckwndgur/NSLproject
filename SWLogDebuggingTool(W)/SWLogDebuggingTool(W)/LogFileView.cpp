@@ -6,6 +6,14 @@
 #include "LogFileView.h"
 #include "MainFrm.h"
 #include "SWLogDebuggingTool(W)Doc.h"
+#include "stdlib.h"
+#include "string.h"
+
+#define ERRORITEM	1
+#define DATEITEM	2
+#define PATHITEM	3
+#define LINEITEM	4
+#define DESITEM		5
 
 
 // LogFileView
@@ -32,6 +40,19 @@ void LogFileView::OnInitialUpdate()
 {
 	CScrollView::OnInitialUpdate();
 
+	//ListView추가
+	m_OriginLoglist.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT,
+						   CRect(0, 0, 1000, 100), this, 1234);
+    
+	/*
+	//컬럼 추가
+	m_OriginLoglist.InsertColumn(0, "No.", LVCFMT_LEFT, 40);
+	m_OriginLoglist.InsertColumn(1, "Error Level", LVCFMT_LEFT, 100);
+	m_OriginLoglist.InsertColumn(2, "Date", LVCFMT_LEFT, 300);
+	m_OriginLoglist.InsertColumn(3, "Path", LVCFMT_LEFT, 100);
+	m_OriginLoglist.InsertColumn(4, "Line number", LVCFMT_LEFT, 100);
+	m_OriginLoglist.InsertColumn(5, "Description", LVCFMT_LEFT, 200);
+*/
 	CSize sizeTotal;
 	// TODO: calculate the total size of this view
 	sizeTotal.cx = sizeTotal.cy = 100;
@@ -86,6 +107,7 @@ void LogFileView::SetScrollView(int x, int y)
 
 void LogFileView::OnDraw(CDC* pDC)
 {
+	/*
 	CDocument* pDoc = GetDocument();
 	// TODO: add draw code here
 
@@ -93,14 +115,23 @@ void LogFileView::OnDraw(CDC* pDC)
 	{
 		//int C = 40;
 		int i = 0;
-		SetScrollView(m_textsize.cx * 8, /*C +*/ m_textsize.cy*20);
+		SetScrollView(m_textsize.cx * 8, m_textsize.cy*20);
 		//text size * 8 -> wnd x size
 		//first line height + total line number * each line height
 		for (list<CString>::iterator iterPos = m_strView.begin(); iterPos != m_strView.end(); ++iterPos, ++i)
 		{
-			pDC->TextOut(0, /*C+*/i*20, *iterPos);
+			pDC->TextOut(0, i*20, *iterPos);
 		}
 	}
+	*/
+
+	if(m_openflag == TRUE)
+	{
+		//LogtoList(openfilepath);
+		DLogtoList(openfilepath);
+	}
+
+	m_openflag = FALSE;
 }
 
 BOOL LogFileView::OnCommand(WPARAM wParam, LPARAM lParam)
@@ -122,6 +153,166 @@ BOOL LogFileView::OnCommand(WPARAM wParam, LPARAM lParam)
 
 	return CView::OnCommand(wParam, lParam);
 }
+
+//윈도우의 리스트뷰에 로그파일 오픈
+void LogFileView::DLogtoList(CString filepath)
+{
+	ifstream originfile(filepath); //지정된 경로의 로그파일을 열어 저장합니다.
+	string alinelog, alinelog_buf;
+	alinelog = alinelog_buf = "";
+	CString lineno;
+	int valstart, valend, listno, strlength, columnno;
+	valstart = 1;
+	valend = listno = strlength = columnno = 0;
+	string liststr_buf;
+	CString liststr;//리스트뷰 서브아이템에 들어갈 값입니다.
+	liststr = "";
+	bool inputflag;
+	inputflag = true;
+
+	while(!originfile.eof())
+	{
+		getline(originfile, alinelog);//1개 라인을 스트링으로 읽어옵니다.
+		alinelog_buf = alinelog;
+		inputflag = true;
+		columnno = 0;
+
+		//리스트뷰의 컬럼과 첫번째 아이템을 생성합니다.
+		if(listno == 0)
+		{
+			m_OriginLoglist.InsertColumn(0, "No.", LVCFMT_LEFT, 40);
+			lineno.Format(_T("%d"), listno+1);
+			m_OriginLoglist.InsertItem(listno, lineno, 0);
+
+			while(inputflag)
+			{
+				valstart = alinelog_buf.find("《");
+				valend = alinelog_buf.find("》");
+				strlength = valend - valstart;
+				liststr_buf = alinelog_buf.substr(valstart+2, strlength-2);
+				liststr = liststr_buf.c_str();
+				m_OriginLoglist.InsertColumn(columnno+1, liststr, LVCFMT_LEFT, 150);
+
+				alinelog_buf.erase(valstart,strlength+2);
+				valstart = alinelog_buf.find("《");
+
+				liststr_buf = alinelog_buf.substr(0, valstart);
+				liststr = liststr_buf.c_str();
+				
+				m_OriginLoglist.SetItemText(listno, columnno+1, liststr);//서브아이템을 추가합니다.				alinelog_buf.erase(0,valstart);
+				
+				valstart = alinelog_buf.find("《");
+
+				if(valstart == -1)
+				{
+					inputflag = false;
+				}
+
+				else
+				{
+				}
+
+				columnno++;
+			}
+
+			listno++;
+
+		}
+		
+		//리스트뷰의 나머지 아이템을 추가합니다.
+		else
+		{
+			//m_OriginLoglist.InsertColumn(0, "No.", LVCFMT_LEFT, 40);
+			lineno.Format(_T("%d"), listno+1);
+			m_OriginLoglist.InsertItem(listno, lineno, 0);
+
+			while(inputflag)
+			{
+				valstart = alinelog_buf.find("《");
+				valend = alinelog_buf.find("》");
+				strlength = valend - valstart;
+				liststr_buf = alinelog_buf.substr(valstart+2, strlength-2);
+				liststr = liststr_buf.c_str();
+				//m_OriginLoglist.InsertColumn(columnno+1, liststr, LVCFMT_LEFT, 150);
+
+				alinelog_buf.erase(valstart,strlength+2);
+				valstart = alinelog_buf.find("《");
+
+				liststr_buf = alinelog_buf.substr(0, valstart);
+				liststr = liststr_buf.c_str();
+				
+				m_OriginLoglist.SetItemText(listno, columnno+1, liststr);//서브아이템을 추가합니다.
+				alinelog_buf.erase(0,valstart);
+				
+				valstart = alinelog_buf.find("《");
+
+				if(valstart == -1)
+				{
+					inputflag = false;
+				}
+
+				else
+				{
+				}
+
+				columnno++;
+			}
+
+			listno++;
+		}
+	}
+
+	listno = 0;
+}
+
+void LogFileView::LogtoList(CString filepath)
+{
+	ifstream originfile(filepath); //지정된 경로의 로그파일을 열어 저장합니다.
+	string alinelog;
+	alinelog = "";
+	CString lineno;
+	int valstart, valend, listno, strlength;
+	valstart = 1;
+	valend = listno = strlength = 0;
+	string liststr_buf;
+	CString liststr;//리스트뷰 서브아이템에 들어갈 값입니다.
+	liststr = "";
+
+	while(!originfile.eof())
+	{
+		lineno.Format(_T("%d"), listno+1);
+		m_OriginLoglist.InsertItem(listno, lineno, 0);//리스트뷰 아이템 추가합니다.
+
+		getline(originfile, alinelog);//1개 라인을 스트링으로 읽어옵니다.
+
+		valend = alinelog.find(")");
+		strlength = valend - valstart;
+		liststr_buf = alinelog.substr(valstart, strlength);		
+		liststr = liststr_buf.c_str();
+		m_OriginLoglist.SetItemText(listno, ERRORITEM, liststr); //에러레벨을 추가합니다.
+
+		valstart = alinelog.find("[") + 1;
+		valend = alinelog.find("]_");
+		strlength = valend - valstart;
+		liststr_buf = alinelog.substr(valstart, strlength);
+		liststr = liststr_buf.c_str();
+		m_OriginLoglist.SetItemText(listno, DATEITEM, liststr); //날짜를 추가합니다.
+
+		alinelog = "";
+		valstart = 1;
+		valend = 0;
+		listno++;
+	}
+
+	listno = 0;
+}
+
+//리스트뷰의 아이템을 받아옵니다.
+void ListtoLog()
+{
+	
+}
+
 
 
 // LogFileView diagnostics

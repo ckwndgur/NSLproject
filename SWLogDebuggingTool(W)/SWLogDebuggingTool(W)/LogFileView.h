@@ -28,6 +28,11 @@ public:
 
 	BOOL m_bView;
 
+	CString openfilepath;
+	BOOL m_openflag;
+	CListCtrl m_OriginLoglist;
+	
+
 private:
 	void SetScrollView(int x, int y);
 
@@ -38,6 +43,9 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 #endif
+	void LogtoList(CString filepath);
+	void DLogtoList(CString filepath);
+	void ListtoLog();
 
 protected:
 	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
