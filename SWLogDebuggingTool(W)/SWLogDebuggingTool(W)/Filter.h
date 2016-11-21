@@ -18,5 +18,8 @@ public:
 
 	string WantedLog;
 
+	CString LogColumn;
+
+
 	list<CString> cslstFilteredData;
 };

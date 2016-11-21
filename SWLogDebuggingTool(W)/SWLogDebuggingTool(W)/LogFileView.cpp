@@ -9,6 +9,7 @@
 #include "stdlib.h"
 #include "string.h"
 
+
 #define ERRORITEM	1
 #define DATEITEM	2
 #define PATHITEM	3
@@ -43,7 +44,8 @@ void LogFileView::OnInitialUpdate()
 	//ListView추가
 	m_OriginLoglist.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT,
 						   CRect(0, 0, 1000, 100), this, 1234);
-    
+    m_OriginLoglist.ShowScrollBar(SB_BOTH);
+
 	/*
 	//컬럼 추가
 	m_OriginLoglist.InsertColumn(0, "No.", LVCFMT_LEFT, 40);
@@ -170,6 +172,9 @@ void LogFileView::DLogtoList(CString filepath)
 	bool inputflag;
 	inputflag = true;
 
+	Filter *pfilter = new Filter;
+	pfilter->LogColumn  = "";
+
 	while(!originfile.eof())
 	{
 		getline(originfile, alinelog);//1개 라인을 스트링으로 읽어옵니다.
@@ -193,13 +198,17 @@ void LogFileView::DLogtoList(CString filepath)
 				liststr = liststr_buf.c_str();
 				m_OriginLoglist.InsertColumn(columnno+1, liststr, LVCFMT_LEFT, 150);
 
+				pfilter->LogColumn  += "*";
+				pfilter->LogColumn  += liststr;
+
 				alinelog_buf.erase(valstart,strlength+2);
 				valstart = alinelog_buf.find("《");
 
 				liststr_buf = alinelog_buf.substr(0, valstart);
 				liststr = liststr_buf.c_str();
 				
-				m_OriginLoglist.SetItemText(listno, columnno+1, liststr);//서브아이템을 추가합니다.				alinelog_buf.erase(0,valstart);
+				m_OriginLoglist.SetItemText(listno, columnno+1, liststr);//서브아이템을 추가합니다.				
+				alinelog_buf.erase(0,valstart);
 				
 				valstart = alinelog_buf.find("《");
 

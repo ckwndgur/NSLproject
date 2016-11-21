@@ -32,6 +32,7 @@ public:
 	CComboBox m_wndObjectCombo;
 	CFilterToolBar m_wndToolBar;
 	CMFCPropertyGridCtrl m_wndFilterList;
+	
 
 protected:
 	/*

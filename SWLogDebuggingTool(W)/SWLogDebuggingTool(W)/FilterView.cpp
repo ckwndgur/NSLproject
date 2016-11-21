@@ -5,6 +5,7 @@
 #include "Resource.h"
 #include "MainFrm.h"
 #include "SWLogDebuggingTool(W).h"
+#include "Filter.h"
 
 #define ERRORSTR	0
 #define DATESTR		1
@@ -152,6 +153,32 @@ void CFilterWnd::OnFilter1()
 void CFilterWnd::OnUpdateFilter1(CCmdUI* /*pCmdUI*/)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+
+	m_wndFilterList.EnableHeaderCtrl(FALSE);
+	m_wndFilterList.EnableDescriptionArea();
+	m_wndFilterList.SetVSDotNetLook();
+	m_wndFilterList.MarkModifiedProperties();
+
+	int startno;
+	bool rowflag;
+	CString rowname;
+
+	startno = 0;
+	rowflag  =  true;
+	rowname = "";
+
+	Filter *pfilter = new Filter;
+	rowname = pfilter->LogColumn;
+	CMFCPropertyGridProperty* pGroupfilter = new CMFCPropertyGridProperty(_T("Filter Property and String"));
+
+	while(rowflag)
+	{
+		CMFCPropertyGridProperty* pDateProp = new CMFCPropertyGridProperty(_T("from"), (_variant_t) _T(""), _T("YYYY-MM-DD_hh:mm:ss"));
+		pGroupfilter->AddSubItem(pDateProp);
+	}
+
+	m_wndFilterList.AddProperty(pGroupfilter);
+	
 }
 
 void CFilterWnd::OnFilter2()
@@ -160,7 +187,7 @@ void CFilterWnd::OnFilter2()
 
 }
 
-void CFilterWnd::OnUpdateFilter2(CCmdUI* pCmdUI)
+void CFilterWnd::OnUpdateFilter2(CCmdUI* /*pCmdUI*/)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 }
@@ -216,6 +243,8 @@ void CFilterWnd::InitFilterList()
 	m_wndFilterList.SetVSDotNetLook();
 	m_wndFilterList.MarkModifiedProperties();
 
+	
+/*
 	//에러레벨 검색
 	CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(_T("Error Level"));
 	pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("Error"), (_variant_t)_T(""), _T("ERROR")));
@@ -256,7 +285,7 @@ void CFilterWnd::InitFilterList()
 
 	CMFCPropertyGridProperty* filterbtn = new CMFCPropertyGridProperty(_T("Filtering"));
 	
-
+*/
 }
 
 void CFilterWnd::OnSetFocus(CWnd* pOldWnd)
