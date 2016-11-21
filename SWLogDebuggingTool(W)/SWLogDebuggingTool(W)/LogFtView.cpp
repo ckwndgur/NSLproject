@@ -8,7 +8,6 @@
 #include "SWLogDebuggingTool(W)Doc.h"
 
 
-
 // LogFtView
 
 IMPLEMENT_DYNCREATE(LogFtView, CScrollView)
@@ -50,29 +49,6 @@ void LogFtView::OnInitialUpdate()
 	m_ComboBox.AddString("5. Description");
 	m_ComboBox.AddString("6. Total");
 */
-/*
-	m_list.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT, CRect(0, 0, 1000, 100), this, 1234);
-    
-	// 컬럼 추가
-	m_list.InsertColumn(0, "No.", LVCFMT_LEFT, 40);
-	m_list.InsertColumn(1, "Error Level", LVCFMT_LEFT, 100);
-	m_list.InsertColumn(2, "Date", LVCFMT_LEFT, 100);
-	m_list.InsertColumn(3, "Path", LVCFMT_LEFT, 100);
-	m_list.InsertColumn(4, "Line number", LVCFMT_LEFT, 100);
-	m_list.InsertColumn(5, "Description", LVCFMT_LEFT, 200);
-
-	// 항목 추가
-	m_list.InsertItem(0, "1", 0);
-	m_list.InsertItem(1, "2", 0);
-	 
-	// 하위 항목 추가
-	m_list.SetItemText(0, 1, "ERROR");
-	m_list.SetItemText(0, 2, "20161114");
-	m_list.SetItemText(0, 3, "c:\\");
-	m_list.SetItemText(0, 4, "1234");
-	m_list.SetItemText(0, 5, "test test");
-*/
-
 	SetScrollSizes(MM_TEXT, sizeTotal);
 
 }
