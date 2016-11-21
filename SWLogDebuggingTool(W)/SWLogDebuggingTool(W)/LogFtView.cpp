@@ -50,7 +50,7 @@ void LogFtView::OnInitialUpdate()
 	m_ComboBox.AddString("5. Description");
 	m_ComboBox.AddString("6. Total");
 */
-
+/*
 	m_list.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT, CRect(0, 0, 1000, 100), this, 1234);
     
 	// 컬럼 추가
@@ -71,7 +71,7 @@ void LogFtView::OnInitialUpdate()
 	m_list.SetItemText(0, 3, "c:\\");
 	m_list.SetItemText(0, 4, "1234");
 	m_list.SetItemText(0, 5, "test test");
-
+*/
 
 	SetScrollSizes(MM_TEXT, sizeTotal);
 
