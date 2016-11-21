@@ -243,7 +243,7 @@ void CFileView::OnFileOpen()
 	CSWLogDebuggingToolWDoc *pDoc = (CSWLogDebuggingToolWDoc *)pApp->pDocTemplate->OpenDocumentFile(csTVDataFilePath);
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	CChildFrame *pChild = (CChildFrame *) pFrame->GetActiveFrame();
-	LogFileView *pView = (LogFileView *)pChild->GetFileViewPane(); 
+	LogFileView *pView = (LogFileView *)pChild->GetFileViewPane();
 	LogFtView *pFtView = (LogFtView *)pChild->GetFtViewPane();
 	
 

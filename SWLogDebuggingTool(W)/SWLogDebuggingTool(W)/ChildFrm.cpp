@@ -37,7 +37,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pConte
 		return FALSE;
 	}
 
-	m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(LogFileView), CSize(100, 100), pContext);
+	m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(LogFileView), CSize(100, 200), pContext);
 	m_wndSplitter.CreateView(1, 0, RUNTIME_CLASS(LogFtView), CSize(100, 100), pContext);
 
 	return TRUE;

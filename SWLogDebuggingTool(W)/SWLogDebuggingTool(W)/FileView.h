@@ -10,6 +10,7 @@
 #include <afxwin.h>
 #include <Windows.h>
 #include "TextManager.h"
+#include "Filter.h"
 
 
 class CFileViewToolBar : public CMFCToolBar
@@ -27,7 +28,6 @@ class CFileView : public CDockablePane
 // 생성입니다.
 public:
 	CFileView();
-	
 	
 	CString getData();
 	CString csData;
