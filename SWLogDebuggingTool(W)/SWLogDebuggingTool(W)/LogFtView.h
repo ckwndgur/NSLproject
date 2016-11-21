@@ -21,6 +21,7 @@ public:
 	//class
 	CString m_strViewPath;
 	CSize m_textsize;
+	CListCtrl m_list;
 	//var
 
 	//func
@@ -32,9 +33,12 @@ private:
 		Filter mFilter;
 	//class
 		list<CString> m_strFilteredData;
+		bool bCListCnt;
 	//var
 		void FillFtView(list<CString> input, CDC* pdc);
 		void SetScrollView(int x, int y);
+		CSize CalViewSize(int x, int y);
+		void initClistCnt();
 	//func
 
 public:
