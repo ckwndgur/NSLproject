@@ -43,20 +43,22 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pConte
 	}
 
 	m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(LogFileView), CSize(300, 300), pContext);
-	m_wndSplitterDown.CreateView(0, 0, RUNTIME_CLASS(LogFtView), CSize(200, 300), pContext);
+	m_wndSplitterDown.CreateView(0, 0, RUNTIME_CLASS(LogFtView), CSize(300, 300), pContext);
 	m_wndSplitterDown.CreateView(0, 1, RUNTIME_CLASS(DFilterView), CSize(100, 300), pContext);
 
-	m_wndSplitter.SetRowInfo(0, 300, 300);
-	m_wndSplitter.SetRowInfo(1, 300, 300);
-	m_wndSplitterDown.SetColumnInfo(0, 200, 0);
-	m_wndSplitterDown.SetColumnInfo(1, 100, 0);
 
 	return TRUE;
 }
 
 CScrollView* CChildFrame::GetFtViewPane()
 {
-	CWnd* pWnd = m_wndSplitter.GetPane(1, 0);
+	CWnd* pWnd = m_wndSplitterDown.GetPane(0, 0);
+	CScrollView* pView = DYNAMIC_DOWNCAST(CScrollView, pWnd);
+	return pView;
+}
+CScrollView* CChildFrame::GetDFilterViewPane()
+{
+	CWnd* pWnd = m_wndSplitterDown.GetPane(0, 1);
 	CScrollView* pView = DYNAMIC_DOWNCAST(CScrollView, pWnd);
 	return pView;
 }

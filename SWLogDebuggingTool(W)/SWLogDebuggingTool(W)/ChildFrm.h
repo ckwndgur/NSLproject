@@ -18,6 +18,7 @@ protected:
 public:
 	CScrollView* GetFileViewPane();
 	CScrollView* GetFtViewPane();
+	CScrollView* GetDFilterViewPane();
 
 // 작업입니다.
 public:
