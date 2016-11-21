@@ -12,7 +12,7 @@ public:
 
 protected:
 	CSplitterWndEx m_wndSplitter;
-	
+	CSplitterWndEx m_wndSplitterDown;
 	
 // 특성입니다.
 public:
