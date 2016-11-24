@@ -25,6 +25,7 @@ LogFtView::~LogFtView()
 
 
 BEGIN_MESSAGE_MAP(LogFtView, CScrollView)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -211,3 +212,18 @@ void LogFtView::Dump(CDumpContext& dc) const
 
 
 // LogFtView message handlers
+
+void LogFtView::OnSize(UINT nType, int cx, int cy)
+{
+	CScrollView::OnSize(nType, cx, cy);
+
+	if (m_list)
+	{
+		CRect rc;
+		GetClientRect(&rc);
+		m_list.SetWindowPos(NULL, 0, 0, rc.Width(), rc.Height(), SWP_NOZORDER|SWP_SHOWWINDOW|SWP_NOACTIVATE);
+	}
+	
+	// TODO: Add your message handler code here
+
+}

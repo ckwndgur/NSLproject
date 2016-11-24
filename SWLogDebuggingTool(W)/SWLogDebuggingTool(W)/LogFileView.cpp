@@ -32,6 +32,7 @@ LogFileView::~LogFileView()
 
 
 BEGIN_MESSAGE_MAP(LogFileView, CScrollView)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -342,3 +343,16 @@ void LogFileView::Dump(CDumpContext& dc) const
 
 
 // LogFileView message handlers
+
+void LogFileView::OnSize(UINT nType, int cx, int cy)
+{
+	CScrollView::OnSize(nType, cx, cy);
+
+	if (m_OriginLoglist)
+	{
+		CRect rc;
+		GetClientRect(&rc);
+		m_OriginLoglist.SetWindowPos(NULL, 0, 0, rc.Width(), rc.Height(), SWP_NOZORDER|SWP_SHOWWINDOW|SWP_NOACTIVATE);
+	}
+	// TODO: Add your message handler code here
+}
