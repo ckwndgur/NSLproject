@@ -243,7 +243,7 @@ void CFileView::OnFileOpen()
 	CSWLogDebuggingToolWDoc *pDoc = (CSWLogDebuggingToolWDoc *)pApp->pDocTemplate->OpenDocumentFile(csTVDataFilePath);
 	CMainFrame* pFrame = (CMainFrame*)AfxGetMainWnd();
 	CChildFrame *pChild = (CChildFrame *) pFrame->GetActiveFrame();
-	LogFileView *pView = (LogFileView *)pChild->GetFileViewPane(); 
+	LogFileView *pView = (LogFileView *)pChild->GetFileViewPane();
 	LogFtView *pFtView = (LogFtView *)pChild->GetFtViewPane();
 	
 
@@ -252,6 +252,10 @@ void CFileView::OnFileOpen()
 		pView->m_strView = mTextManager.ReadTextList((LPSTR)(LPCTSTR)csTVDataFilePath);
 		pView->m_bView = TRUE;
 		pView->m_textsize = Cal_scrollview(csTVDataFilePath);
+
+		pView->m_openflag = TRUE;
+		pView->openfilepath = csTVDataFilePath;
+
 		pFtView->m_strViewPath = csTVDataFilePath;
 		pFtView->m_textsize = Cal_scrollview(csTVDataFilePath);
 		

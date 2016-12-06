@@ -28,15 +28,27 @@ public:
 		m_wndFilterList.SetGroupNameFullWidth(bSet);
 	}
 
-protected:
 	CFont m_fntFilterList;
 	CComboBox m_wndObjectCombo;
 	CFilterToolBar m_wndToolBar;
 	CMFCPropertyGridCtrl m_wndFilterList;
+	
+
+protected:
+	/*
+	CFont m_fntFilterList;
+	CComboBox m_wndObjectCombo;
+	CFilterToolBar m_wndToolBar;
+	CMFCPropertyGridCtrl m_wndFilterList;
+	*/
 
 // 구현입니다.
 public:
 	virtual ~CFilterWnd();
+	void ProcessFilter();
+	CString GetSearchString(int search_type);
+	void InitFilterList();
+
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -54,7 +66,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
-	void InitFilterList();
+	//void InitFilterList();
 	void SetFilterListFont();
 };
 

@@ -6,6 +6,7 @@
 #include "SWLogDebuggingTool(W).h"
 #include "LogFileView.h"
 #include "LogFtView.h"
+#include "DFilterView.h"
 
 #include "ChildFrm.h"
 
@@ -36,16 +37,28 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pConte
 	{
 		return FALSE;
 	}
+	if (!m_wndSplitterDown.CreateStatic(&m_wndSplitter, 1, 2, WS_CHILD | WS_VISIBLE | WS_BORDER,m_wndSplitter.IdFromRowCol(1, 0)))
+	{
+		return FALSE;
+	}
 
-	m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(LogFileView), CSize(100, 100), pContext);
-	m_wndSplitter.CreateView(1, 0, RUNTIME_CLASS(LogFtView), CSize(100, 100), pContext);
+	m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(LogFileView), CSize(300, 300), pContext);
+	m_wndSplitterDown.CreateView(0, 0, RUNTIME_CLASS(LogFtView), CSize(300, 300), pContext);
+	m_wndSplitterDown.CreateView(0, 1, RUNTIME_CLASS(DFilterView), CSize(100, 300), pContext);
+
 
 	return TRUE;
 }
 
 CScrollView* CChildFrame::GetFtViewPane()
 {
-	CWnd* pWnd = m_wndSplitter.GetPane(1, 0);
+	CWnd* pWnd = m_wndSplitterDown.GetPane(0, 0);
+	CScrollView* pView = DYNAMIC_DOWNCAST(CScrollView, pWnd);
+	return pView;
+}
+CScrollView* CChildFrame::GetDFilterViewPane()
+{
+	CWnd* pWnd = m_wndSplitterDown.GetPane(0, 1);
 	CScrollView* pView = DYNAMIC_DOWNCAST(CScrollView, pWnd);
 	return pView;
 }

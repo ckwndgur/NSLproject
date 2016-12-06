@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Korean resources
+// 한국어 resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 #ifdef _WIN32
@@ -103,6 +103,7 @@ IDR_MENU_IMAGES         BITMAP                  "res\\menuimages.bmp"
 IDB_MENU_IMAGES_24      BITMAP                  "res\\menuimages_hc.bmp"
 IDR_PROPERTIES          BITMAP                  "res\\properties.bmp"
 IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
+IDR_FILTER              BITMAP                  "res\\toolbar1.bmp"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -167,6 +168,11 @@ BEGIN
     BUTTON      ID_SORTPROPERTIES
     BUTTON      ID_PROPERTIES1
     BUTTON      ID_PROPERTIES2
+END
+
+IDR_TOOLBAR1 TOOLBAR  16, 16
+BEGIN
+    BUTTON      ID_FILTERING
 END
 
 
@@ -310,7 +316,7 @@ BEGIN
     POPUP "탐색기"
     BEGIN
         MENUITEM "열기(&O)",                      ID_OPEN
-        MENUITEM "새로고침(&E)",             ID_OPEN_WITH
+        MENUITEM "새로고침(&E)",                    ID_OPEN_WITH
         MENUITEM SEPARATOR
         MENUITEM "컴파일(&C)",                     ID_DUMMY_COMPILE
         MENUITEM SEPARATOR
@@ -602,7 +608,7 @@ BEGIN
     IDS_FIND_TAB            "찾기"
 END
 
-#endif    // Korean resources
+#endif    // 한국어 resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -8,14 +8,15 @@
 #include "SWLogDebuggingTool(W)Doc.h"
 
 
-
 // LogFtView
 
 IMPLEMENT_DYNCREATE(LogFtView, CScrollView)
 
 LogFtView::LogFtView()
 {
-	
+	bCListCnt = false;	
+	m_textsize.cx = 0;
+	m_textsize.cy = 0;
 }
 
 LogFtView::~LogFtView()
@@ -24,6 +25,7 @@ LogFtView::~LogFtView()
 
 
 BEGIN_MESSAGE_MAP(LogFtView, CScrollView)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -36,7 +38,7 @@ void LogFtView::OnInitialUpdate()
 	CSize sizeTotal;
 	// TODO: calculate the total size of this view
 	sizeTotal.cx = sizeTotal.cy = 100;
-
+/*
 	m_ButtonSearch.Create(TEXT("BUTTON"), TEXT("Search"), WS_CHILD|WS_VISIBLE|BS_PUSHBUTTON, CRect(300,0,450,20),this,1233);
 	m_EditSearch.Create(TEXT("EDIT"),TEXT(""), WS_CHILD|WS_VISIBLE|WS_BORDER, CRect(150,0,300,20), this, 1232);
 
@@ -47,7 +49,7 @@ void LogFtView::OnInitialUpdate()
 	m_ComboBox.AddString("4. LineNumber");
 	m_ComboBox.AddString("5. Description");
 	m_ComboBox.AddString("6. Total");
-
+*/
 	SetScrollSizes(MM_TEXT, sizeTotal);
 
 }
@@ -58,7 +60,48 @@ void LogFtView::OnDraw(CDC* pDC)
 	// TODO: add draw code here
 
 	FillFtView(m_strFilteredData, pDC);
+	if (!bCListCnt)
+	{
+		initClistCnt();
+	}
+
 	
+}
+
+void LogFtView::initClistCnt()
+{
+	CRect crect;
+	GetDesktopWindow()->GetWindowRect(crect);
+	CSize siz;
+
+	siz.cx = crect.Width();
+	siz.cy = crect.Height();
+
+	m_list.Create(WS_CHILD | WS_VISIBLE | WS_BORDER | LVS_REPORT, CRect(0, 0, siz.cx, siz.cy - 10) , this, 1234);
+
+	// 컬럼 추가
+	m_list.InsertColumn(0, "No.", LVCFMT_LEFT, 40);
+	m_list.InsertColumn(1, "Error Level", LVCFMT_LEFT, 100);
+	m_list.InsertColumn(2, "Date", LVCFMT_LEFT, 100);
+	m_list.InsertColumn(3, "Path", LVCFMT_LEFT, 100);
+	m_list.InsertColumn(4, "Line number", LVCFMT_LEFT, 100);
+	m_list.InsertColumn(5, "Description", LVCFMT_LEFT, 200);
+
+	// 항목 추가
+	m_list.InsertItem(0, "1", 0);
+	m_list.InsertItem(1, "2", 0);
+
+	// 하위 항목 추가
+	m_list.SetItemText(0, 1, "ERROR");
+	m_list.SetItemText(0, 2, "20161114");
+	m_list.SetItemText(0, 3, "c:\\");
+	m_list.SetItemText(0, 4, "1234");
+	m_list.SetItemText(0, 5, "test test");
+	
+	m_list.ShowScrollBar(SB_VERT, 1);
+	m_list.ShowScrollBar(SB_HORZ, 1);
+
+	bCListCnt = true;
 }
 
 BOOL LogFtView::OnCommand(WPARAM wParam, LPARAM lParam)
@@ -85,6 +128,16 @@ BOOL LogFtView::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void LogFtView::SetScrollView(int x, int y)
 {
+	CSize sizeViewPage;
+
+	sizeViewPage = CalViewSize(x, y);
+	
+	SetScrollSizes(MM_TEXT, sizeViewPage);
+
+}
+
+CSize LogFtView::CalViewSize(int x, int y)
+{
 	if ((x==0)&&(y==0))
 	{
 		CRect rc;
@@ -92,8 +145,8 @@ void LogFtView::SetScrollView(int x, int y)
 		CSize sizeViewPage;
 		sizeViewPage.cx = rc.right-rc.left;
 		sizeViewPage.cy = rc.bottom-rc.top;
-		SetScrollSizes(MM_TEXT, sizeViewPage);
-	} 
+		return sizeViewPage;
+	}
 	else
 	{
 		CRect rc;
@@ -119,10 +172,9 @@ void LogFtView::SetScrollView(int x, int y)
 		{
 			sizeViewPage.cy = y;
 		}
-
-
-		SetScrollSizes(MM_TEXT, sizeViewPage);
+		return sizeViewPage;
 	}
+	
 
 }
 
@@ -160,3 +212,18 @@ void LogFtView::Dump(CDumpContext& dc) const
 
 
 // LogFtView message handlers
+
+void LogFtView::OnSize(UINT nType, int cx, int cy)
+{
+	CScrollView::OnSize(nType, cx, cy);
+
+	if (m_list)
+	{
+		CRect rc;
+		GetClientRect(&rc);
+		m_list.SetWindowPos(NULL, 0, 0, rc.Width(), rc.Height(), SWP_NOZORDER|SWP_SHOWWINDOW|SWP_NOACTIVATE);
+	}
+	
+	// TODO: Add your message handler code here
+
+}

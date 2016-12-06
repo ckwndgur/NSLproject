@@ -12,12 +12,13 @@ public:
 
 protected:
 	CSplitterWndEx m_wndSplitter;
-	
+	CSplitterWndEx m_wndSplitterDown;
 	
 // 특성입니다.
 public:
 	CScrollView* GetFileViewPane();
 	CScrollView* GetFtViewPane();
+	CScrollView* GetDFilterViewPane();
 
 // 작업입니다.
 public:
