@@ -43,7 +43,7 @@ BOOL CChildFrame::OnCreateClient(LPCREATESTRUCT /*lpcs*/, CCreateContext* pConte
 	}
 
 	m_wndSplitter.CreateView(0, 0, RUNTIME_CLASS(LogFileView), CSize(300, 300), pContext);
-	m_wndSplitterDown.CreateView(0, 0, RUNTIME_CLASS(LogFtView), CSize(300, 300), pContext);
+	m_wndSplitterDown.CreateView(0, 0, RUNTIME_CLASS(LogFtView), CSize(650, 300), pContext);
 	m_wndSplitterDown.CreateView(0, 1, RUNTIME_CLASS(DFilterView), CSize(100, 300), pContext);
 
 

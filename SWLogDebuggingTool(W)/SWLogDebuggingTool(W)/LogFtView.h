@@ -11,12 +11,14 @@ class LogFtView : public CScrollView
 {
 	DECLARE_DYNCREATE(LogFtView)
 
+	
 protected:
 	LogFtView();           // protected constructor used by dynamic creation
 	virtual ~LogFtView();
 
 public:
 	//view
+
 
 	//class
 	CString m_strViewPath;
@@ -52,7 +54,7 @@ public:
 protected:
 	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
 	virtual void OnInitialUpdate();     // first time after construct
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+	//virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 public:

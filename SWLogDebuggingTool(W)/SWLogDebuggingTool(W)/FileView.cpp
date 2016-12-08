@@ -10,6 +10,7 @@
 #include "SWLogDebuggingTool(W)Doc.h"
 #include "LogFileView.h"
 #include "LogFtView.h"
+#include "DFilterView.h"
 
 
 #ifdef _DEBUG
@@ -245,6 +246,8 @@ void CFileView::OnFileOpen()
 	CChildFrame *pChild = (CChildFrame *) pFrame->GetActiveFrame();
 	LogFileView *pView = (LogFileView *)pChild->GetFileViewPane();
 	LogFtView *pFtView = (LogFtView *)pChild->GetFtViewPane();
+	DFilterView *pDView = (DFilterView *)pChild->GetDFilterViewPane();
+	//DFilterView *pDView = new DFilterView;
 	
 
 	if (csTVDataFilePath.GetLength() >0 )
@@ -255,8 +258,8 @@ void CFileView::OnFileOpen()
 
 		pView->m_openflag = TRUE;
 		pView->openfilepath = csTVDataFilePath;
-
 		pFtView->m_strViewPath = csTVDataFilePath;
+		pDView->m_filePath = csTVDataFilePath;
 		pFtView->m_textsize = Cal_scrollview(csTVDataFilePath);
 		
 		pView->Invalidate(TRUE);
