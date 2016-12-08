@@ -214,10 +214,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\DFilterView.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FileView.cpp"
 				>
 			</File>
@@ -349,6 +345,10 @@
 			</File>
 			<File
 				RelativePath=".\DataReqMsg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DFilterView.h"
 				>
 			</File>
 			<File

@@ -8,6 +8,7 @@
 #include "SWLogDebuggingTool(W)Doc.h"
 #include "stdlib.h"
 #include "string.h"
+#include "DFilterView.h"
 
 
 #define ERRORITEM	1
@@ -174,6 +175,8 @@ void LogFileView::DLogtoList(CString filepath)
 
 	Filter *pfilter = new Filter;
 	pfilter->LogColumn  = "";
+	DFilterView *pDfilter  = new DFilterView;
+	pDfilter->filterform = "";
 
 	while(!originfile.eof())
 	{
@@ -200,6 +203,9 @@ void LogFileView::DLogtoList(CString filepath)
 
 				pfilter->LogColumn  += "*";
 				pfilter->LogColumn  += liststr;
+
+				pDfilter->filterform += "*";
+				pDfilter->filterform += liststr;
 
 				alinelog_buf.erase(valstart,strlength+2);
 				valstart = alinelog_buf.find("¡¶");
