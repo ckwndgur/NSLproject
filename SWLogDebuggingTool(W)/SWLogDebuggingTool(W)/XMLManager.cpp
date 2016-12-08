@@ -35,11 +35,11 @@ void XMLManager::CreatXML_AgentInfo(string AgentName)
 	sConfigFileName = AgentName;
 
 	string title = "AgentInfo";
-	string childelement[3] = {"AgentIP", "AgentName", "AgentLogFileList"};
-	string contents[3] = {"ExampleIP", "ExampleName", "ExampleList"};
-	
+	string childelement[4] = {"AgentIP", "AgentName", "AgentLogDir", "AgentLogFileList"};
+	string contents[4] = {"ExampleIP", "ExampleName", "ExampleDir", "ExampleList"};
+
 	mFolderManager.MakeDirectory(&sConfigDirectory[0u],&sConfigFileName[0u]);
-	
+
 	if (mXMLDocument.LoadFile(sConfigFileDirectory.c_str()) == false)
 	{
 
@@ -49,7 +49,6 @@ void XMLManager::CreatXML_AgentInfo(string AgentName)
 		WriteXML(title, childelement, contents, sizeof(contents)/sizeof(contents[0]));
 	}
 }
-
 
 bool XMLManager::WriteXML(string NodeTitle, string* ChildElement, string* Contents, int ChildCnt)
 {

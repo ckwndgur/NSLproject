@@ -198,6 +198,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\AgtRscMsg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ChildFrm.cpp"
 				>
 			</File>
@@ -333,6 +337,10 @@
 			</File>
 			<File
 				RelativePath=".\AgtInfoMsg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\AgtRscMsg.h"
 				>
 			</File>
 			<File

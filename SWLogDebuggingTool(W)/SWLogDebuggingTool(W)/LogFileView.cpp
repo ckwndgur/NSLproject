@@ -31,10 +31,9 @@ LogFileView::~LogFileView()
 {
 }
 
-
 BEGIN_MESSAGE_MAP(LogFileView, CScrollView)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
-
 
 // LogFileView drawing
 
@@ -118,11 +117,13 @@ void LogFileView::OnDraw(CDC* pDC)
 	{
 		//int C = 40;
 		int i = 0;
+
 		SetScrollView(m_textsize.cx * 8, m_textsize.cy*20);
 		//text size * 8 -> wnd x size
 		//first line height + total line number * each line height
 		for (list<CString>::iterator iterPos = m_strView.begin(); iterPos != m_strView.end(); ++iterPos, ++i)
 		{
+
 			pDC->TextOut(0, i*20, *iterPos);
 		}
 	}
@@ -348,3 +349,16 @@ void LogFileView::Dump(CDumpContext& dc) const
 
 
 // LogFileView message handlers
+
+void LogFileView::OnSize(UINT nType, int cx, int cy)
+{
+	CScrollView::OnSize(nType, cx, cy);
+
+	if (m_OriginLoglist)
+	{
+		CRect rc;
+		GetClientRect(&rc);
+		m_OriginLoglist.SetWindowPos(NULL, 0, 0, rc.Width(), rc.Height(), SWP_NOZORDER|SWP_SHOWWINDOW|SWP_NOACTIVATE);
+	}
+	// TODO: Add your message handler code here
+}

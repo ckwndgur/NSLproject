@@ -285,6 +285,7 @@ BEGIN
     BEGIN
         MENUITEM "Agent정보 요청",                  ID_Info_Req
         MENUITEM "Agent정보 로드",                  ID_Info_Load
+		MENUITEM "Agent자원 정보 요청",               ID_AGENT_RscReq
     END
 END
 

@@ -13,6 +13,27 @@ TextManager::~TextManager(void)
 {
 }
 
+void TextManager::WriteText(char* filedirectory, char* filename, string data, bool lastflag)
+{
+	ofstream ofile;
+	char cTemp[256];
+
+	strcpy(cTemp, mStringManager.AppendChar(filedirectory, filename));
+
+	//cTemp[strlen(cTemp) - 1] = NULL;
+	if (!ofile.is_open())
+	{
+		ofile.open(cTemp, ios_base::out | ios_base::app);
+	} 
+
+	ofile<< data;
+
+	if (lastflag)
+	{
+		ofile.close();
+	}
+}
+
 void TextManager::WriteText(char* filedirectory, char* filename, string data)
 {
 	//ofstream ofile;.
@@ -27,6 +48,25 @@ void TextManager::WriteText(char* filedirectory, char* filename, string data)
 	ofile.close();
 }
 
+
+void TextManager::MakeDirectory(char* filedirectory, char* filename)
+{
+	char cTemp[256], *sp;
+	strcpy(cTemp, mStringManager.AppendChar(filedirectory, filename));
+	cTemp[strlen(cTemp) - 1] = NULL;
+	sp = cTemp;
+
+	while((sp = strchr(sp, '\\')))
+	{
+		if(sp> cTemp && *(sp - 1) != ':')
+		{
+			*sp = '\0';
+			::CreateDirectoryA(cTemp, NULL);
+			*sp = '\\';
+		}
+		sp++;
+	}
+}
 
 string TextManager::ReadText(char* filedirectory, char* filename)
 {

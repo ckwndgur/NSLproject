@@ -1,4 +1,3 @@
-
 #pragma once
 #include <string>
 #include <sstream>
@@ -7,10 +6,14 @@
 #include "XMLManager.h"
 #include "AgtInfoList.h"
 #include "UDPCommunication.h"
+#include "TCPCommunication.h"
+
 #include "afxcmn.h"
 #include "FileView.h"
 #include "TreeviewManager.h"
 #include "TreeviewData.h"
+
+#define IDC_MY_TREE_VIEW 2
 
 class CClassToolBar : public CMFCToolBar
 {
@@ -55,6 +58,9 @@ public:
 	void SocketBinding(int& iSocket, SOCKADDR_IN mSocketAddr, int iAddrFamily, long lSourceIP, int iSourcePort);
 	void DisplayAllElement_List(list<string> lList);
 	void RefreshClassView();
+	void OnAgentResourceReq();
+	void OnAgentRcsoReq_OnClick(NMHDR *pNMHDR, LRESULT *pResult);
+
 	list<string> OpenXML(string sXMLDir);
 
 //protected:
@@ -94,5 +100,6 @@ public:
 	afx_msg void OnLogReq();
 	afx_msg void OnInfoReq();
 	afx_msg void OnInfoLoad();
+	afx_msg void OnAgentRscreq();
 };
 

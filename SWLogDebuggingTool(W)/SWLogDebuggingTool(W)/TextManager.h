@@ -12,10 +12,15 @@ public:
 	TextManager(void);
 	~TextManager(void);
 
+	void WriteText(char* filedirectory, char* filename, string data, bool lastflag);
 	void WriteText(char* filedirectory, char* filename, string data);
+
 	int GetFileSize(char* filedirectory, char* filename);
+
 	int GetMaxLineSize(char* fulldirectory);
 	int GetLinelength(char* fulldirectory);
+
+	void MakeDirectory(char* filedirectory, char* filename);
 
 	string ReadText(char* filedirectory, char* filename);
 	string ReadText(char* fulldirectory);

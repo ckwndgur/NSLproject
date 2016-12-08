@@ -4,10 +4,15 @@
 #include "Resource.h"
 #include "SWLogDebuggingTool(W).h"
 
-CViewTree m_wndClassView;
-UDPCommunication mUDPCommunication;
-int iUdpMultiSock, iUdpUniSock, iUdpSndSock;
+#define MY_MULTI_SERVER "234.56.78.9"
+#define MY_TCP_PORT 18830
+#define MY_UDP_PORT 18840
 
+UDPCommunication mUDPCommunication;
+TCPCommunication mTCPCommunication;
+CViewTree m_wndClassView;
+int iUdpMultiSock, iUdpUniSock, iUdpSndSock;
+int iTCPSocket;
 
 class CClassViewMenuButton : public CMFCToolBarMenuButton
 {
@@ -62,9 +67,12 @@ BEGIN_MESSAGE_MAP(CClassView, CDockablePane)
 	ON_WM_SETFOCUS()
 	ON_COMMAND_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnSort)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_SORTING_GROUPBYTYPE, ID_SORTING_SORTBYACCESS, OnUpdateSort)
-	ON_COMMAND(ID_Log_Req, &OnLogReq)
-	ON_COMMAND(ID_Info_Req, &OnInfoReq)
-	ON_COMMAND(ID_Info_Load, &OnInfoLoad)
+	ON_COMMAND(ID_Log_Req, &CClassView::OnLogReq)
+	ON_COMMAND(ID_Info_Req, &CClassView::OnInfoReq)
+	ON_COMMAND(ID_Info_Load, &CClassView::OnInfoLoad)
+	ON_COMMAND(ID_AGENT_RscReq, &CClassView::OnAgentRscreq)
+	//ON_NOTIFY(TVN_SELCHANGED, IDC_MY_TREE_VIEW, &OnAgentRcsoReq_OnClick)
+	ON_NOTIFY(NM_CLICK, IDC_MY_TREE_VIEW, &OnAgentRcsoReq_OnClick)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -75,6 +83,7 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//통신 기능 초기화 - 소켓 생성 및 멀티캐스트 그룹주소 설정 등
 	mUDPCommunication.WSAInit();
 	mUDPCommunication.InitSocket_Wt(iUdpMultiSock, iUdpUniSock, iUdpSndSock);
+	
 	mXMLManager.initXML();
 
 	int iRcvSockBufSize = 1048576*2;
@@ -95,7 +104,7 @@ int CClassView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// 뷰를 만듭니다.
 	const DWORD dwViewStyle = WS_CHILD | WS_VISIBLE | TVS_HASLINES | TVS_LINESATROOT | TVS_HASBUTTONS | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | TVS_EDITLABELS;
 
-	if (!m_wndClassView.Create(dwViewStyle, rectDummy, this, 2))
+	if (!m_wndClassView.Create(dwViewStyle, rectDummy, this, IDC_MY_TREE_VIEW))
 	{
 		TRACE0("클래스 뷰를 만들지 못했습니다.\n");
 		return -1;      // 만들지 못했습니다.
@@ -451,17 +460,12 @@ void CClassView::OnLogReq()
 	// TODO: Add your command handler code here
 	HTREEITEM hItem = m_wndClassView.GetSelectedItem();
 	string sLogFileName = "";
+	string sLogDir = "";
 	string sAgentIPwithName = "";
 	string sAgentIP = "";
-	string sLogDir = "";
 	stringstream sDate;
+	BOOL bSuccessFlag = FALSE;
 	int iIndex = 0;
-
-	memset(&AddrStruct, 0, sizeof(AddrStruct));
-	AddrStruct.sin_family = AF_INET;
-	AddrStruct.sin_addr.s_addr = htonl(INADDR_ANY);
-	AddrStruct.sin_port = htons(1883);
-	bind(iUdpUniSock, (SOCKADDR*)&AddrStruct, sizeof(AddrStruct));
 
 	if(hItem != NULL)
 	{
@@ -473,24 +477,44 @@ void CClassView::OnLogReq()
 		iIndex = sAgentIPwithName.find_first_of("/");
 		sAgentIP = sAgentIPwithName.substr(0, iIndex);
 	}
+	char* pcAgtIP = &sAgentIP[0u];
+	if(mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT) == TRUE)
+	{
+		time_t tTimer;
+		struct tm tTimer_St;
+		tTimer = time(NULL);
+		localtime_s(&tTimer_St, &tTimer);
+		int iToday = (tTimer_St.tm_year + 1900) * 10000 + (tTimer_St.tm_mon + 1) * 100 + (tTimer_St.tm_mday);	
+		sDate << iToday;
 
-	if(mUDPCommunication.SndDataReq_MFC(iUdpUniSock, sAgentIP, sLogFileName, 1883) != TRUE)
-		AfxMessageBox("SndReq Fail");
+		sLogDir = mXMLManager.Parsing_Target_XML(mUserConfig.GetExeDirectory() + "Config.xml", "CommonPath", "Watcher");
+		sLogDir += "\\" + sDate.str() + "\\" + sAgentIP + "\\";
 
-	time_t tTimer;
-	struct tm tTimer_St;
-	tTimer = time(NULL);
-	localtime_s(&tTimer_St, &tTimer);
-	int iToday = (tTimer_St.tm_year + 1900) * 10000 + (tTimer_St.tm_mon + 1) * 100 + (tTimer_St.tm_mday);	
-	sDate << iToday;
+		mTCPCommunication.LogFileReq(iTCPSocket, sLogDir, sLogFileName);
+	}
+	else
+	{}
+}
 
-	sLogDir = mXMLManager.Parsing_Target_XML(mUserConfig.GetExeDirectory() + "Config.xml", "CommonPath", "Watcher");
-	sLogDir += "\\" + sDate.str() + "\\" + sAgentIP + "\\";
+void CClassView::OnInfoReq()
+{
+	// TODO: Add your command handler code here
+	//SocketBinding(iUdpUniSock, AddrStruct, AF_INET, INADDR_ANY, 1883);
 
-	mUDPCommunication.LogFileRcv(iUdpUniSock, (char*)sLogDir.c_str(), (char*)sLogFileName.c_str());
+	mUDPCommunication.InforReq(iUdpMultiSock, MY_UDP_PORT, MY_MULTI_SERVER);
+	//mUDPCommunication.InforReq(iUdpMultiSock, MY_UDP_PORT, "192.168.0.12");
 
-	mCFileView.RefreshFileView();
+	memset(&AddrStruct, 0, sizeof(AddrStruct));
+	AddrStruct.sin_family = AF_INET;
+	AddrStruct.sin_addr.s_addr = htonl(INADDR_ANY);
+	AddrStruct.sin_port = htons(MY_UDP_PORT);
+	bind(iUdpUniSock, (SOCKADDR*)&AddrStruct, sizeof(AddrStruct));
 
+	mUDPCommunication.RcvInfor(iUdpUniSock, 4);
+	RefreshClassView();
+
+	/*Agent Info 수신확인 코드*/
+	//DisplayAllElement_List(lAgtInfoList);
 }
 
 void CClassView::RefreshClassView()
@@ -501,73 +525,73 @@ void CClassView::RefreshClassView()
 	m_wndClassView.UpdateWindow();
 }
 
-void CClassView::OnInfoReq()
-{
-	// TODO: Add your command handler code here
-	SocketBinding(iUdpUniSock, AddrStruct, AF_INET, INADDR_ANY, 1883);
-	mUDPCommunication.InforReq(iUdpSndSock, 1883, "234.56.78.9");
-	mUDPCommunication.RcvInfor(iUdpUniSock, 5);
-	RefreshClassView();
-	/*Agent Info 수신확인 코드*/
-	//DisplayAllElement_List(lAgtInfoList);
-}
-
 
 void CClassView::OnInfoLoad()
 {
 	// TODO: Add your command handler code here
-	
 	RefreshClassView();
+}
 
-	//m_wndClassView.DeleteItem(hItem);
+void CClassView::OnAgentRcsoReq_OnClick(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	string sItem = "";
+	char cHDDUSage[4096];
+	float fCPUUsage;
+	DWORD dwRAMUsage;
 
-	//m_wndClassView.RefreshData();
-	
-	//m_wndClassView.DeleteAllItems();
+	TV_HITTESTINFO hit_info;
 
-	//m_wndClassView.UpdateWindow();
-	
-	//FillClassView();
+	// 화면상에서 마우스의 위치를 얻는다.
+	::GetCursorPos(&hit_info.pt);
 
-	//m_wndClassView.UpdateData(FALSE);
-	//m_wndClassView.UpdateData(TRUE);
-	
-	//m_wndClassView.SetRedraw();	
-	//m_wndClassView.DeleteAllItems();
-	//m_wndClassView.UpdateWindow();
-	//m_wndClassView.UnlockWindowUpdate();
-	//m_wndClassView.Invalidate();
+	// 얻은 마우스 좌표를 트리컨트롤 기준의 좌표로 변경한다.
+	::ScreenToClient(m_wndClassView.m_hWnd, &hit_info.pt);
 
-	/*
-	do
+	// 현재 마우스 좌표가 위치한 항목 정보를 얻는다.
+	HTREEITEM current_item = m_wndClassView.HitTest(&hit_info);
+	HTREEITEM Current_PItem;
+	int iIndex = 0;
+	string sAgentIP = "";
+	string sPItem = "";
+	BOOL bCnctFlag;
+	if(current_item != NULL)
 	{
-		//파일 경로를 추출
-		hFind = FindFirstFile((mUserConfig.GetExeDirectory()+"AgtInfo\\*").c_str(), &FindData);
+		// 마우스가 위치한 항목을 찾았다면 해당 항목을 선택한다.
+		m_wndClassView.Select(current_item, TVGN_CARET);
+		Current_PItem = m_wndClassView.GetParentItem(current_item);
 
-		if(hFind==INVALID_HANDLE_VALUE)
+		sPItem = m_wndClassView.GetItemText(Current_PItem);
+		sItem = m_wndClassView.GetItemText(current_item);
+
+		if(sPItem == "노드 목록")
 		{
-			AfxMessageBox("파일경로 에러");
-			break;
-		}
-	}while(hFind==INVALID_HANDLE_VALUE);
+			iIndex = sItem.find_first_of("/");
+			sAgentIP = sItem.substr(0, iIndex);
+			char* pcAgtIP = &sAgentIP[0u];
 
-	int iDeletPoint = 0;
-	do{
-		if(iDeletPoint < 2)
-		{
-			iDeletPoint++;
+			mTCPCommunication.TCPSockInit(iTCPSocket);
+			bCnctFlag = mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT);
+			if(bCnctFlag == TRUE)
+			{
+				memcpy(&cHDDUSage, mTCPCommunication.ReqRsc(iTCPSocket, fCPUUsage, dwRAMUsage), 
+					4096);
+			}
 		}
-		else
-		{
-			lAgtXMLStorage.push_back(mXMLManager.LoadAllXMLinDir(mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName, "AgentInfo", "AgentIP"));
-			lAgtXMLStorage.push_back(mXMLManager.LoadAllXMLinDir(mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName, "AgentInfo", "AgentName"));
-			lAgtXMLStorage.push_back(mXMLManager.LoadAllXMLinDir(mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName, "AgentInfo", "AgentLogFileList"));
-		}
-	}while(FindNextFile(hFind, &FindData));
+	}
+}
 
-	//DisplayAllElement_List(lAgtXMLStorage);
-	*/
+void CClassView::OnAgentRscreq()
+{
+	// TODO: Add your command handler code here
+	mUDPCommunication.ResourceReq(iUdpMultiSock, MY_UDP_PORT, MY_MULTI_SERVER);
 
+	memset(&AddrStruct, 0, sizeof(AddrStruct));
+	AddrStruct.sin_family = AF_INET;
+	AddrStruct.sin_addr.s_addr = htonl(INADDR_ANY);
+	AddrStruct.sin_port = htons(MY_UDP_PORT);
+	bind(iUdpUniSock, (SOCKADDR*)&AddrStruct, sizeof(AddrStruct));
+
+	mUDPCommunication.RcvRsc(iUdpUniSock, 4);
 }
 
 void CClassView::SocketBinding(int& iSocket, SOCKADDR_IN mSocketAddr, int iAddrFamily, long lSourceIP, int iSourcePort)
