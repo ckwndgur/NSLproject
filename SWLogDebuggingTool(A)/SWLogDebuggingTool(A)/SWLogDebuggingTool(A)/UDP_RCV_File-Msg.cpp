@@ -210,8 +210,10 @@ unsigned int __stdcall TCP_AgentLogReq_Resp(void*)
 
 			sFileDir = mXMLManager.ParsingXML("CommonPath", "Agent");
 			sFileDir += MyDataReqMsg.cReqFileName;
+			memcpy(&cFileDir, sFileDir.c_str(), sFileDir.length()-1);
+			//sFileDir.substr(0, sFileDir.length()-1);
 
-			hFile = CreateFile(sFileDir.c_str(), GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+			hFile = CreateFile(cFileDir, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 			if(hFile == INVALID_HANDLE_VALUE)
 			{
