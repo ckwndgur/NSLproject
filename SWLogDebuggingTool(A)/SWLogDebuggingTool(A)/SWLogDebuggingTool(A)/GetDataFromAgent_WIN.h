@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include "AgtInfoList.h"
+#include <string>
 
 
 #pragma once
@@ -17,7 +18,7 @@ public:
 
 	char* GetAgentName(int& iAgtNameSize);
 	char* GetAgentIP();
-	char* GetAgentFileInfo(char* cAgtLogPathBuf);
+	string GetAgentFileInfo(char* cAgtLogPathBuf);
 	char* GetLogData(char cLogFilePath[256], int& iCurrentPointOutput);
 	
 	//list<char*> GetAgentFileInfo_List(char* cAgtLogPathBuf);
