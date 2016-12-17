@@ -5,8 +5,8 @@
 #include "SWLogDebuggingTool(W).h"
 
 #define MY_MULTI_SERVER "234.56.78.9"
-#define MY_TCP_PORT 18830
-#define MY_UDP_PORT 18840
+#define MY_TCP_PORT 18840
+#define MY_UDP_PORT 18830
 
 UDPCommunication mUDPCommunication;
 TCPCommunication mTCPCommunication;
@@ -73,6 +73,7 @@ BEGIN_MESSAGE_MAP(CClassView, CDockablePane)
 	ON_COMMAND(ID_AGENT_RscReq, &CClassView::OnAgentRscreq)
 	//ON_NOTIFY(TVN_SELCHANGED, IDC_MY_TREE_VIEW, &OnAgentRcsoReq_OnClick)
 	ON_NOTIFY(NM_CLICK, IDC_MY_TREE_VIEW, &OnAgentRcsoReq_OnClick)
+	ON_MESSAGE(WM_TREEVIEW_REFRESH_EVENT, Treeview_Refresh)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -196,7 +197,6 @@ void void CClassView::UpdateClassView()
 //클래스뷰에 Agent Info를 출력
 void CClassView::FillClassView()
 {
-	
 	string sFileDIrChk ="";
 	list<string> AgentXMLList;
 	XMLManager m_XMLManager;	
@@ -221,7 +221,6 @@ void CClassView::FillClassView()
 		}
 	}while(hFind==INVALID_HANDLE_VALUE);
 
-
 	int iDeletPoint = 0;
 
 	do{
@@ -231,64 +230,71 @@ void CClassView::FillClassView()
 		}
 		else
 		{
-			sFileDIrChk = mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName;
-			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentIP"));
-			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentName"));
-			//AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileDirectory"));
-			AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList"));
-			
+			if(FindData.cFileName != NULL)
+			{
+				sFileDIrChk = mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName;
+				AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentIP"));
+				AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentName"));
+				AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileDirectory"));
+				AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList"));
+			}
 		}
 	}while(FindNextFile(hFind, &FindData));
 
 	/////////////OpenXML 끝
 
-	string sListElement = "";
-
-	list<string>::iterator iterStartList = AgentXMLList.begin();
-	list<string>::iterator iterEndList = AgentXMLList.end();
-
-	while(iterStartList != iterEndList)
+	if(AgentXMLList.size()!=0)
 	{
-		sListElement = *iterStartList + "/";
-		iterStartList++;
-		sListElement += *iterStartList;
-		hClass = m_wndClassView.InsertItem(_T(sListElement.c_str()), 1, 1, hRoot);
-		
-		iterStartList++;
+		string sListElement = "";
 
-		//C:\Temp\CoreDebug
-//<<<<<<< HEAD
-		int index = 0;
-		CString str = (*iterStartList).c_str();
-		index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
+		list<string>::iterator iterStartList = AgentXMLList.begin();
+		list<string>::iterator iterEndList = AgentXMLList.end();
 
-		CString temp;
-		AfxExtractSubString(temp, str, index + 2, '\\');
-		hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
-		
-//=======
-// 		int index = 0;
-// 		CString str = (*iterStartList).c_str();
-// 		index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
-// 
-// 		CString temp;
-// 		AfxExtractSubString(temp, str, index + 2, '\\');
-// 		hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
-// 		
-// 		iterStartList++;
-//>>>>>>> 93c9376e81d76ada5e39c94b2b88927f98f46478
-
-		sListElement = *iterStartList;
-		sListElement = sListElement.substr(0, sListElement.length()-1);
-		std::stringstream strmFileList(sListElement);
-		std::string sFileList;
-
-		while(strmFileList.good())
+		while(iterStartList != iterEndList)
 		{
-			getline(strmFileList, sFileList,'\n');
-			m_wndClassView.InsertItem(_T(sFileList.c_str()), 1, 1, hSrc);
+			sListElement = *iterStartList + "/";
+			iterStartList++;
+			sListElement += *iterStartList;
+			hClass = m_wndClassView.InsertItem(_T(sListElement.c_str()), 1, 1, hRoot);
+			
+			iterStartList++;
+
+			//C:\Temp\CoreDebug
+	//<<<<<<< HEAD
+			int index = 0;
+			CString str = (*iterStartList).c_str();
+			index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
+
+			CString temp;
+			AfxExtractSubString(temp, str, index + 2, '\\');
+			hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
+			
+	//=======
+	// 		int index = 0;
+	// 		CString str = (*iterStartList).c_str();
+	// 		index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
+	// 
+	// 		CString temp;
+	// 		AfxExtractSubString(temp, str, index + 2, '\\');
+	// 		hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
+	// 		
+	// 		iterStartList++;
+	//>>>>>>> 93c9376e81d76ada5e39c94b2b88927f98f46478
+	 		
+			iterStartList++;
+
+			sListElement = *iterStartList;
+			sListElement = sListElement.substr(0, sListElement.length());
+			std::stringstream strmFileList(sListElement);
+			std::string sFileList;
+
+			while(strmFileList.good())
+			{
+				getline(strmFileList, sFileList,'\n');
+				m_wndClassView.InsertItem(_T(sFileList.c_str()), 1, 1, hSrc);
+			}
+			iterStartList++;
 		}
-		iterStartList++;
 	}
 
 }
@@ -458,6 +464,13 @@ void CClassView::OnChangeVisualStyle()
 void CClassView::OnLogReq()
 {
 	// TODO: Add your command handler code here
+	//Thread Log Req
+
+	CWinThread *LogReqThread = NULL;
+	LogReqThread = AfxBeginThread(Thread_Log_Req,this);
+
+	//Non-Thread Log Req
+	/*
 	HTREEITEM hItem = m_wndClassView.GetSelectedItem();
 	string sLogFileName = "";
 	string sLogDir = "";
@@ -472,12 +485,14 @@ void CClassView::OnLogReq()
 		sLogFileName = m_wndClassView.GetItemText(hItem);
 
 		hItem = m_wndClassView.GetParentItem(hItem);
+		hItem = m_wndClassView.GetParentItem(hItem);
 		sAgentIPwithName = m_wndClassView.GetItemText(hItem);
 
 		iIndex = sAgentIPwithName.find_first_of("/");
 		sAgentIP = sAgentIPwithName.substr(0, iIndex);
 	}
 	char* pcAgtIP = &sAgentIP[0u];
+	mTCPCommunication.TCPSockInit(iTCPSocket);
 	if(mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT) == TRUE)
 	{
 		time_t tTimer;
@@ -493,7 +508,10 @@ void CClassView::OnLogReq()
 		mTCPCommunication.LogFileReq(iTCPSocket, sLogDir, sLogFileName);
 	}
 	else
-	{}
+	{
+
+	}
+	*/
 }
 
 void CClassView::OnInfoReq()
@@ -501,10 +519,12 @@ void CClassView::OnInfoReq()
 	// TODO: Add your command handler code here
 	//SocketBinding(iUdpUniSock, AddrStruct, AF_INET, INADDR_ANY, 1883);
 
+	//Info Req
 	mUDPCommunication.InforReq(iUdpMultiSock, MY_UDP_PORT, MY_MULTI_SERVER);
 	//mUDPCommunication.InforReq(iUdpMultiSock, MY_UDP_PORT, "192.168.0.12");
 
-	memset(&AddrStruct, 0, sizeof(AddrStruct));
+	//Non-Thread InfoRcv
+	/*memset(&AddrStruct, 0, sizeof(AddrStruct));
 	AddrStruct.sin_family = AF_INET;
 	AddrStruct.sin_addr.s_addr = htonl(INADDR_ANY);
 	AddrStruct.sin_port = htons(MY_UDP_PORT);
@@ -512,6 +532,12 @@ void CClassView::OnInfoReq()
 
 	mUDPCommunication.RcvInfor(iUdpUniSock, 4);
 	RefreshClassView();
+	*/
+
+	
+	//Thread InfoRcv
+	CWinThread *InfoRcvThread = NULL;
+	InfoRcvThread = AfxBeginThread(Thread_Info_Rcv,this);
 
 	/*Agent Info 수신확인 코드*/
 	//DisplayAllElement_List(lAgtInfoList);
@@ -525,7 +551,6 @@ void CClassView::RefreshClassView()
 	m_wndClassView.UpdateWindow();
 }
 
-
 void CClassView::OnInfoLoad()
 {
 	// TODO: Add your command handler code here
@@ -534,6 +559,15 @@ void CClassView::OnInfoLoad()
 
 void CClassView::OnAgentRcsoReq_OnClick(NMHDR *pNMHDR, LRESULT *pResult)
 {
+	//Thread
+	CWinThread *RcsReqThread = NULL;
+	RcsReqThread = AfxBeginThread(Thread_RcsReq_Click, this);
+
+	//Non-Thread
+	/*
+	TCPCommunication mTCPCommunication;
+	int iTCPSocket = 0;
+	
 	string sItem = "";
 	char cHDDUSage[4096];
 	float fCPUUsage;
@@ -550,6 +584,10 @@ void CClassView::OnAgentRcsoReq_OnClick(NMHDR *pNMHDR, LRESULT *pResult)
 	// 현재 마우스 좌표가 위치한 항목 정보를 얻는다.
 	HTREEITEM current_item = m_wndClassView.HitTest(&hit_info);
 	HTREEITEM Current_PItem;
+	HTREEITEM ChildITem;
+	HTREEITEM ListITem;
+	list<string> LogList;
+
 	int iIndex = 0;
 	string sAgentIP = "";
 	string sPItem = "";
@@ -559,7 +597,6 @@ void CClassView::OnAgentRcsoReq_OnClick(NMHDR *pNMHDR, LRESULT *pResult)
 		// 마우스가 위치한 항목을 찾았다면 해당 항목을 선택한다.
 		m_wndClassView.Select(current_item, TVGN_CARET);
 		Current_PItem = m_wndClassView.GetParentItem(current_item);
-
 		sPItem = m_wndClassView.GetItemText(Current_PItem);
 		sItem = m_wndClassView.GetItemText(current_item);
 
@@ -573,11 +610,18 @@ void CClassView::OnAgentRcsoReq_OnClick(NMHDR *pNMHDR, LRESULT *pResult)
 			bCnctFlag = mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT);
 			if(bCnctFlag == TRUE)
 			{
-				memcpy(&cHDDUSage, mTCPCommunication.ReqRsc(iTCPSocket, fCPUUsage, dwRAMUsage), 
-					4096);
+				memcpy(&cHDDUSage, mTCPCommunication.ReqRsc(iTCPSocket, fCPUUsage, dwRAMUsage), 4096);
+			}
+			
+			mTCPCommunication.TCPSockInit(iTCPSocket);			
+			bCnctFlag = mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT);
+			if(bCnctFlag == TRUE)
+			{
+				mTCPCommunication.LogListReq(iTCPSocket, pcAgtIP);
 			}
 		}
 	}
+	*/
 }
 
 void CClassView::OnAgentRscreq()
@@ -616,4 +660,208 @@ void CClassView::DisplayAllElement_List(list<string> lList)
 		AfxMessageBox(sListElement.c_str());
 		iterStartList++;
 	}
+}
+
+//TCP File Rcv using Thread
+UINT CClassView::Thread_Log_Req(LPVOID pParam)
+{
+	TCPCommunication mTCPCommunication;
+	XMLManager mXMLManager;
+	UserConfig mUserConfig;
+	int iTCPSocket = 0;
+
+	CClassView *Thread_View = (CClassView*)pParam;
+	
+	// TODO: Add your command handler code here
+	HTREEITEM hItem = m_wndClassView.GetSelectedItem();
+	string sLogFileName = "";
+	string sLogDir = "";
+	string sAgentIPwithName = "";
+	string sAgentIP = "";
+	stringstream sDate;
+	BOOL bSuccessFlag = FALSE;
+	int iIndex = 0;
+
+	if(hItem != NULL)
+	{
+		sLogFileName = m_wndClassView.GetItemText(hItem);
+
+		hItem = m_wndClassView.GetParentItem(hItem);
+		hItem = m_wndClassView.GetParentItem(hItem);
+		sAgentIPwithName = m_wndClassView.GetItemText(hItem);
+
+		iIndex = sAgentIPwithName.find_first_of("/");
+		sAgentIP = sAgentIPwithName.substr(0, iIndex);
+	}
+	char* pcAgtIP = &sAgentIP[0u];
+	mTCPCommunication.TCPSockInit(iTCPSocket);
+	if(mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT) == TRUE)
+	{
+		time_t tTimer;
+		struct tm tTimer_St;
+		tTimer = time(NULL);
+		localtime_s(&tTimer_St, &tTimer);
+		int iToday = (tTimer_St.tm_year + 1900) * 10000 + (tTimer_St.tm_mon + 1) * 100 + (tTimer_St.tm_mday);	
+		sDate << iToday;
+
+		sLogDir = mXMLManager.Parsing_Target_XML(mUserConfig.GetExeDirectory() + "Config.xml", "CommonPath", "Watcher");
+		sLogDir += "\\" + sDate.str() + "\\" + sAgentIP + "\\";
+
+		mTCPCommunication.LogFileReq(iTCPSocket, sLogDir, sLogFileName);
+	}
+	else
+	{
+
+	}
+
+	return 0;
+}
+
+UINT CClassView::Thread_Info_Rcv(LPVOID pParam)
+{
+	CClassView *Thread_LogRvcv = (CClassView*)pParam;
+	UDPCommunication mUDPCommunication;
+	int iUdpUniSock = 0;
+	SOCKADDR_IN AddrStruct;
+
+	memset(&AddrStruct, 0, sizeof(AddrStruct));
+	AddrStruct.sin_family = AF_INET;
+	AddrStruct.sin_addr.s_addr = htonl(INADDR_ANY);
+	AddrStruct.sin_port = htons(MY_UDP_PORT);
+	bind(iUdpUniSock, (SOCKADDR*)&AddrStruct, sizeof(AddrStruct));
+
+	mUDPCommunication.RcvInfor(iUdpUniSock, 4);
+
+	return 0;
+}
+
+UINT CClassView::Thread_RcsReq_Click(LPVOID pParam)
+{
+	TCPCommunication mTCPCommunication;
+	int iTCPSocket = 0;
+
+	string sItem = "";
+	char cHDDUSage[4096];
+	float fCPUUsage;
+	DWORD dwRAMUsage;
+
+	TV_HITTESTINFO hit_info;
+
+	// 화면상에서 마우스의 위치를 얻는다.
+	::GetCursorPos(&hit_info.pt);
+
+	// 얻은 마우스 좌표를 트리컨트롤 기준의 좌표로 변경한다.
+	::ScreenToClient(m_wndClassView.m_hWnd, &hit_info.pt);
+
+	// 현재 마우스 좌표가 위치한 항목 정보를 얻는다.
+	HTREEITEM current_item = m_wndClassView.HitTest(&hit_info);
+	HTREEITEM Current_PItem;
+	HTREEITEM ChildITem;
+	HTREEITEM ListITem;
+	list<string> LogList;
+
+	int iIndex = 0;
+	string sAgentIP = "";
+	string sPItem = "";
+	BOOL bCnctFlag;
+	if(current_item != NULL)
+	{
+		// 마우스가 위치한 항목을 찾았다면 해당 항목을 선택한다.
+		m_wndClassView.Select(current_item, TVGN_CARET);
+		Current_PItem = m_wndClassView.GetParentItem(current_item);
+		sPItem = m_wndClassView.GetItemText(Current_PItem);
+		sItem = m_wndClassView.GetItemText(current_item);
+
+		if(sPItem == "노드 목록")
+		{
+			iIndex = sItem.find_first_of("/");
+			sAgentIP = sItem.substr(0, iIndex);
+			char* pcAgtIP = &sAgentIP[0u];
+
+			mTCPCommunication.TCPSockInit(iTCPSocket);
+			bCnctFlag = mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT);
+			if(bCnctFlag == TRUE)
+			{
+				memcpy(&cHDDUSage, mTCPCommunication.ReqRsc(iTCPSocket, fCPUUsage, dwRAMUsage), 4096);
+			}
+
+			mTCPCommunication.TCPSockInit(iTCPSocket);			
+			bCnctFlag = mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT);
+			if(bCnctFlag == TRUE)
+			{
+				mTCPCommunication.LogListReq(iTCPSocket, pcAgtIP);
+			}
+			
+			Sleep(5);
+			
+			CClassView *pcThis = (CClassView*)pParam;
+			::PostMessage(pcThis->GetSafeHwnd(), WM_TREEVIEW_REFRESH_EVENT, (WPARAM)current_item, 0);
+			//::SendMessage(pcThis->GetSafeHwnd(), WM_TREEVIEW_REFRESH_EVENT, (WPARAM)current_item, 0);
+			//AfxGetMainWnd()->SendMessage(WM_TREEVIEW_REFRESH_EVENT, 0, 0);
+		}
+	}
+	return 0;
+}
+
+HRESULT CClassView::Treeview_Refresh(WPARAM wParam, LPARAM lParam)
+{
+	HTREEITEM hSelectItem = (HTREEITEM)wParam;
+	HTREEITEM hChildItem = m_wndClassView.GetChildItem(hSelectItem);
+	HTREEITEM hGrandChildItem = m_wndClassView.GetChildItem(hChildItem);
+	list<string> AgentFileList;
+	string sFileDIrChk;
+	string sFileLIst = "";
+	XMLManager m_XMLManager;
+
+	//기존 파일 리스트 삭제
+
+	sFileDIrChk = m_wndClassView.GetItemText(hChildItem);
+	m_wndClassView.DeleteItem(hChildItem);
+	m_wndClassView.InsertItem(_T(sFileDIrChk.c_str()), 0, 0, hSelectItem);
+	hChildItem = m_wndClassView.GetChildItem(hSelectItem);
+	do
+	{
+		//파일 경로를 추출
+		hFind = FindFirstFile((mUserConfig.GetExeDirectory()+"AgtInfo\\*").c_str(), &FindData);
+
+		if(hFind==INVALID_HANDLE_VALUE)
+		{
+			AfxMessageBox("파일경로 에러");
+			break;
+		}
+	}while(hFind==INVALID_HANDLE_VALUE);
+
+	int iDeletPoint = 0;
+
+	do{
+		if(iDeletPoint < 2)
+		{
+			iDeletPoint++;
+		}
+		else
+		{
+			if(FindData.cFileName != NULL)
+			{
+				sFileDIrChk = mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName;
+				sFileLIst = m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList");
+				//AgentFileList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList"));
+			}
+		}
+	}while(FindNextFile(hFind, &FindData));
+
+	/////////////OpenXML 끝
+	sFileLIst = sFileLIst.substr(0, strlen(sFileLIst.c_str())-1);
+	std::stringstream strmFileList(sFileLIst);
+	std::string sFileList = "";
+
+	while(strmFileList.good())
+	{
+		getline(strmFileList, sFileList,'\n');
+		m_wndClassView.InsertItem(_T(sFileList.c_str()), 1, 1, hChildItem);
+	}
+
+	m_wndClassView.Invalidate();
+	m_wndClassView.UpdateWindow();
+
+	return TRUE;
 }

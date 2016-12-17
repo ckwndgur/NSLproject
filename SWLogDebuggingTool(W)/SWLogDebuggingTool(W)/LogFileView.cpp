@@ -8,6 +8,7 @@
 #include "SWLogDebuggingTool(W)Doc.h"
 #include "stdlib.h"
 #include "string.h"
+#include "DFilterView.h"
 
 
 #define ERRORITEM	1
@@ -32,6 +33,9 @@ LogFileView::~LogFileView()
 
 BEGIN_MESSAGE_MAP(LogFileView, CScrollView)
 	ON_WM_SIZE()
+	ON_COMMAND(ID_Log_Req, &CClassView::OnLogReq)
+	ON_COMMAND(ID_Info_Req, &CClassView::OnInfoReq)
+	ON_COMMAND(ID_Info_Load, &CClassView::OnInfoLoad)
 END_MESSAGE_MAP()
 
 // LogFileView drawing
@@ -130,8 +134,8 @@ void LogFileView::OnDraw(CDC* pDC)
 
 	if(m_openflag == TRUE)
 	{
-		//LogtoList(openfilepath);
-		DLogtoList(openfilepath);
+		LogtoList(openfilepath);
+		//DLogtoList(openfilepath);
 	}
 
 	m_openflag = FALSE;
@@ -175,6 +179,8 @@ void LogFileView::DLogtoList(CString filepath)
 
 	Filter *pfilter = new Filter;
 	pfilter->LogColumn  = "";
+	//DFilterView *pDfilter  = new DFilterView;
+	//pDfilter->filterform = "";
 
 	while(!originfile.eof())
 	{
@@ -201,6 +207,9 @@ void LogFileView::DLogtoList(CString filepath)
 
 				pfilter->LogColumn  += "*";
 				pfilter->LogColumn  += liststr;
+
+				//pDfilter->filterform += "*";
+				//pDfilter->filterform += liststr;
 
 				alinelog_buf.erase(valstart,strlength+2);
 				valstart = alinelog_buf.find("《");
@@ -275,6 +284,15 @@ void LogFileView::DLogtoList(CString filepath)
 	listno = 0;
 }
 
+
+//로그형태
+/*
+(TEST)
+[150611_11h43m23s154ms]_
+_c:\stc_dds\include\csds\csds.h_
+734_
+[ RTDBDomain ] TRACKDB_ALL_E on_sample_lost and total count =7
+*/
 void LogFileView::LogtoList(CString filepath)
 {
 	ifstream originfile(filepath); //지정된 경로의 로그파일을 열어 저장합니다.
@@ -288,6 +306,13 @@ void LogFileView::LogtoList(CString filepath)
 	CString liststr;//리스트뷰 서브아이템에 들어갈 값입니다.
 	liststr = "";
 
+	m_OriginLoglist.InsertColumn(0, "No.",  LVCFMT_LEFT, 50);
+	m_OriginLoglist.InsertColumn(1, "ERROR",  LVCFMT_LEFT, 70);
+	m_OriginLoglist.InsertColumn(2, "DATE",  LVCFMT_LEFT, 170);
+	m_OriginLoglist.InsertColumn(3, "PATH",  LVCFMT_LEFT, 200);
+	m_OriginLoglist.InsertColumn(4, "LINE",  LVCFMT_LEFT, 50);
+	m_OriginLoglist.InsertColumn(5, "DESCRIPTION",  LVCFMT_LEFT, 250);
+
 	while(!originfile.eof())
 	{
 		lineno.Format(_T("%d"), listno+1);
@@ -300,14 +325,36 @@ void LogFileView::LogtoList(CString filepath)
 		liststr_buf = alinelog.substr(valstart, strlength);		
 		liststr = liststr_buf.c_str();
 		m_OriginLoglist.SetItemText(listno, ERRORITEM, liststr); //에러레벨을 추가합니다.
+		alinelog.erase(0,strlength+2);
 
 		valstart = alinelog.find("[") + 1;
-		valend = alinelog.find("]_");
+		valend = alinelog.find("]");
 		strlength = valend - valstart;
 		liststr_buf = alinelog.substr(valstart, strlength);
 		liststr = liststr_buf.c_str();
 		m_OriginLoglist.SetItemText(listno, DATEITEM, liststr); //날짜를 추가합니다.
+		alinelog.erase(0,strlength+4);
 
+		valstart = 0;
+		valend = alinelog.find(".");
+		valend = valend  + 2;
+		strlength = valend - valstart;
+		liststr_buf = alinelog.substr(valstart, strlength);
+		liststr = liststr_buf.c_str();
+		m_OriginLoglist.SetItemText(listno, PATHITEM, liststr); //경로를 추가합니다.
+		alinelog.erase(0,strlength+1);
+
+		valstart = 0; //alinelog.find("]__") + 1;
+		valend = alinelog.find("_");
+		strlength = valend - valstart;
+		liststr_buf = alinelog.substr(valstart, strlength);
+		liststr = liststr_buf.c_str();
+		m_OriginLoglist.SetItemText(listno, LINEITEM, liststr); //라인을 추가합니다.
+		alinelog.erase(0,strlength+1);
+
+		liststr = alinelog.c_str();
+		m_OriginLoglist.SetItemText(listno, DESITEM, liststr); //설명을 추가합니다.
+		
 		alinelog = "";
 		valstart = 1;
 		valend = 0;

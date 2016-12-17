@@ -86,7 +86,7 @@ void LogFtView::initClistCnt()
 	m_list.InsertColumn(3, "Path", LVCFMT_LEFT, 100);
 	m_list.InsertColumn(4, "Line number", LVCFMT_LEFT, 100);
 	m_list.InsertColumn(5, "Description", LVCFMT_LEFT, 200);
-
+/*
 	// 항목 추가
 	m_list.InsertItem(0, "1", 0);
 	m_list.InsertItem(1, "2", 0);
@@ -97,34 +97,13 @@ void LogFtView::initClistCnt()
 	m_list.SetItemText(0, 3, "c:\\");
 	m_list.SetItemText(0, 4, "1234");
 	m_list.SetItemText(0, 5, "test test");
-	
+	*/
 	m_list.ShowScrollBar(SB_VERT, 1);
 	m_list.ShowScrollBar(SB_HORZ, 1);
 
 	bCListCnt = true;
 }
 
-BOOL LogFtView::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	// TODO: Add your specialized code here and/or call the base class
-	if(wParam == 1233){
-
-		int Category = m_ComboBox.GetCurSel() + 1;
-		CString WantedLog1;
-		GetDlgItemTextA(1232,WantedLog1);
-		CT2CA pszConvertedAnsiString(WantedLog1);
-		string WantedLog(pszConvertedAnsiString);
-
-		string Title= mFilter.CreatingTime(WantedLog);
-		m_strFilteredData.clear();
-		m_strFilteredData = mFilter.DoFilter(Category, WantedLog, Title, m_strViewPath);
-		this->Invalidate(TRUE);
-
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////여기까지
-
-	return CView::OnCommand(wParam, lParam);
-}
 
 void LogFtView::SetScrollView(int x, int y)
 {

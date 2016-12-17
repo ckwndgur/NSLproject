@@ -87,12 +87,16 @@ BOOL TCPCommunication::TryCnct(int& iTCPSock, char* cIP ,int iPort)
 	sockAddr.sin_addr.s_addr = inet_addr(cIP);
 	sockAddr.sin_port = htons(iPort);
 
-	ioctlsocket(iTCPSock, FIONBIO, &uNonBlkOpt);
-
-	int m_socklen_t = sizeof(sockAddr);
+	//non-blocking TCP
+	//ioctlsocket(iTCPSock, FIONBIO, &uNonBlkOpt);
+	//int m_socklen_t = sizeof(sockAddr);
 
 	Ret = connect(iTCPSock, (SOCKADDR*) &sockAddr, sizeof(sockAddr));
 
+	return TRUE;
+
+	//non-block TCP
+	/*
 	if(Ret == SOCKET_ERROR)
 	{
 		dwErr = WSAGetLastError();
@@ -107,8 +111,8 @@ BOOL TCPCommunication::TryCnct(int& iTCPSock, char* cIP ,int iPort)
 			FD_SET(iTCPSock, &Write);
 			FD_SET(iTCPSock, &Err);
 
-			Timeout.tv_sec  = 1;
-			Timeout.tv_usec = 5000; // your timeout
+			Timeout.tv_sec  = 10;
+			Timeout.tv_usec = 100; // your timeout
 
 			Ret = select (0,                // ignored
 				NULL,           // read,
@@ -146,7 +150,8 @@ BOOL TCPCommunication::TryCnct(int& iTCPSock, char* cIP ,int iPort)
 		return TRUE;
 	}
 	//Connect Fail
-	return FALSE;
+
+	return FALSE;*/
 }
 
 void TCPCommunication::AcptCnct(int& iTCPServSock, int& iTCPCltSock)
@@ -243,10 +248,11 @@ void TCPCommunication::LogFileReq(int& iRcvSocket, string sSaveDir, string sReqF
 	char cWtcName[64];
 	char* cSaveDir;
 	char* cReqFileName;
-	string sWatcherIP;
-	string sLogDir;
-	string sWriteData;
-	string sAgentIP;
+	string sWatcherIP = "";
+	string sLogDir = "";
+	string sWriteData = "";
+	string sBuf = "";
+	string sAgentIP = "";
 	stringstream sDate;
 	struct DataReqMsgStruct MyDataReqMsg;
 	struct AgtDataMsgStruct MyAgtDataMsg;
@@ -266,7 +272,7 @@ void TCPCommunication::LogFileReq(int& iRcvSocket, string sSaveDir, string sReqF
 	//port 1883;
 	memcpy(&MyDataReqMsg.cWatcherIP, sWatcherIP.c_str(), strlen(sWatcherIP.c_str()));
 	memcpy(&MyDataReqMsg.cReqFileName, sReqFileName.c_str(), strlen(sReqFileName.c_str()));
-	MyDataReqMsg.iWatcherPort = MY_TCP_PORT;
+	MyDataReqMsg.iWatcherPort = TCP_PORT;
 	MyDataReqMsg.nReqType = 2;
 	memset(&MyAgtDataMsg, 0, sizeof(struct AgtDataMsgStruct));
 	send(iRcvSocket, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0);
@@ -287,7 +293,7 @@ void TCPCommunication::LogFileReq(int& iRcvSocket, string sSaveDir, string sReqF
 		{
 			sWriteData = "";
 			sWriteData = MyAgtDataMsg.cLogData;
-
+			sWriteData = sWriteData.substr(0, 15000);
 			mTextManager.WriteText(cSaveDir, cReqFileName, sWriteData, MyAgtDataMsg.bLastPacket);
 			if(MyAgtDataMsg.bLastPacket)
 				break;
@@ -356,7 +362,7 @@ char* TCPCommunication::ReqRsc(int& iTCPSock, float& CPUUsage, DWORD& RAMUsage)
 
 	//port 1883;
 	memcpy(&MyDataReqMsg.cWatcherIP, sWatcherIP.c_str(), strlen(sWatcherIP.c_str()));
-	MyDataReqMsg.iWatcherPort = MY_TCP_PORT;
+	MyDataReqMsg.iWatcherPort = TCP_PORT;
 	MyDataReqMsg.nReqType = 3;
 
 	send(iTCPSock, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0);
@@ -377,4 +383,79 @@ char* TCPCommunication::ReqRsc(int& iTCPSock, float& CPUUsage, DWORD& RAMUsage)
 	closesocket(iTCPSock);
 
 	return HDDUsage;
+}
+
+
+list<string> TCPCommunication::LogListReq(int& iTCPSock, char* cAgentIP)
+{
+	char cWtcName[64];
+	string sWatcherIP;
+	string sLogList ="";
+	string sBuf = "";
+	char cBuf[8096];
+	int iRcvLen = 0;
+	PHOSTENT pHostInfo;
+	struct DataReqMsgStruct MyDataReqMsg;
+	struct AgtRcsMsgStruct MyAgtRcsMsg;
+
+	AgtInfoList MyAgtInfoList = AgtInfoList();
+
+	memset(cWtcName, 0, sizeof(cWtcName));
+	memset(&MyDataReqMsg, 0, sizeof(struct DataReqMsgStruct));
+
+	int nError = gethostname(cWtcName, sizeof(cWtcName));
+	if (nError == 0)
+	{
+		pHostInfo = gethostbyname(cWtcName);
+		// ip address 파악
+		sWatcherIP = inet_ntoa(*(struct in_addr*)pHostInfo->h_addr_list[0]);
+	}
+
+	//port 1883;
+	memcpy(&MyDataReqMsg.cWatcherIP, sWatcherIP.c_str(), strlen(sWatcherIP.c_str()));
+	MyDataReqMsg.iWatcherPort = TCP_PORT;
+	MyDataReqMsg.nReqType = 4;
+
+	send(iTCPSock, (char*)&MyDataReqMsg, sizeof(struct DataReqMsgStruct), 0);
+	Sleep(100);
+
+	while(1)
+	{
+		memset(cBuf, 0, sizeof(cBuf));
+		Sleep(3);
+		iRcvLen = recv(iTCPSock, cBuf, 8096/*sizeof dBuf*/, 0);
+		if(iRcvLen>0)
+		{
+			sBuf += cBuf;
+			sLogList += sBuf.substr(0, 8095);
+			sBuf ="";
+			//sLogList = sLogList.substr(0,8096)
+			//mXMLManager.AddXML("AgentInfo", "AgentLogFileList", sLogList.c_str());
+
+			//sLogList = sLogList.substr(0, strlen(sLogList.c_str())-1);
+			if(iRcvLen<8096)
+				break;
+		}
+	}
+
+	std::string sAgtFileList(sLogList.c_str());
+	std::stringstream strmAgtFileList(sAgtFileList);
+
+	std::string sSingleFileName;
+
+	while(strmAgtFileList.good())
+	{
+		getline(strmAgtFileList, sSingleFileName,'\n');
+		MyAgtInfoList.AgtFileList.push_back(sSingleFileName);	
+	}
+
+	//Agent한대당 XML파일 하나 생성 후 데이터 입력
+	mXMLManager.CreatXML_AgentInfo(cAgentIP);
+	mXMLManager.EditElementXML("AgentInfo", "AgentLogFileList", sLogList.c_str());
+
+	//AfxMessageBox("Rsc Req and Rcv is Done");
+	shutdown(iTCPSock, SD_SEND);
+	closesocket(iTCPSock);
+
+	return MyAgtInfoList.AgtFileList;
 }
