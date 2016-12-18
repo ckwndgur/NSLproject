@@ -74,6 +74,7 @@ BEGIN_MESSAGE_MAP(CClassView, CDockablePane)
 	//ON_NOTIFY(TVN_SELCHANGED, IDC_MY_TREE_VIEW, &OnAgentRcsoReq_OnClick)
 	ON_NOTIFY(NM_CLICK, IDC_MY_TREE_VIEW, &OnAgentRcsoReq_OnClick)
 	ON_MESSAGE(WM_TREEVIEW_REFRESH_EVENT, Treeview_Refresh)
+
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -674,6 +675,11 @@ UINT CClassView::Thread_Log_Req(LPVOID pParam)
 	
 	// TODO: Add your command handler code here
 	HTREEITEM hItem = m_wndClassView.GetSelectedItem();
+	HTREEITEM hChild;
+	HTREEITEM hGrandChild;
+	HTREEITEM hParents;
+	HTREEITEM hGrandParents;
+
 	string sLogFileName = "";
 	string sLogDir = "";
 	string sAgentIPwithName = "";
@@ -681,39 +687,98 @@ UINT CClassView::Thread_Log_Req(LPVOID pParam)
 	stringstream sDate;
 	BOOL bSuccessFlag = FALSE;
 	int iIndex = 0;
+	int iNumofLog = 0;
+	int iTotalNumofLog = 0;
 
 	if(hItem != NULL)
 	{
 		sLogFileName = m_wndClassView.GetItemText(hItem);
 
-		hItem = m_wndClassView.GetParentItem(hItem);
-		hItem = m_wndClassView.GetParentItem(hItem);
-		sAgentIPwithName = m_wndClassView.GetItemText(hItem);
-
+		hParents = m_wndClassView.GetParentItem(hItem);
+		hGrandParents = m_wndClassView.GetParentItem(hParents);
+		sAgentIPwithName = m_wndClassView.GetItemText(hGrandParents);
 		iIndex = sAgentIPwithName.find_first_of("/");
 		sAgentIP = sAgentIPwithName.substr(0, iIndex);
 	}
-	char* pcAgtIP = &sAgentIP[0u];
-	mTCPCommunication.TCPSockInit(iTCPSocket);
-	if(mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT) == TRUE)
+	//index != -1, 선택한 것이 로그 파일인 경우 바로 파일 요청
+	//Get 부모노드 두번으로 IP와 장치이름 획득
+	if(iIndex != -1)
 	{
-		time_t tTimer;
-		struct tm tTimer_St;
-		tTimer = time(NULL);
-		localtime_s(&tTimer_St, &tTimer);
-		int iToday = (tTimer_St.tm_year + 1900) * 10000 + (tTimer_St.tm_mon + 1) * 100 + (tTimer_St.tm_mday);	
-		sDate << iToday;
+		char* pcAgtIP = &sAgentIP[0u];
+		mTCPCommunication.TCPSockInit(iTCPSocket);
+		if(mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT) == TRUE)
+		{
+			time_t tTimer;
+			struct tm tTimer_St;
+			tTimer = time(NULL);
+			localtime_s(&tTimer_St, &tTimer);
+			int iToday = (tTimer_St.tm_year + 1900) * 10000 + (tTimer_St.tm_mon + 1) * 100 + (tTimer_St.tm_mday);	
+			sDate << iToday;
 
-		sLogDir = mXMLManager.Parsing_Target_XML(mUserConfig.GetExeDirectory() + "Config.xml", "CommonPath", "Watcher");
-		sLogDir += "\\" + sDate.str() + "\\" + sAgentIP + "\\";
+			sLogDir = mXMLManager.Parsing_Target_XML(mUserConfig.GetExeDirectory() + "Config.xml", "CommonPath", "Watcher");
+			sLogDir += "\\" + sDate.str() + "\\" + sAgentIP + "\\";
 
-		mTCPCommunication.LogFileReq(iTCPSocket, sLogDir, sLogFileName);
+			mTCPCommunication.LogFileReq(iTCPSocket, sLogDir, sLogFileName);
+		}
+		else
+		{
+
+		}
 	}
+	//index == -1 인 경우
+	//선택한 것이 IP와 장치이름인 경우, 해당 장치에 존재하는 모든 로그 파일을 요청함
 	else
 	{
+		sAgentIPwithName = m_wndClassView.GetItemText(hParents);
+		
+		if(sAgentIPwithName == "노드 목록")
+		{
+			sAgentIPwithName = m_wndClassView.GetItemText(hItem);
+			iIndex = sAgentIPwithName.find_first_of("/");
+			sAgentIP = sAgentIPwithName.substr(0, iIndex);
 
+			char* pcAgtIP = &sAgentIP[0u];
+			mTCPCommunication.TCPSockInit(iTCPSocket);
+			//노드에 존재하는 모든 파일의 갯수를 구함
+			hChild = m_wndClassView.GetChildItem(hItem);
+			hGrandChild = m_wndClassView.GetChildItem(hChild);
+			while(hGrandChild = m_wndClassView.GetNextSiblingItem(hGrandChild))
+			{
+				iTotalNumofLog++;
+			}
+			////
+			
+			hGrandChild = m_wndClassView.GetChildItem(hChild);
+
+			time_t tTimer;
+			struct tm tTimer_St;
+			tTimer = time(NULL);
+			localtime_s(&tTimer_St, &tTimer);
+			int iToday = (tTimer_St.tm_year + 1900) * 10000 + (tTimer_St.tm_mon + 1) * 100 + (tTimer_St.tm_mday);	
+			sDate << iToday;
+
+			sLogDir = mXMLManager.Parsing_Target_XML(mUserConfig.GetExeDirectory() + "Config.xml", "CommonPath", "Watcher");
+			sLogDir += "\\" + sDate.str() + "\\" + sAgentIP + "\\";
+
+			for(iNumofLog=0;iNumofLog <= iTotalNumofLog;iNumofLog++)
+			{
+
+				mTCPCommunication.TCPSockInit(iTCPSocket);
+				if(mTCPCommunication.TryCnct(iTCPSocket, pcAgtIP, MY_TCP_PORT) == TRUE)
+				{
+					Sleep(200);
+					sLogFileName = m_wndClassView.GetItemText(hGrandChild);
+					mTCPCommunication.LogFileReq(iTCPSocket, sLogDir, sLogFileName);
+				}
+				else
+				{
+
+				}
+				hGrandChild = m_wndClassView.GetNextItem(hGrandChild, TVGN_NEXT);
+			}
+
+		}
 	}
-
 	return 0;
 }
 
@@ -865,3 +930,261 @@ HRESULT CClassView::Treeview_Refresh(WPARAM wParam, LPARAM lParam)
 
 	return TRUE;
 }
+
+
+
+/*
+void CClassView::OnLButtonDown(UINT nFlags, CPoint point) {
+	m_nClickFlags = nFlags;
+	HTREEITEM iClk = GetClickedItem();
+	if (iClk) {
+		if (m_fMultiselectable) {
+			if (m_nClickFlags & MK_CONTROL) {
+				// we change selection
+				ChgSelection(iClk);
+				return;
+			}
+		}
+		// we set as selection
+		m_wndClassView.SetItemState(iClk, TVIS_SELECTED , TVIS_SELECTED);
+	} else CTreeCtrl::OnLButtonDown(nFlags, point);
+}
+
+HTREEITEM CClassView::GetClickedItem() {
+	DWORD dwPos = GetMessagePos();
+	CPoint spt( LOWORD(dwPos), HIWORD(dwPos) );
+	ScreenToClient(&spt);
+	m_pt = spt;
+	UINT test;
+	HTREEITEM hti = HitTest(spt, &test);
+	if ((hti != 0) && (test & (TVHT_ONITEM | TVHT_ONITEMRIGHT))) return
+		hti;
+	if (hti == 0) {
+		ClearSelection();
+	}
+	return 0;
+}
+
+void CClassView::ChgSelection(HTREEITEM iClk) {
+	if GetItemState(iClk, TVIS_SELECTED) == TVIS_SELECTED) {
+		SetItemState(iClk, 0 , TVIS_SELECTED);
+	} else {
+		SetItemState(iClk, TVIS_SELECTED , TVIS_SELECTED);
+	}
+}
+*/
+/*
+void CClassView::OnLButtonDown(UINT nFlags, CPoint point) 
+{
+	// Set focus to control if key strokes are needed.
+	// Focus is not automatically given to control on lbuttondown
+
+	m_dwDragStart = GetTickCount();
+
+	if(nFlags & MK_CONTROL ) 
+	{
+		// Control key is down
+		UINT flag;
+		HTREEITEM hItem = m_wndClassView.HitTest( point, &flag );
+		if( hItem )
+		{
+			// Toggle selection state
+			UINT uNewSelState = 
+				m_wndClassView.GetItemState(hItem, TVIS_SELECTED) & TVIS_SELECTED ? 
+				0 : TVIS_SELECTED;
+
+			// Get old selected (focus) item and state
+			HTREEITEM hItemOld = m_wndClassView.GetSelectedItem();
+			UINT uOldSelState  = hItemOld ? 
+				m_wndClassView.GetItemState(hItemOld, TVIS_SELECTED) : 0;
+
+			// Select new item
+			if( m_wndClassView.GetSelectedItem() == hItem )
+				m_wndClassView.SelectItem( NULL );		// to prevent edit
+			CTreeCtrl::OnLButtonDown(nFlags, point);
+
+			// Set proper selection (highlight) state for new item
+			m_wndClassView.SetItemState(hItem, uNewSelState,  TVIS_SELECTED);
+
+			// Restore state of old selected item
+			if (hItemOld && hItemOld != hItem)
+				m_wndClassView.SetItemState(hItemOld, uOldSelState, TVIS_SELECTED);
+
+			m_hItemFirstSel = NULL;
+
+			return;
+		}
+	} 
+	else if(nFlags & MK_SHIFT)
+	{
+		// Shift key is down
+		UINT flag;
+		HTREEITEM hItem = HitTest( point, &flag );
+
+		// Initialize the reference item if this is the first shift selection
+		if( !m_hItemFirstSel )
+			m_hItemFirstSel = m_wndClassView.GetSelectedItem();
+
+		// Select new item
+		if( m_wndClassView.GetSelectedItem() == hItem )
+			m_wndClassView.SelectItem( NULL );			// to prevent edit
+		CTreeCtrl::OnLButtonDown(nFlags, point);
+
+		if( m_hItemFirstSel )
+		{
+			SelectItems( m_hItemFirstSel, hItem );
+			return;
+		}
+	}
+	else
+	{
+		// Normal - remove all selection and let default 
+		// handler do the rest
+		ClearSelection();
+		m_hItemFirstSel = NULL;
+	}
+
+	CTreeCtrl::OnLButtonDown(nFlags, point);
+}
+
+void CClassView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
+{
+	if ( (nChar==VK_UP || nChar==VK_DOWN) && GetKeyState( VK_SHIFT )&0x8000)
+	{
+		// Initialize the reference item if this is the first shift selection
+		if( !m_hItemFirstSel )
+		{
+			m_hItemFirstSel = m_wndClassView.GetSelectedItem();
+			ClearSelection();
+		}
+
+		// Find which item is currently selected
+		HTREEITEM hItemPrevSel = m_wndClassView.GetSelectedItem();
+
+		HTREEITEM hItemNext;
+		if ( nChar==VK_UP )
+			hItemNext = m_wndClassView.GetPrevVisibleItem( hItemPrevSel );
+		else
+			hItemNext = m_wndClassView.GetNextVisibleItem( hItemPrevSel );
+
+		if ( hItemNext )
+		{
+			// Determine if we need to reselect previously selected item
+			BOOL bReselect = 
+				!( m_wndClassView.GetItemState( hItemNext, TVIS_SELECTED ) & TVIS_SELECTED );
+
+			// Select the next item - this will also deselect the previous item
+			m_wndClassView.SelectItem( hItemNext );
+
+			// Reselect the previously selected item
+			if ( bReselect )
+				m_wndClassView.SetItemState( hItemPrevSel, TVIS_SELECTED, TVIS_SELECTED );
+		}
+		return;
+	}
+	else if( nChar >= VK_SPACE )
+	{
+		m_hItemFirstSel = NULL;
+		ClearSelection();
+	}
+	CTreeCtrl::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+void CClassView::ClearSelection()
+{
+	// This can be time consuming for very large trees 
+	// and is called every time the user does a normal selection
+	// If performance is an issue, it may be better to maintain 
+	// a list of selected items
+	for ( HTREEITEM hItem = m_wndClassView.GetRootItem(); hItem!=NULL; hItem= m_wndClassView.GetNextItem( hItem ) )
+		if ( m_wndClassView.GetItemState( hItem, TVIS_SELECTED ) & TVIS_SELECTED )
+			m_wndClassView.SetItemState( hItem, 0, TVIS_SELECTED );
+}
+
+// SelectItems	- Selects items from hItemFrom to hItemTo. Does not
+//		- select child item if parent is collapsed. Removes
+//		- selection from all other items
+// hItemFrom	- item to start selecting from
+// hItemTo	- item to end selection at.
+BOOL CClassView::SelectItems(HTREEITEM hItemFrom, HTREEITEM hItemTo)
+{
+	HTREEITEM hItem = m_wndClassView.GetRootItem();
+
+	// Clear selection upto the first item
+	while ( hItem && hItem!=hItemFrom && hItem!=hItemTo )
+	{
+		hItem = m_wndClassView.GetNextVisibleItem( hItem );
+		m_wndClassView.SetItemState( hItem, 0, TVIS_SELECTED );
+	}
+
+	if ( !hItem )
+		return FALSE;	// Item is not visible
+
+	m_wndClassView.SelectItem( hItemTo );
+
+	// Rearrange hItemFrom and hItemTo so that hItemFirst is at top
+	if( hItem == hItemTo )
+	{
+		hItemTo = hItemFrom;
+		hItemFrom = hItem;
+	}
+
+
+	// Go through remaining visible items
+	BOOL bSelect = TRUE;
+	while ( hItem )
+	{
+		// Select or remove selection depending on whether item
+		// is still within the range.
+		m_wndClassView.SetItemState( hItem, bSelect ? TVIS_SELECTED : 0, TVIS_SELECTED );
+
+		// Do we need to start removing items from selection
+		if( hItem == hItemTo ) 
+			bSelect = FALSE;
+
+		hItem = m_wndClassView.GetNextVisibleItem( hItem );
+	}
+
+	return TRUE;
+}
+
+HTREEITEM CClassView::GetFirstSelectedItem()
+{
+	for ( HTREEITEM hItem = m_wndClassView.GetRootItem(); hItem!=NULL; hItem = m_wndClassView.GetNextItem( hItem ) )
+		if ( m_wndClassView.GetItemState( hItem, TVIS_SELECTED ) & TVIS_SELECTED )
+			return hItem;
+
+	return NULL;
+}
+
+HTREEITEM CClassView::GetNextSelectedItem( HTREEITEM hItem )
+{
+	for ( hItem = m_wndClassView.GetNextItem( hItem ); hItem!=NULL; hItem = m_wndClassView.GetNextItem( hItem ) )
+		if ( m_wndClassView.GetItemState( hItem, TVIS_SELECTED ) & TVIS_SELECTED )
+			return hItem;
+
+	return NULL;
+}
+
+	HTREEITEM CClassView::GetPrevSelectedItem( HTREEITEM hItem )
+	{
+		for ( hItem = GetPrevItem( hItem ); hItem!=NULL; hItem = GetPrevItem( hItem ) )
+			if ( GetItemState( hItem, TVIS_SELECTED ) & TVIS_SELECTED )
+				return hItem;
+
+		return NULL;
+	}
+*/
+
+
+/*
+void CClassView::OnMultiSelect() 
+{
+	UpdateData();
+	m_wndClassView.EnableMultiSelect(m_bMultiSelect != FALSE);
+	if(!m_bMultiSelect) {
+		HTREEITEM hItem = m_wndClassView.GetSelectedItem();
+		m_wndClassView.ClearSelection(hItem);
+	}
+}
+*/

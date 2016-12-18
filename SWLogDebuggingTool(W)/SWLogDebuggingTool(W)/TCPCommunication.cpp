@@ -305,8 +305,8 @@ void TCPCommunication::LogFileReq(int& iRcvSocket, string sSaveDir, string sReqF
 		}
 	}
 
-
-	AfxMessageBox("File Download Done");
+	Sleep(2);
+	//AfxMessageBox("File Download Done");
 
 	shutdown(iRcvSocket, SD_SEND);
 	closesocket(iRcvSocket);
@@ -438,6 +438,7 @@ list<string> TCPCommunication::LogListReq(int& iTCPSock, char* cAgentIP)
 		}
 	}
 
+	//sLogList = sLogList.substr(0, strlen(sLogList.c_str())-1);
 	std::string sAgtFileList(sLogList.c_str());
 	std::stringstream strmAgtFileList(sAgtFileList);
 

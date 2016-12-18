@@ -16,7 +16,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 한국어 resources
+// Korean resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 #ifdef _WIN32
@@ -285,7 +285,7 @@ BEGIN
     BEGIN
         MENUITEM "Agent정보 요청",                  ID_Info_Req
         MENUITEM "Agent정보 로드",                  ID_Info_Load
-		MENUITEM "Agent자원 정보 요청",               ID_AGENT_RscReq
+        MENUITEM "Agent자원 정보 요청",               ID_AGENT_RscReq
     END
 END
 
@@ -608,7 +608,7 @@ BEGIN
     IDS_FIND_TAB            "찾기"
 END
 
-#endif    // 한국어 resources
+#endif    // Korean resources
 /////////////////////////////////////////////////////////////////////////////
 
 
