@@ -236,7 +236,8 @@ void CClassView::FillClassView()
 				sFileDIrChk = mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName;
 				AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentIP"));
 				AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentName"));
-				AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileDirectory"));
+				//AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileDirectory"));
+				AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogDir"));
 				AgentXMLList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList"));
 			}
 		}
@@ -259,17 +260,18 @@ void CClassView::FillClassView()
 			hClass = m_wndClassView.InsertItem(_T(sListElement.c_str()), 1, 1, hRoot);
 			
 			iterStartList++;
-
+			
+			hSrc = m_wndClassView.InsertItem((*iterStartList).c_str(), 0, 0, hClass);
 			//C:\Temp\CoreDebug
 	//<<<<<<< HEAD
-			int index = 0;
+			/*int index = 0;
 			CString str = (*iterStartList).c_str();
 			index = m_TreeviewManager.GetCharNumber(str, '\\') - 2;
 
 			CString temp;
 			AfxExtractSubString(temp, str, index + 2, '\\');
 			hSrc = m_wndClassView.InsertItem(temp, 0, 0, hClass);
-			
+			*/
 	//=======
 	// 		int index = 0;
 	// 		CString str = (*iterStartList).c_str();
@@ -525,7 +527,7 @@ void CClassView::OnInfoReq()
 	//mUDPCommunication.InforReq(iUdpMultiSock, MY_UDP_PORT, "192.168.0.12");
 
 	//Non-Thread InfoRcv
-	/*memset(&AddrStruct, 0, sizeof(AddrStruct));
+	memset(&AddrStruct, 0, sizeof(AddrStruct));
 	AddrStruct.sin_family = AF_INET;
 	AddrStruct.sin_addr.s_addr = htonl(INADDR_ANY);
 	AddrStruct.sin_port = htons(MY_UDP_PORT);
@@ -533,10 +535,9 @@ void CClassView::OnInfoReq()
 
 	mUDPCommunication.RcvInfor(iUdpUniSock, 4);
 	RefreshClassView();
-	*/
 
-	
 	//Thread InfoRcv
+	/*
 	CWinThread *InfoRcvThread = NULL;
 	InfoRcvThread = AfxBeginThread(Thread_Info_Rcv,this);
 

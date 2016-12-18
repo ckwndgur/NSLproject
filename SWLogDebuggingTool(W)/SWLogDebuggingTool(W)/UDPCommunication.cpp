@@ -221,7 +221,7 @@ list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 	//char* cSingleFileName;
 
 	memset(cRcvBuf, 0, sizeof(cRcvBuf));
-
+	int isock  = iRcvUniSock;
 	AgtInfoMsgStruct MyAgtInfoMsg = AgtInfoMsgStruct();
 	AgtInfoList MyAgtInfoList = AgtInfoList();
 
@@ -251,8 +251,9 @@ list<string> UDPCommunication::RcvInfor(int iRcvUniSock, int iTimeout_sec)
 			mXMLManager.CreatXML_AgentInfo(MyAgtInfoMsg.cAgtIPAddr);
 			mXMLManager.EditElementXML("AgentInfo", "AgentIP", MyAgtInfoMsg.cAgtIPAddr);
 			mXMLManager.EditElementXML("AgentInfo", "AgentName", MyAgtInfoMsg.cAgtName);
-			mXMLManager.EditElementXML("AgentInfo", "AgentLogDir", MyAgtInfoMsg.cAgtLogDir);
+			//mXMLManager.EditElementXML("AgentInfo", "AgentLogDir", "CoreDebug"/*MyAgtInfoMsg.cAgtLogDir*/);
 			mXMLManager.EditElementXML("AgentInfo", "AgentLogFileList", MyAgtInfoMsg.cAgtFileList);
+			mXMLManager.EditElementXML("AgentInfo", "AgentLogDir", MyAgtInfoMsg.cAgtLogDir);
 
 			MyAgtInfoMsg.cAgtFileList[strlen(MyAgtInfoMsg.cAgtFileList)-1] = '\0';
 
