@@ -218,14 +218,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\EditTreeCtrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EditTreeCtrlEx.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\FileView.cpp"
 				>
 			</File>
@@ -365,14 +357,6 @@
 			</File>
 			<File
 				RelativePath=".\DFilterView.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EditTreeCtrl.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EditTreeCtrlEx.h"
 				>
 			</File>
 			<File

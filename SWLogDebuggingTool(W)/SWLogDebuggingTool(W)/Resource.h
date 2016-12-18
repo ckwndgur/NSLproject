@@ -105,6 +105,12 @@
 #define ID_Info_Req                     32785
 #define ID_Info_Load                    32786
 #define ID_FILTERING                    32788
+#define WantedERROR						32789
+#define WantedDATE						32790
+#define WantedPATH						32791
+#define WantedLINE						32792
+#define WantedDESCRIPTION				32793
+#define WantedTOTAL						32794
 
 //병합하면서 ID 변경
 //원본#define ID_AGENT_RscReq                 32788

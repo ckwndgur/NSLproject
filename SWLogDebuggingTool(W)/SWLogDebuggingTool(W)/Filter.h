@@ -13,12 +13,12 @@ class Filter
 public:
 	Filter();
 	~Filter();
-	list<CString> DoFilter(int Category,string WantedLog,string Title, CString filepath);
+	list<CString> DoFilter(int Category,string WantedLog,string Title, CString filepath, CString Rfilepath, bool multiflag);
 	string CreatingTime(string WantedLog);
 
 	string WantedLog;
-
 	CString LogColumn;
+	CString ResultPath;
 
 
 	list<CString> cslstFilteredData;
