@@ -875,6 +875,7 @@ HRESULT CClassView::Treeview_Refresh(WPARAM wParam, LPARAM lParam)
 	HTREEITEM hGrandChildItem = m_wndClassView.GetChildItem(hChildItem);
 	list<string> AgentFileList;
 	string sFileDIrChk;
+	string sFileName;
 	string sFileLIst = "";
 	XMLManager m_XMLManager;
 
@@ -884,35 +885,14 @@ HRESULT CClassView::Treeview_Refresh(WPARAM wParam, LPARAM lParam)
 	m_wndClassView.DeleteItem(hChildItem);
 	m_wndClassView.InsertItem(_T(sFileDIrChk.c_str()), 0, 0, hSelectItem);
 	hChildItem = m_wndClassView.GetChildItem(hSelectItem);
-	do
-	{
-		//파일 경로를 추출
-		hFind = FindFirstFile((mUserConfig.GetExeDirectory()+"AgtInfo\\*").c_str(), &FindData);
+	
+	sFileName = m_wndClassView.GetItemText(hSelectItem);	
+	int iIndex = sFileName.find_first_of("/");
+	string sAgentIP = sFileName.substr(0, iIndex);
 
-		if(hFind==INVALID_HANDLE_VALUE)
-		{
-			AfxMessageBox("파일경로 에러");
-			break;
-		}
-	}while(hFind==INVALID_HANDLE_VALUE);
 
-	int iDeletPoint = 0;
-
-	do{
-		if(iDeletPoint < 2)
-		{
-			iDeletPoint++;
-		}
-		else
-		{
-			if(FindData.cFileName != NULL)
-			{
-				sFileDIrChk = mUserConfig.GetExeDirectory()+"AgtInfo\\" + FindData.cFileName;
-				sFileLIst = m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList");
-				//AgentFileList.push_back(m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList"));
-			}
-		}
-	}while(FindNextFile(hFind, &FindData));
+	sFileDIrChk = mUserConfig.GetExeDirectory()+"AgtInfo\\" + sAgentIP +".xml";
+	sFileLIst = m_XMLManager.Parsing_Target_XML(sFileDIrChk, "AgentInfo", "AgentLogFileList");
 
 	/////////////OpenXML 끝
 	sFileLIst = sFileLIst.substr(0, strlen(sFileLIst.c_str())-1);
@@ -930,8 +910,6 @@ HRESULT CClassView::Treeview_Refresh(WPARAM wParam, LPARAM lParam)
 
 	return TRUE;
 }
-
-
 
 /*
 void CClassView::OnLButtonDown(UINT nFlags, CPoint point) {
