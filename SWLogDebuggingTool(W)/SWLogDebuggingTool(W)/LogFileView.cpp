@@ -33,6 +33,9 @@ LogFileView::~LogFileView()
 
 BEGIN_MESSAGE_MAP(LogFileView, CScrollView)
 	ON_WM_SIZE()
+	ON_COMMAND(ID_Log_Req, &CClassView::OnLogReq)
+	ON_COMMAND(ID_Info_Req, &CClassView::OnInfoReq)
+	ON_COMMAND(ID_Info_Load, &CClassView::OnInfoLoad)
 END_MESSAGE_MAP()
 
 // LogFileView drawing

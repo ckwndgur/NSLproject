@@ -3,6 +3,7 @@
 #include <string.h>
 #include <winsock2.h>
 #include <process.h>
+
 #include "AgtDataMsg.h"
 #include "AgtInfoList.h"
 #include "AgtInfoMsg.h"
@@ -12,7 +13,7 @@
 #include "XMLManager.h"
 #include "AgtRscMsg.h"
 
-#define MY_TCP_PORT 18840
+#define TCP_PORT 18840
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
@@ -45,4 +46,6 @@ public:
 	void LogFileRcv(int& iRcvSocket, char* cFileDir, char* cFileName);
 	void LogFileSnd(int iRcvSocket, char* cFileDir, char* cFileName);
 	char* ReqRsc(int& iTCPSock, float& CPUUsage, DWORD& RAMUsage);
+
+	list<string> LogListReq(int& iTCPSock, char* cAgentIP);
 };

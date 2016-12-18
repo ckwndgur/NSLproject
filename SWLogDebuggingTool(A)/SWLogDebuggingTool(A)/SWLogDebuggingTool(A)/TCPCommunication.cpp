@@ -51,7 +51,7 @@ void TCPCommunication::TCPAddrAlloc_Auto(int& iTCPSock, int& iTCPPort)
 	memset(&sServAddr, 0, sizeof(sServAddr));
 	sServAddr.sin_family = AF_INET;
 	sServAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	sServAddr.sin_port = htons(iTCPPort);
+	sServAddr.sin_port = 0;
 
 	if(bind(iTCPSock, (SOCKADDR*) &sServAddr, sizeof(sServAddr)) == SOCKET_ERROR)
 	{

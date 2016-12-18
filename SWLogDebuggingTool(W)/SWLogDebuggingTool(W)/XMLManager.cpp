@@ -32,11 +32,11 @@ void XMLManager::CreatXML_AgentInfo(string AgentName)
 {
 	sConfigFileDirectory = mUserConfig.GetExeDirectory()+"AgtInfo\\"+ AgentName + ".xml";
 	sConfigDirectory = (mUserConfig.GetExeDirectory()+"AgtInfo\\");
-	sConfigFileName = AgentName;
+	sConfigFileName = AgentName + ".xml";
 
 	string title = "AgentInfo";
-	string childelement[4] = {"AgentIP", "AgentName", "AgentLogDir", "AgentLogFileList"};
-	string contents[4] = {"ExampleIP", "ExampleName", "ExampleDir", "ExampleList"};
+	string childelement[4] = {"AgentIP", "AgentName", "AgentLogFileList", "AgentLogFileDirectory"};
+	string contents[4] = {"ExampleIP", "ExampleName", "ExampleList", "ExampleDir"};
 
 	mFolderManager.MakeDirectory(&sConfigDirectory[0u],&sConfigFileName[0u]);
 
@@ -143,7 +143,6 @@ bool XMLManager::EditElementXML(string ChildTitle, string ChildElement, string C
 	} 
 	else
 	{
-
 		return true;
 	}
 }
@@ -153,6 +152,7 @@ string XMLManager::ParsingXML(string ChildTitle, string ChildElement)
 	if (mXMLDocument.LoadFile(sConfigFileDirectory.c_str()) == false)
 	{
 		mNode = mXMLDocument.FirstChildElement(ChildTitle.c_str())->FirstChildElement(ChildElement.c_str());
+
 
 		return (string) mNode->ToElement()->GetText();
 	} 
@@ -164,12 +164,17 @@ string XMLManager::ParsingXML(string ChildTitle, string ChildElement)
 
 string XMLManager::Parsing_Target_XML(string sTargetDir, string ChildTitle, string ChildElement)
 {
+	string sFail = "XML Parsing Fail";
 	mXMLDocument.Clear();
-
+	string sString;
 	if (mXMLDocument.LoadFile(sTargetDir.c_str()) == false)
 	{
 		mNode = mXMLDocument.FirstChildElement(ChildTitle.c_str())->FirstChildElement(ChildElement.c_str());
-		return (string) mNode->ToElement()->GetText();
+		/////
+		if(mNode&&mNode->ToElement()->GetText())
+			return (string) mNode->ToElement()->GetText();
+		/////
+		return sFail;
 	} 
 	else
 	{

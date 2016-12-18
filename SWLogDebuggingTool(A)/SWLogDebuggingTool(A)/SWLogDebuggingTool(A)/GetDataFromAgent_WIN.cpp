@@ -32,9 +32,10 @@ char* GetDataFromAgent_WIN::GetAgentIP()
 	return AgtIPInfoBuf;
 }
 
-char* GetDataFromAgent_WIN::GetAgentFileInfo(char* cAgtLogPathBuf)
+string GetDataFromAgent_WIN::GetAgentFileInfo(char* cAgtLogPathBuf)
 {
-	char cFileListOutput[2048];
+	string sFileListOutput = "";
+	char* cFileListOutput;
 	char cFailReturn[2] = "F";
 
 	WIN32_FIND_DATA FindData;
@@ -70,22 +71,29 @@ char* GetDataFromAgent_WIN::GetAgentFileInfo(char* cAgtLogPathBuf)
 		else if(iDeletPoint == 2)
 		{
 			printf("%s\n", FindData.cFileName);
-			strcpy(cFileListOutput, FindData.cFileName);
-			strcat(cFileListOutput, "\n");
+			sFileListOutput += FindData.cFileName;
+			sFileListOutput += "\n";
+			//strcpy(cFileListOutput, FindData.cFileName);
+			//strcat(cFileListOutput, "\n");
 			iDeletPoint++;
 		}
 		else
 		{
 			printf("%s\n", FindData.cFileName);
-			strcat(cFileListOutput, FindData.cFileName);
-			strcat(cFileListOutput, "\n");
-
+			sFileListOutput += FindData.cFileName;
+			sFileListOutput += "\n";
+			//strcat(cFileListOutput, FindData.cFileName);
+			//strcat(cFileListOutput, "\n");
 		}
 	}while(FindNextFile(hFind, &FindData));
 
 	FindClose(hFind);
+	//char* 반환
+	//cFileListOutput = (char*)sFileListOutput.c_str();
+	//return cFileListOutput;
 	
-	return cFileListOutput;
+	//string 반환
+	return sFileListOutput;
 }
 
 
