@@ -35,7 +35,7 @@ void XMLManager::CreatXML_AgentInfo(string AgentName)
 	sConfigFileName = AgentName + ".xml";
 
 	string title = "AgentInfo";
-	string childelement[4] = {"AgentIP", "AgentName", "AgentLogFileList", "AgentLogFileDirectory"};
+	string childelement[4] = {"AgentIP", "AgentName", "AgentLogFileList", "AgentLogDir"};
 	string contents[4] = {"ExampleIP", "ExampleName", "ExampleList", "ExampleDir"};
 
 	mFolderManager.MakeDirectory(&sConfigDirectory[0u],&sConfigFileName[0u]);
@@ -135,16 +135,23 @@ bool XMLManager::EditElementXML(string ChildTitle, string ChildElement, string C
 	if (mXMLDocument.LoadFile(sConfigFileDirectory.c_str()) == false)
 	{
 		mNode = mXMLDocument.FirstChildElement(ChildTitle.c_str())->FirstChildElement(ChildElement.c_str());
-		mNode->ToElement()->SetText(Contents.c_str());
-
-		mXMLDocument.SaveFile(sConfigFileDirectory.c_str());
-		mXMLDocument.Clear();
-		return false;
+		if(strlen(Contents.c_str())<1)
+		{
+			return true;
+		}
+		else
+		{
+			mNode->ToElement()->SetText(Contents.c_str());
+			mXMLDocument.SaveFile(sConfigFileDirectory.c_str());
+			mXMLDocument.Clear();
+			return false;
+		}
 	} 
 	else
 	{
 		return true;
 	}
+	return true;
 }
 
 bool XMLManager::Target_EditElementXML(string sTargetDir, string ChildTitle, string ChildElement, string Contents)
