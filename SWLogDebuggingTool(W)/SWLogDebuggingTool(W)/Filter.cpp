@@ -1,4 +1,3 @@
-//////////////////////////////////////////////////////////////////////////////////////////////싹다 복붙
 #include "StdAfx.h"
 #include "Filter.h"
 #include "FolderManager.h"
@@ -23,7 +22,8 @@ string Filter::CreatingTime(string WantedLog)
 	sprintf_s(buffer,sizeof(buffer),"%04d-%02d-%02d %02dhour%02dmin%02dsec.txt", lst.wYear, lst.wMonth, lst.wDay, lst.wHour, lst.wMinute, lst.wSecond);
 	string Title1;
 	Title1 = buffer;
-	Title1 = "["+WantedLog + "] "+ Title1;
+	Title1 = WantedLog + Title1;
+	//Title1 = "["+WantedLog + "] "+ Title1;
 	char* Title = new char[Title1.size() +1];
 	strcpy_s(Title, Title1.size() + 1, Title1.c_str());
 
@@ -153,7 +153,7 @@ string Filter::LogDivider(int category, string alinelog)
 	return valrtnLog;
 }
 
-list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CString filepath)
+list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CString filepath, CString Rfilepath, bool multiflag)
 {
 	string Log;
 	string FilteredLog;
@@ -173,25 +173,42 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 		divider = '|';
 	}
 
-	
 	CString csfilepath, temp = ""; 
-	for (int i = 0; i<4; i++)
+	csfilepath = Rfilepath;
+/*
+	if(multiflag == false)
 	{
-		AfxExtractSubString(temp, filepath, i, '\\');
-		csfilepath += temp + '\\';
+		
+		for (int i = 0; i<4; i++)
+		{
+			AfxExtractSubString(temp, filepath, i, '\\');
+			csfilepath += temp + '\\';
+		}
+		AfxExtractSubString(temp, filepath, 4, '\\');
+		AfxExtractSubString(temp, temp, 0, '.');
+		csfilepath = csfilepath + "Debug" + '\\' + "(" + temp + ")" + Title.c_str();
+		ResultPath = csfilepath;		
+		FolderManager mFolderManager;
+		mFolderManager.MakeDirectory((LPSTR)((LPCTSTR)csfilepath));
+		ifstream input((CStringA)filepath, ios::in); // 
+		if(input.fail()){
+			cout << "파일을 여는 데 실패했습니다."<< endl;
+		}
+		ofstream output(csfilepath, ios::out); 
+		if(output.fail()){
+			cout << "파일을 쓰는 데 실패했습니다.1"<< endl;
+		}
 	}
-	AfxExtractSubString(temp, filepath, 4, '\\');
-	AfxExtractSubString(temp, temp, 0, '.');
-
-	csfilepath = csfilepath + "Debug" + '\\' + "(" + temp + ")" + Title.c_str();
-	
-	FolderManager mFolderManager;
-	mFolderManager.MakeDirectory((LPSTR)((LPCTSTR)csfilepath));
-
+	else
+	{
+		csfilepath = Rfilepath;
+	}
+*/
 	ifstream input((CStringA)filepath, ios::in); // 
 	if(input.fail()){
 		cout << "파일을 여는 데 실패했습니다."<< endl;
 	}
+
 	ofstream output(csfilepath, ios::out); 
 	if(output.fail()){
 		cout << "파일을 쓰는 데 실패했습니다."<< endl;
@@ -202,7 +219,8 @@ list<CString> Filter::DoFilter(int Category, string WantedLog, string Title, CSt
 		WantedLogPart[0].assign(WantedLog,0, WantedLog.find("~"));
 		WantedLogPart[1].assign(WantedLog, WantedLog.find("~")+1, WantedLog.length());
 	}
-	while(!input.eof()){					
+	while(!input.eof())
+	{					
 		getline(input, Log);
 		switch(Category)
 		{

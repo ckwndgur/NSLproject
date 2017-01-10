@@ -40,12 +40,14 @@ public:
 	CWnd m_ButtonSearch;
 
 	list<CString> m_strFilteredData;
-	
+
 
 	CString filterform;
 
 	void MakeFilterForm(CString columnlist);
+	void PreFiltering(list<string> WantedLogString);
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -57,9 +59,7 @@ public:
 protected:
 	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
 	virtual void OnInitialUpdate();     // first time after construct
-	
+
 
 	DECLARE_MESSAGE_MAP()
 };
-
-
