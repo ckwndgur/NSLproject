@@ -3075,5 +3075,5 @@ Log(997).txt
 Log(998).txt
 Log(999).txt
 </AgentLogFileList>
-    <AgentLogDir>c:\Temp\CoreDebug\*</AgentLogDir>
+    <AgentLogFileDirectory>c:\Temp\CoreDebug*</AgentLogFileDirectory>
 </AgentInfo>

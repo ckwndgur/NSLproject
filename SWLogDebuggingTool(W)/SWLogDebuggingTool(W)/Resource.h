@@ -107,7 +107,15 @@
 #define ID_32787                        32787
 #define ID_FILTERING                    32788
 #define ID_AgentDirChange               32788
-#define ID_AGENT_RscReq                 32789
+
+#define WantedERROR						32789
+#define WantedDATE						32790
+#define WantedPATH						32791
+#define WantedLINE						32792
+#define WantedDESCRIPTION				32793
+#define WantedTOTAL						32794
+
+#define ID_AGENT_RscReq                 32795
 
 // Next default values for new objects
 // 
