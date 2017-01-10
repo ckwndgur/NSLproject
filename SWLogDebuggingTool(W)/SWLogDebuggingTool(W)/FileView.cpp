@@ -247,6 +247,7 @@ void CFileView::OnFileOpen()
 	LogFileView *pView = (LogFileView *)pChild->GetFileViewPane();
 	LogFtView *pFtView = (LogFtView *)pChild->GetFtViewPane();
 	DFilterView *pDView = (DFilterView *)pChild->GetDFilterViewPane();
+	//DFilterView *pDView = new DFilterView;
 	
 
 	if (csTVDataFilePath.GetLength() >0 )

@@ -45,9 +45,7 @@ public:
 	CString filterform;
 
 	void MakeFilterForm(CString columnlist);
-	void PreFiltering(list<string> WantedLogString);
 	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
