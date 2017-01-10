@@ -317,7 +317,8 @@ unsigned int __stdcall TCP_AgentLogReq_Resp(void*)
 			printf("\n");
 			printf("===================================================================\n");
 
-			sFileDir = mXMLManager.ParsingXML("CommonPath", "Agent");
+			//sFileDir = mXMLManager.ParsingXML("CommonPath", "Agent");
+			sFileDir = MyDataReqMsg.cFileDir;
 			sFileDir += MyDataReqMsg.cReqFileName;
 
 			hFile = CreateFile(sFileDir.c_str(), GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
@@ -368,7 +369,6 @@ unsigned int __stdcall TCP_AgentLogReq_Resp(void*)
 		break;
 
 		case 3:
-			
 			iWatcherPort = MyDataReqMsg.iWatcherPort;
 			strcat(cWatcherIP, MyDataReqMsg.cWatcherIP);
 			printf("===================================================================\n");
@@ -386,7 +386,6 @@ unsigned int __stdcall TCP_AgentLogReq_Resp(void*)
 
 			if(send(iTCP_CltSock, (char*)&MyAgtRcsMsg, sizeof(struct AgtRcsMsgStruct), 0)==-1)
 				printf("Agent Rsc Trans Failed\n");
-
 		break;
 		
 		case 4:
@@ -417,6 +416,20 @@ unsigned int __stdcall TCP_AgentLogReq_Resp(void*)
 			}
 			//TCP기반의 Agent 로그목록 전송 기능 종료
 			/////////////////////////////////////////////////////////////
+		break;
+
+		case 5:
+		//파일경로 수정 메시지 수신 및 처리
+		
+			printf("파일경로 수정 메시지 도착\n");
+			printf("새 경로 : ");
+			printf(MyDataReqMsg.cFileDir);
+			printf("\n");
+			mXMLManager.EditElementXML("CommonPath", "Agent", MyDataReqMsg.cFileDir);		
+		
+		break;
+
+		default:
 		break;
 
 	}

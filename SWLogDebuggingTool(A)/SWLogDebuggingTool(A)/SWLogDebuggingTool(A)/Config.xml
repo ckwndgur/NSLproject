@@ -1,4 +1,4 @@
-<Common Path>
+<CommonPath>
     <Agent>c:\Temp\CoreDebug\</Agent>
-    <Watcher>C:LogDebugging\</Watcher>
-</Common Path>
+    <Watcher>c:\LogDebugging\</Watcher>
+</CommonPath>
